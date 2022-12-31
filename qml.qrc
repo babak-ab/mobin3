@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>qtquickcontrols2.conf</file>
+        <file>ContactModel.qml</file>
+        <file>VideoRender.qml</file>
+        <file>CustomButton.qml</file>
+    </qresource>
+</RCC>
