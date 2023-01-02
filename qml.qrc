@@ -5,5 +5,21 @@
         <file>ContactModel.qml</file>
         <file>VideoRender.qml</file>
         <file>CustomButton.qml</file>
+        <file>Images/menu-icon.png</file>
+        <file>content/ButtonPage.qml</file>
+        <file>content/AndroidDelegate.qml</file>
+        <file>content/ListPage.qml</file>
+        <file>content/ProgressBarPage.qml</file>
+        <file>content/SliderPage.qml</file>
+        <file>content/TabBarPage.qml</file>
+        <file>content/TextInputPage.qml</file>
+        <file>Images/button_default.png</file>
+        <file>Images/button_pressed.png</file>
+        <file>Images/navigation_next_item.png</file>
+        <file>Images/navigation_previous_item.png</file>
+        <file>Images/tab_selected.png</file>
+        <file>Images/tabs_standard.png</file>
+        <file>Images/textinput.png</file>
+        <file>Images/toolbar.png</file>
     </qresource>
 </RCC>

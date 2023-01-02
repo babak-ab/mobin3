@@ -1,0 +1,74 @@
+#ifndef APPCONTROL_H
+#define APPCONTROL_H
+
+#define FRAME_WIDTH 1920
+#define FRAME_HEIGHT 1080
+#define SOFTWARE_VERSION "0.9.0"
+
+#include <QObject>
+#include <QStandardPaths>
+
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgcodecs/imgcodecs.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+
+#include "global.h"
+#include "videocapture.h"
+#include "videorecord.h"
+#include "videoadapter.h"
+#include "serialcontrol.h"
+
+class AppControl: public QObject, public IObserver
+{
+    Q_OBJECT
+    Q_PROPERTY(QObject* videoAdapter READ videoAdapter NOTIFY signalVideoAdapter)
+
+public:
+    explicit AppControl(QObject* parent = Q_NULLPTR);
+    ~AppControl();
+
+private:
+    VideoAdapter* _videoAdapter;
+
+    VideoCapture* _videoCaptureIr;
+    VideoCapture* _videoCaptureTv;
+
+    VideoRecord* _videoRecordTv;
+    VideoRecord* _videoRecordIr;
+
+    QStringList _cameraList;
+    QString _recodringLocation = "";
+
+    QString _captureDeviceIr;
+    QString _captureDeviceTv;
+
+    bool _isTVRecordActivated = false;
+    bool _isTRCRecordActivated = false;
+
+    SerialControl _serialControl;
+
+public:
+    void onReadyRead(QString name, uchar* data, long size);
+
+    QString captureDeviceIr() const;
+
+    QString captureDeviceTv() const;
+
+    bool tvRecord() const;
+
+    bool irRecord() const;
+
+    VideoAdapter* videoAdapter() const;
+
+
+Q_SIGNALS:
+    void sigCaptureDeviceTvChanged();
+    void sigCaptureDeviceIrChanged();
+    void tvRecordChanged();
+    void irRecordChanged();
+    void signalVideoAdapter();
+};
+
+
+#endif // APPCONTROL_H
