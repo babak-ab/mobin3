@@ -161,6 +161,10 @@ ApplicationWindow {
             title: "Sending Mode"
             page: "content/ButtonPage.qml"
         }
+        ListElement {
+            title: "Connections"
+            page: "content/Connections.qml"
+        }
     }
 
     StackView {

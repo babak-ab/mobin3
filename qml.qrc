@@ -23,5 +23,6 @@
         <file>Images/toolbar.png</file>
         <file>content/CustomMessageBox.qml</file>
         <file>content/ZoomFocus.qml</file>
+        <file>content/Connections.qml</file>
     </qresource>
 </RCC>

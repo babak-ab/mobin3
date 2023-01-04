@@ -24,12 +24,15 @@ AppControl::AppControl(QObject* parent)
     foreach (const QSerialPortInfo &serialPortInfo, QSerialPortInfo::availablePorts())
     {
         _serialPortList.append(serialPortInfo.portName());
-        qDebug() << serialPortInfo.portName();
     }
 
-    qDebug() << "XXXXXX count: " << QSerialPortInfo::availablePorts().count();
+    _serialPortList.append("COM1");
+    _serialPortList.append("COM2");
 
-    _serialPortName = "COM1";
+    if (_serialPortList.count() > 0)
+        _serialPortName = _serialPortList[0];
+    else
+        _serialPortName = "COM1";
 
 }
 
@@ -62,21 +65,19 @@ QString AppControl::messageText() const
     return _messageText;
 }
 
-int AppControl::connectToSerialPort()
+bool AppControl::connectToSerialPort()
 {
-        qDebug() << "XXXXXXXXXXXX 1";
-
     bool isConnected = _serialControl.connectToSerialPort(_serialPortName);
 
     if (isConnected) {
-         return _serialPortList.indexOf(QRegExp(_serialPortName, Qt::CaseInsensitive, QRegExp::W3CXmlSchema11));
+         return true;
     }
 
     _messageTitle = "Serial Port Error";
     _messageText = "Could not connect to " + _serialPortName + " port!";
     Q_EMIT sigThrowSerialMessageRequested();
 
-    return 0;
+    return false;
 }
 
 void AppControl::disconnectSerialPort()
@@ -92,8 +93,5 @@ void AppControl::disconnectSerialPort()
 
 QStringList AppControl::serialPort() const
 {
-
-    qDebug() << "XXXXXXXXXXXX 0";
-
     return _serialPortList;
 }

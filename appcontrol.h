@@ -40,9 +40,16 @@ private:
     QString _messageText;
 public:
 
-    Q_INVOKABLE int connectToSerialPort();
+    Q_INVOKABLE bool connectToSerialPort();
     Q_INVOKABLE void disconnectSerialPort();
     Q_INVOKABLE void setSerialPortName(QString portName);
+
+//    Q_INVOKABLE void setSerialPortName(QString portName);
+//    Q_INVOKABLE void setSerialPortName(QString portName);
+//    Q_INVOKABLE void setSerialPortName(QString portName);
+//    Q_INVOKABLE void setSerialPortName(QString portName);
+//    Q_INVOKABLE void setSerialPortName(QString portName);
+//    Q_INVOKABLE void setSerialPortName(QString portName);
 
     QString messageTitle() const;
     QString messageText() const;
