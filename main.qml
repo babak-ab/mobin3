@@ -127,7 +127,7 @@ ApplicationWindow {
         id: pageModel
         ListElement {
             title: "Zoom & Focus"
-            page: "content/ButtonPage.qml"
+            page: "content/ZoomFocus.qml"
         }
         ListElement {
             title: "Pan & Tilt"

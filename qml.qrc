@@ -22,5 +22,6 @@
         <file>Images/textinput.png</file>
         <file>Images/toolbar.png</file>
         <file>content/CustomMessageBox.qml</file>
+        <file>content/ZoomFocus.qml</file>
     </qresource>
 </RCC>
