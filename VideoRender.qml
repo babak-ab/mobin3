@@ -6,11 +6,4 @@ VideoOutput {
     id: videoOutput
     fillMode: VideoOutput.PreserveAspectCrop
 
-    source: camera
-    signal press
-    Camera {
-        id: camera
-        captureMode: Camera.CaptureStillImage
-    }
 }
-
