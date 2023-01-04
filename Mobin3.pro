@@ -17,7 +17,8 @@ include($$PWD/utils/utils.pri)
 SOURCES += \
         appcontrol.cpp \
         buttonmodel.cpp \
-        main.cpp
+        main.cpp \
+        serialcontrol.cpp
 
 RESOURCES += qml.qrc
 
@@ -34,7 +35,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     appcontrol.h \
-    buttonmodel.h
+    buttonmodel.h \
+    serialcontrol.h
 
 DISTFILES += \
     CustomButton.qml
