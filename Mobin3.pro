@@ -17,11 +17,7 @@ include($$PWD/utils/utils.pri)
 SOURCES += \
         appcontrol.cpp \
         buttonmodel.cpp \
-        main.cpp \
-        serialcontrol.cpp \
-        videoadapter.cpp \
-        videocapture.cpp \
-        videorecord.cpp
+        main.cpp
 
 RESOURCES += qml.qrc
 
@@ -38,29 +34,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     appcontrol.h \
-    buttonmodel.h \
-    global.h \
-    serialcontrol.h \
-    videoadapter.h \
-    videocapture.h \
-    videorecord.h
+    buttonmodel.h
 
 DISTFILES += \
-    CustomButton.qml \
-    utils/utils.pri
-
-CONFIG += link_pkgconfig \
-            c++11
-
-PKGCONFIG += gstreamer-1.0 \
-        glib-2.0 \
-        gobject-2.0 \
-        gio-2.0
-
-
-win32{
-win32: LIBS += -L'C:/Program Files/OpenCV3.4.16/lib/' -lopencv_world3416
-
-INCLUDEPATH += 'C:/Program Files/OpenCV3.4.16/include'
-DEPENDPATH += 'C:/Program Files/OpenCV3.4.16/include'
-}
+    CustomButton.qml

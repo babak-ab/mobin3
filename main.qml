@@ -2,6 +2,7 @@ import QtQuick 2.12
 import QtQuick.Window 2.12
 import QtQuick.Controls 2.14
 import QtQuick.Layouts 1.14
+import AppControl 1.0
 
 import "content"
 
@@ -68,7 +69,7 @@ ApplicationWindow {
     }
 
     Repeater {
-        model: buttons
+        model: appControl.buttonModel
         CustomButton {
             id: control
             _point: pos

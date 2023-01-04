@@ -1,3 +1,4 @@
+#include "appcontrol.h"
 #include "buttonmodel.h"
 #include "qqmlcontext.h"
 #include <QGuiApplication>
@@ -9,10 +10,7 @@ int main(int argc, char* argv[])
 
     QGuiApplication app(argc, argv);
 
-    ButtonModel* _buttons = new ButtonModel;
-    _buttons->addButton(new Button("Button1", QPoint(500, 5)));
-    _buttons->addButton(new Button("Button2", QPoint(900, 5)));
-    _buttons->addButton(new Button("Button3", QPoint(1300, 5)));
+    AppControl app_control;
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));
@@ -23,8 +21,9 @@ int main(int argc, char* argv[])
                 QCoreApplication::exit(-1);
         },
         Qt::QueuedConnection);
+    qmlRegisterType<AppControl>("AppControl", 1, 0, "AppControl");
 
-    engine.rootContext()->setContextProperty("buttons", _buttons);
+    engine.rootContext()->setContextProperty("appControl", &app_control);
 
     engine.load(url);
 
