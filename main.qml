@@ -2,6 +2,7 @@ import QtQuick 2.12
 import QtQuick.Window 2.12
 import QtQuick.Controls 2.14
 import QtQuick.Layouts 1.14
+
 import "content"
 
 ApplicationWindow {
@@ -20,7 +21,6 @@ ApplicationWindow {
         color: "#212126"
         anchors.fill: parent
     }
-
 
     RowLayout {
         anchors.left: parent.left
@@ -42,7 +42,6 @@ ApplicationWindow {
 
                 onClicked: {
                     //drawer.open()
-
 
                     stackView.visible = !stackView.visible
 
@@ -93,28 +92,40 @@ ApplicationWindow {
     ListModel {
         id: pageModel
         ListElement {
-            title: "Buttons"
+            title: "Zoom & Focus"
             page: "content/ButtonPage.qml"
         }
         ListElement {
-            title: "Sliders"
+            title: "Pan & Tilt"
             page: "content/SliderPage.qml"
         }
         ListElement {
-            title: "ProgressBar"
+            title: "Camera & Filter"
             page: "content/ProgressBarPage.qml"
         }
         ListElement {
-            title: "Tabs"
+            title: "FOV"
             page: "content/TabBarPage.qml"
         }
         ListElement {
-            title: "TextInput"
+            title: "Settings"
             page: "content/TextInputPage.qml"
         }
         ListElement {
-            title: "List"
+            title: "Advanced Settings"
             page: "content/ListPage.qml"
+        }
+        ListElement {
+            title: "Menu"
+            page: "content/ButtonPage.qml"
+        }
+        ListElement {
+            title: "Illuminator"
+            page: "content/ButtonPage.qml"
+        }
+        ListElement {
+            title: "Sending Mode"
+            page: "content/ButtonPage.qml"
         }
     }
 

@@ -7,6 +7,7 @@
 
 #include <QObject>
 #include <QStandardPaths>
+#include <QSerialPortInfo>
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -22,7 +23,13 @@
 class AppControl: public QObject, public IObserver
 {
     Q_OBJECT
+
     Q_PROPERTY(QObject* videoAdapter READ videoAdapter NOTIFY signalVideoAdapter)
+    Q_PROPERTY(QStringList serialPort READ serialPort NOTIFY signalVideoAdapter);
+//    Q_PROPERTY(QString serialPortName READ serialPortName NOTIFY sigSerialPortNameChanged);
+    Q_PROPERTY(QString messageTitle READ messageTitle NOTIFY sigThrowSerialMessageRequested);
+    Q_PROPERTY(QString messageText READ messageText NOTIFY sigThrowSerialMessageRequested);
+
 
 public:
     explicit AppControl(QObject* parent = Q_NULLPTR);
@@ -43,12 +50,29 @@ private:
     QString _captureDeviceIr;
     QString _captureDeviceTv;
 
-    bool _isTVRecordActivated = false;
-    bool _isTRCRecordActivated = false;
+    bool _isTVRecordActivated;
+    bool _isTRCRecordActivated;
 
     SerialControl _serialControl;
+    bool _isSerialPortOpened;
+    QStringList _serialPortList;
+
+    QString _serialPortName;
+
+    QString _messageTitle;
+    QString _messageText;
 
 public:
+    Q_INVOKABLE int connectToSerialPort();
+    Q_INVOKABLE void disconnectSerialPort();
+    Q_INVOKABLE void setSerialPortName(QString portName);
+
+//    QString serialPortName() const;
+
+    QString messageTitle() const;
+
+    QString messageText() const;
+
     void onReadyRead(QString name, uchar* data, long size);
 
     QString captureDeviceIr() const;
@@ -61,10 +85,14 @@ public:
 
     VideoAdapter* videoAdapter() const;
 
+    QStringList serialPort() const;
+
 
 Q_SIGNALS:
     void sigCaptureDeviceTvChanged();
     void sigCaptureDeviceIrChanged();
+//    void sigSerialPortNameChanged();
+    void sigThrowSerialMessageRequested();
     void tvRecordChanged();
     void irRecordChanged();
     void signalVideoAdapter();

@@ -58,7 +58,7 @@ Item {
 
     Column {
         spacing: 12
-        anchors.centerIn: parent
+        //anchors.centerIn: parent
 
         Slider {
             anchors.margins: 20

@@ -57,9 +57,10 @@ PKGCONFIG += gstreamer-1.0 \
         gobject-2.0 \
         gio-2.0
 
-win32 {
-win32: LIBS += -L$$PWD/'../../../../Program Files/OpenCV3.4.16/lib/' -lopencv_world3416
 
-INCLUDEPATH += $$PWD/'../../../../Program Files/OpenCV3.4.16/include'
-DEPENDPATH += $$PWD/'../../../../Program Files/OpenCV3.4.16/include'
+win32{
+win32: LIBS += -L'C:/Program Files/OpenCV3.4.16/lib/' -lopencv_world3416
+
+INCLUDEPATH += 'C:/Program Files/OpenCV3.4.16/include'
+DEPENDPATH += 'C:/Program Files/OpenCV3.4.16/include'
 }

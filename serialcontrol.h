@@ -5,6 +5,8 @@
 #include <QSerialPort>
 #include <QtMath>
 #include <QDebug>
+#include <QMessageBox>
+#include <QSerialPortInfo>
 
 #include "utils/cursor.h"
 #include "utils/ringqueue.h"
@@ -45,7 +47,7 @@ public:
     ///
     /// @see disconnectSerialPort()
     ///
-    bool connectToSerialPort(const QSerialPortInfo &portInfo);
+    bool connectToSerialPort(const QString &portName);
 
     ///
     /// \brief disconnect from serial port

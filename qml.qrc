@@ -21,5 +21,6 @@
         <file>Images/tabs_standard.png</file>
         <file>Images/textinput.png</file>
         <file>Images/toolbar.png</file>
+        <file>content/CustomMessageBox.qml</file>
     </qresource>
 </RCC>

@@ -52,6 +52,7 @@ import QtQuick 2.2
 import QtQuick.Controls 1.2
 import QtQuick.Controls.Styles 1.1
 
+
 Item {
     width: parent.width
     height: parent.height
@@ -74,11 +75,90 @@ Item {
 
     Column {
         spacing: 40
-        anchors.centerIn: parent
+//        anchors.centerIn: parent
+//        anchors.topMargin: 300
+//        anchors.leftMargin: 300
+
+
+
+        Row {
+            spacing: 15
+            Text {
+                Rectangle {
+                    implicitWidth: parent.width
+                    implicitHeight: parent.height
+                    opacity: 0.2
+                    border.width: 1
+                    radius: 2
+                    color: "black"
+                }
+
+                text: qsTr("Serial Port:")
+                //anchors.centerIn: parent
+                opacity: 1
+                color: "#FFFFFF"
+                font.pixelSize: 23
+                renderType: Text.NativeRendering
+            }
+
+//            ComboBox {
+//                id: serialPortNames
+//                //anchors.fill: parent
+//                //model: appControl.serialPort
+//                //currentIndex: appControl.connectToSerialPort()
+//                style: comboTouchStyle
+//                editable: true
+//                model: ListModel {
+//                    id: model
+//                    ListElement { text: "Banana" }
+//                    ListElement { text: "Apple" }
+//                    ListElement { text: "Coconut" }
+//                }
+//                onAccepted: {
+//                    if (find(editText) === -1)
+//                        model.append({text: editText})
+//                }
+//            }
+
+
+            ComboBox {
+                activeFocusOnPress: true
+                style: comboTouchStyle
+
+                model: /*ListModel {
+                    id: cbItems
+                    ListElement { text: "Banana" }
+                    ListElement { text: "Apple" }
+                    ListElement { text: "Coconut" }
+                }*/
+                       appControl.serialPort
+
+                currentIndex: 0
+                width: 200
+            }
+        }
 
         Button {
-            text: "Press me"
             style: touchStyle
+
+            Rectangle {
+                implicitWidth: parent.width
+                implicitHeight: parent.height
+                opacity: 0.5
+                border.width: 1
+                radius: 2
+                color: "black"
+            }
+
+            Text {
+                id: controlText
+                anchors.fill: parent
+                   horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                font.pixelSize: 24
+                color: "#FFFFFF"
+                text: "Connect"
+            }
         }
 
         Button {
@@ -90,9 +170,11 @@ Item {
             anchors.margins: 20
             style: touchStyle
             text: "Don't press me"
-            onClicked: if (stackView) {
-                           //stackView.pop()
+            onClicked: {
+                if (stackView) {
+                           stackView.pop()
                        }
+            }
         }
 
         Row {
@@ -107,12 +189,73 @@ Item {
 
     }
 
+
+//    CustomMessageBox {
+//        id: messageDialog
+//        visible: false
+
+//        _title: appControl.messageTitle
+//        _text: appControl.messageText
+//    }
+
+    Component {
+        id: comboTouchStyle
+        ComboBoxStyle {
+
+            background: Rectangle {
+                id: rectCategory
+                radius: 5
+                border.width: 2
+                color: "#555"
+            }
+
+            label: Text {
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignHCenter
+                font.pointSize: 15
+                font.family: "Courier"
+                font.capitalization: Font.SmallCaps
+                color: "white"
+                text: control.currentText
+            }
+
+
+
+//                // drop-down customization here
+//                property Component __dropDownStyle: MenuStyle {
+//                    __maxPopupHeight: 600
+
+//                    __menuItemType: "comboboxitem"
+
+//                    frame: Rectangle {              // background
+//                        color: "#FFACACAC"
+//                    }
+
+//                    itemDelegate.label: Text {
+//                        verticalAlignment: Text.AlignVCenter
+//                        horizontalAlignment: Text.AlignHCenter
+//                        font.pointSize: 12
+//                        font.family: "sans serif"
+//                        color: styleData.selected ?  "#FF6BC1E5" : "#FF404040"
+//                        text: styleData.text
+//                    }
+
+//                    itemDelegate.background: Rectangle {  // selection of an item
+//                        color: styleData.selected ?  "#FF404040" : "#FFECECEC"
+//                    }
+
+//                    __scrollerStyle: ScrollViewStyle { }
+//                }
+//            }
+        }
+    }
+
     Component {
         id: touchStyle
         ButtonStyle {
             panel: Item {
-                implicitHeight: 50
-                implicitWidth: 320
+                implicitHeight: 60
+                implicitWidth: 150
                 BorderImage {
                     anchors.fill: parent
                     antialiasing: true

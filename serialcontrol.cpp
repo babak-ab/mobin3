@@ -27,6 +27,18 @@ SerialControl::~SerialControl()
 
 }
 
+bool SerialControl::connectToSerialPort(const QString &portName)
+{
+    m_serialPort->setPortName(portName);
+    m_serialPort->setBaudRate(QSerialPort::Baud38400);
+
+    if (!m_serialPort->open(QIODevice::ReadWrite)) {
+        return false;
+    }
+
+    return true;
+}
+
 bool SerialControl::disconnectSerialPort()
 {
     if (m_serialPort->isOpen())
