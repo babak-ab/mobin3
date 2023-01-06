@@ -1,6 +1,6 @@
 #include "appcontrol.h"
-#include "buttonmodel.h"
-#include "qqmlcontext.h"
+
+#include <QQmlContext>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 
@@ -14,6 +14,7 @@ int main(int argc, char* argv[])
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));
+
     QObject::connect(
         &engine, &QQmlApplicationEngine::objectCreated,
         &app, [url](QObject* obj, const QUrl& objUrl) {
@@ -21,11 +22,15 @@ int main(int argc, char* argv[])
                 QCoreApplication::exit(-1);
         },
         Qt::QueuedConnection);
+
     qmlRegisterType<AppControl>("AppControl", 1, 0, "AppControl");
 
     engine.rootContext()->setContextProperty("appControl", &app_control);
+    engine.rootContext()->setContextProperty("software_version", SOFTWARE_VERSION);
 
     engine.load(url);
+
+    app.setWindowIcon(QIcon("://Images/Icon.png"));
 
     return app.exec();
 }

@@ -17,6 +17,11 @@ SerialControl::SerialControl(QObject *parent)
     QObject::connect(this, &SerialControl::sigWriteData,
                      this, &SerialControl::sltWriteSerialPortData);
 
+    _zoomSpeed = 100;
+    _focusSpeed = 100;
+    _panTiltSpeed = 100;
+    _repeatCounter = 0;
+
 }
 
 SerialControl::~SerialControl()
@@ -24,7 +29,6 @@ SerialControl::~SerialControl()
     RingQueue::finalize();
 
      delete m_serialPort;
-
 }
 
 bool SerialControl::connectToSerialPort(const QString &portName)
@@ -84,49 +88,21 @@ QByteArray SerialControl::interpret(IRQueue<quint8> *queueRead)
 
 bool SerialControl::isConnected() const
 {
-   return m_serialPort->isOpen();
+    return m_serialPort->isOpen();
+}
+
+quint8 SerialControl::zoomSpeed() const
+{
+    return _zoomSpeed;
 }
 
 void SerialControl::writeDataOnPlatformsSerialPort(const QByteArray &data)
 {
-    if (m_serialPort->isOpen())
+    if (true/*m_serialPort->isOpen()*/)
     {
         m_serialPort->write(data);
-        qDebug() << "write data :" << data.toHex();
+        qDebug() << "write data :" << data.toHex(' ');
     }
-}
-
-void SerialControl::sendCommand(const QByteArray &data)
-{
-    QByteArray dataBuffer;
-    dataBuffer.resize(9);
-
-    dataBuffer[0] = static_cast<char>(0x80);
-    dataBuffer[1] = static_cast<char>(data.at(0));
-    dataBuffer[2] = static_cast<char>(data.at(1));
-    dataBuffer[3] = static_cast<char>(data.at(2));
-    dataBuffer[4] = static_cast<char>(data.at(3));
-    dataBuffer[5] = static_cast<char>(data.at(4));
-    dataBuffer[6] = static_cast<char>(data.at(5));
-    dataBuffer[7] = static_cast<char>(data.at(6));
-    dataBuffer[8] = static_cast<char>(0xff);
-
-    quint8 checkSum = crc8(dataBuffer);
-
-    QByteArray sendBuffer;
-    sendBuffer.resize(10);
-    sendBuffer[0] = dataBuffer.at(0);
-    sendBuffer[1] = dataBuffer.at(1);
-    sendBuffer[2] = dataBuffer.at(2);
-    sendBuffer[3] = dataBuffer.at(3);
-    sendBuffer[4] = dataBuffer.at(4);
-    sendBuffer[5] = dataBuffer.at(5);
-    sendBuffer[6] = dataBuffer.at(6);
-    sendBuffer[7] = dataBuffer.at(7);
-    sendBuffer[8] = dataBuffer.at(8);
-    sendBuffer[9] = static_cast<char>(checkSum);
-
-    Q_EMIT sigWriteData(sendBuffer);
 }
 
 quint8 SerialControl::crc8(const QByteArray &data)
@@ -220,4 +196,147 @@ void SerialControl::sltReadSeialPortData()
 void SerialControl::sltWriteSerialPortData(QByteArray data)
 {
     writeDataOnPlatformsSerialPort(data);
+}
+
+void SerialControl::zoomIn()
+{
+    sendCommand1(178, _zoomSpeed);
+}
+
+void SerialControl::zoomOut()
+{
+    sendCommand1(177, _zoomSpeed);
+}
+
+void SerialControl::zoomStop()
+{
+    sendCommand1(188, _zoomSpeed);
+
+    //Repeat command to increase reliability of stopping process
+    if (_repeatCounter++ < 6)
+        QTimer::singleShot(50, this, &SerialControl::zoomStop);
+    else
+        _repeatCounter = 0;
+}
+
+void SerialControl::focusFar()
+{
+    sendCommand1(180, _focusSpeed);
+}
+
+void SerialControl::focusNear()
+{
+    sendCommand1(184, _focusSpeed);
+}
+
+void SerialControl::focusStop()
+{
+    sendCommand1(179, _focusSpeed);
+
+    //Repeat command to increase reliability of stopping process
+    if (_repeatCounter++ < 6)
+        QTimer::singleShot(50, this, &SerialControl::focusStop);
+    else
+        _repeatCounter = 0;
+}
+
+void SerialControl::autoFocus()
+{
+    sendCommand1(195, 1);
+
+    //Repeat command to increase reliability of stopping process
+    if (_repeatCounter++ < 2)
+        QTimer::singleShot(50, this, &SerialControl::autoFocus);
+    else
+        _repeatCounter = 0;
+}
+
+void SerialControl::manualFocus()
+{
+    sendCommand1(199, 1);
+
+    //Repeat command to increase reliability of stopping process
+    if (_repeatCounter++ < 2)
+        QTimer::singleShot(50, this, &SerialControl::manualFocus);
+    else
+        _repeatCounter = 0;
+}
+
+void SerialControl::setZoomSpeed(const quint8 speed)
+{
+    _zoomSpeed = speed;
+
+    Q_EMIT sigDataChanged();
+}
+
+void SerialControl::setFocusSpeed(const quint8 speed)
+{
+    _focusSpeed = speed;
+
+    Q_EMIT sigDataChanged();
+}
+
+void SerialControl::tiltUp()
+{
+    sendCommand1(173, _panTiltSpeed);
+}
+
+void SerialControl::tiltDown()
+{
+    sendCommand1(174, _panTiltSpeed);
+}
+
+void SerialControl::tiltStop()
+{
+    sendCommand1(175, 1);
+
+    //Repeat command to increase reliability of stopping process
+    if (_repeatCounter++ < 6)
+        QTimer::singleShot(50, this, &SerialControl::tiltStop);
+    else
+        _repeatCounter = 0;
+}
+
+void SerialControl::panLeft()
+{
+    sendCommand1(171, _panTiltSpeed);
+}
+
+void SerialControl::panRight()
+{
+    sendCommand1(170, _panTiltSpeed);
+}
+
+void SerialControl::panStop()
+{
+    sendCommand1(172, 1);
+
+    //Repeat command to increase reliability of stopping process
+    if (_repeatCounter++ < 6)
+        QTimer::singleShot(50, this, &SerialControl::panStop);
+    else
+        _repeatCounter = 0;
+}
+
+void SerialControl::setPanTiltSpeed(const quint8 speed)
+{
+    _panTiltSpeed = speed;
+
+    Q_EMIT sigDataChanged();
+}
+
+void SerialControl::sendCommand1(const quint8 &command,
+                                           const quint8 &param)
+{
+    quint8 checkSum = command + param + 1;
+
+    QByteArray data;
+    data.append(static_cast<quint8>(104));
+    data.append(static_cast<quint8>(3));
+    data.append(static_cast<quint8>(1));
+    data.append(static_cast<quint8>(command));
+    data.append(static_cast<quint8>(param));
+    data.append(static_cast<quint8>(checkSum));
+
+    Q_EMIT sigWriteData(data);
 }

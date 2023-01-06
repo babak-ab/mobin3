@@ -37,6 +37,7 @@ ApplicationWindow {
             icon.width: 60
             background: Rectangle {
                 color: "black"
+                opacity: 0.6
             }
 
             MouseArea {
@@ -53,7 +54,7 @@ ApplicationWindow {
                         stackView.pop()
                         background.color = "black"
 
-                        stackView.anchors.topMargin = 100
+                        stackView.anchors.topMargin = 120
                         stackView.anchors.leftMargin = 30
                     } else {
                         menuButton.icon.source = "qrc:/Images/menu-icon.png"
@@ -62,6 +63,7 @@ ApplicationWindow {
                 }
             }
         }
+
         Button {
             text: "Record"
             checkable: true
@@ -80,6 +82,7 @@ ApplicationWindow {
         }
     }
 
+
     VideoRender {
         id: videoRender
         anchors.fill: parent
@@ -87,16 +90,40 @@ ApplicationWindow {
         Camera {
             id: camera
             captureMode: Camera.CaptureVideo
-            property string fileName: "test.mp4"
-            property string path: "/home/babak/Videos/"
-            onFileNameChanged: {
-                camera.videoRecorder.outputLocation = path + fileName
-            }
+//            property string fileName: "test.mp4"
+//            property string path: "/home/babak/Videos/"
+//            onFileNameChanged: {
+//                camera.videoRecorder.outputLocation = path + fileName
+//            }
 
-            videoRecorder {
-                resolution: "640x480"
-                frameRate: 30
-                mediaContainer: "mp4"
+//            videoRecorder {
+//                resolution: "640x480"
+//                frameRate: 30
+//                mediaContainer: "mp4"
+//            }
+        }
+    }
+
+    Button {
+        id: cameraSwitchButton
+        icon.source: "qrc:/Images/switch-camera.png"
+        icon.color: "white"
+        icon.height: 60
+        icon.width: 60
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.margins: 25
+
+        background: Rectangle {
+            color: "black"
+            opacity: 0.6
+        }
+
+        MouseArea {
+            anchors.fill: parent
+
+            onClicked: {
+                console.log("cccccccc")
             }
         }
     }
@@ -131,11 +158,11 @@ ApplicationWindow {
         }
         ListElement {
             title: "Pan & Tilt"
-            page: "content/SliderPage.qml"
+            page: "content/PanTilt.qml"
         }
         ListElement {
             title: "Camera & Filter"
-            page: "content/ProgressBarPage.qml"
+            page: "content/CameraFilter.qml"
         }
         ListElement {
             title: "FOV"

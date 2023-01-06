@@ -26,13 +26,10 @@ AppControl::AppControl(QObject* parent)
         _serialPortList.append(serialPortInfo.portName());
     }
 
-    _serialPortList.append("COM1");
-    _serialPortList.append("COM2");
-
     if (_serialPortList.count() > 0)
         _serialPortName = _serialPortList[0];
-    else
-        _serialPortName = "COM1";
+
+    _serialControl = new SerialControl;
 
 }
 
@@ -55,6 +52,11 @@ void AppControl::setSerialPortName(QString portName)
     _serialPortName = portName;
 }
 
+void AppControl::zoomIn()
+{
+    qDebug() << "VCVCVCVCV";
+}
+
 QString AppControl::messageTitle() const
 {
     return _messageTitle;
@@ -67,7 +69,7 @@ QString AppControl::messageText() const
 
 bool AppControl::connectToSerialPort()
 {
-    bool isConnected = _serialControl.connectToSerialPort(_serialPortName);
+    bool isConnected = _serialControl->connectToSerialPort(_serialPortName);
 
     if (isConnected) {
          return true;
@@ -82,7 +84,7 @@ bool AppControl::connectToSerialPort()
 
 void AppControl::disconnectSerialPort()
 {
-    bool result = _serialControl.disconnectSerialPort();
+    bool result = _serialControl->disconnectSerialPort();
 
     if (!result) {
          _messageTitle = "Serial Port Error";
@@ -91,7 +93,12 @@ void AppControl::disconnectSerialPort()
     }
 }
 
-QStringList AppControl::serialPort() const
+QStringList AppControl::serialPortList() const
 {
     return _serialPortList;
+}
+
+SerialControl *AppControl::serialControl() const
+{
+    return _serialControl;
 }

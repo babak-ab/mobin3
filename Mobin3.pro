@@ -14,6 +14,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 include($$PWD/utils/utils.pri)
 
+win32{
+RC_ICONS = ./Images/Icon.ico
+}
+
 SOURCES += \
         appcontrol.cpp \
         buttonmodel.cpp \

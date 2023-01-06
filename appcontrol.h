@@ -5,7 +5,6 @@
 #define FRAME_HEIGHT 1080
 #define SOFTWARE_VERSION "0.9.0"
 
-#include "buttonmodel.h"
 #include <QAbstractItemModel>
 #include <QElapsedTimer>
 #include <QFont>
@@ -13,13 +12,15 @@
 #include <QGuiApplication>
 #include <QObject>
 
+#include "buttonmodel.h"
 #include "serialcontrol.h"
 
 class AppControl : public QObject {
     Q_OBJECT
 
     Q_PROPERTY(ButtonModel* buttonModel READ buttonModel NOTIFY signalVideoAdapter)
-    Q_PROPERTY(QStringList serialPort READ serialPort NOTIFY signalVideoAdapter);
+    Q_PROPERTY(SerialControl* serialControl READ serialControl NOTIFY signalVideoAdapter)
+    Q_PROPERTY(QStringList serialPortList READ serialPortList NOTIFY signalVideoAdapter);
     Q_PROPERTY(QString messageTitle READ messageTitle NOTIFY sigThrowSerialMessageRequested);
     Q_PROPERTY(QString messageText READ messageText NOTIFY sigThrowSerialMessageRequested);
 
@@ -30,7 +31,7 @@ public:
 private:
     ButtonModel* _buttonModel;
 
-    SerialControl _serialControl;
+    SerialControl *_serialControl;
     bool _isSerialPortOpened;
     QStringList _serialPortList;
 
@@ -43,13 +44,8 @@ public:
     Q_INVOKABLE bool connectToSerialPort();
     Q_INVOKABLE void disconnectSerialPort();
     Q_INVOKABLE void setSerialPortName(QString portName);
+    Q_INVOKABLE void zoomIn();
 
-//    Q_INVOKABLE void setSerialPortName(QString portName);
-//    Q_INVOKABLE void setSerialPortName(QString portName);
-//    Q_INVOKABLE void setSerialPortName(QString portName);
-//    Q_INVOKABLE void setSerialPortName(QString portName);
-//    Q_INVOKABLE void setSerialPortName(QString portName);
-//    Q_INVOKABLE void setSerialPortName(QString portName);
 
     QString messageTitle() const;
     QString messageText() const;
@@ -57,7 +53,9 @@ public:
     ButtonModel* buttonModel() const;
     void setButtonModel(ButtonModel* buttonModel);
 
-    QStringList serialPort() const;
+    QStringList serialPortList() const;
+
+    SerialControl* serialControl() const;
 
 private Q_SLOTS:
 

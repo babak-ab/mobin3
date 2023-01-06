@@ -49,15 +49,19 @@
 ****************************************************************************/
 
 import QtQuick 2.2
-import QtQuick.Controls 1.2
 import QtQuick.Controls.Styles 1.1
 
+import QtQuick.Controls 2.3 as QQC2
+import QtQuick.Controls 1.4 as QQC1
+
+import AppControl 1.0
 
 Item {
     width: parent.width
     height: parent.height
 
     property real progress: 0
+
     SequentialAnimation on progress {
         loops: Animation.Infinite
         running: true
@@ -75,68 +79,148 @@ Item {
 
     Column {
         spacing: 40
-        //        anchors.centerIn: parent
-        //        anchors.topMargin: 300
-        //        anchors.leftMargin: 300
-
-
 
         Row {
             spacing: 15
 
-            Button {
-                style: touchStyle
-                text: "ZoomIn"
+            QQC2.Button {
+                id: zoomInButton
+                contentItem: Text {
+                    text: "Zoom In"
+                    color: "white"
+                    opacity: 1.0
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    font.pixelSize: 25
+                    font.bold: true
+                    elide: Text.ElideRight
+                }
 
-                onClicked: {
+                background: Rectangle {
+                    implicitWidth: 180
+                    implicitHeight: 60
+                    color: zoomInButton.down ? "red" : "black"
+                    opacity: 0.5
+                    radius: 5
+                }
 
+                onPressed: {
+                    appControl.serialControl.zoomIn()
+                }
+
+                onReleased: {
+                    appControl.serialControl.zoomStop()
                 }
             }
 
-            Button {
-                style: touchStyle
-                text: "ZoomOut"
+            QQC2.Button {
+                id: zoomOutButton
+                contentItem: Text {
+                    text: "Zoom Out"
+                    color: "white"
+                    opacity: 1.0
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    font.pixelSize: 25
+                    font.bold: true
+                    elide: Text.ElideRight
+                }
 
-                onClicked: {
+                background: Rectangle {
+                    implicitWidth: 180
+                    implicitHeight: 60
+                    color: zoomOutButton.down ? "red" : "black"
+                    opacity: 0.5
+                    radius: 5
+                }
 
+                onPressed: {
+                    appControl.serialControl.zoomOut()
+                }
+
+                onReleased: {
+                    appControl.serialControl.zoomStop()
                 }
             }
 
-            Slider {
+            QQC1.Slider {
                 id: zoomSlider
                 anchors.margins: 20
                 style: sliderTouchStyle
                 value: 100
+
                 minimumValue: 0
                 maximumValue: 255
 
                 onValueChanged: {
-
+                    appControl.serialControl.setZoomSpeed(zoomSlider.value)
                 }
             }
         }
 
         Row {
             spacing: 15
-            Button {
-                style: touchStyle
-                text: "Focus Far"
+            QQC2.Button {
+                id: focusFarButton
+                contentItem: Text {
+                    text: "Focus Far"
+                    color: "white"
+                    opacity: 1.0
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    font.pixelSize: 25
+                    font.bold: true
+                    elide: Text.ElideRight
+                }
 
-                onClicked: {
+                background: Rectangle {
+                    implicitWidth: 180
+                    implicitHeight: 60
+                    color: focusFarButton.down ? "red" : "black"
+                    opacity: 0.5
+                    radius: 5
+                }
 
+                onPressed: {
+                    appControl.serialControl.focusFar()
+                }
+
+                onReleased: {
+                    appControl.serialControl.focusStop()
                 }
             }
 
-            Button {
-                style: touchStyle
-                text: "Focus Near"
+            QQC2.Button {
+                id: focusNearButton
+                contentItem: Text {
+                    text: "Focus Near"
+                    color: "white"
+                    opacity: 1.0
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    font.pixelSize: 25
+                    font.bold: true
+                    elide: Text.ElideRight
+                }
 
-                onClicked: {
+                background: Rectangle {
+                    implicitWidth: 180
+                    implicitHeight: 60
+                    color: focusNearButton.down ? "red" : "black"
+                    opacity: 0.5
+                    radius: 5
+                }
 
+                onPressed: {
+                    appControl.serialControl.focusNear()
+                }
+
+                onReleased: {
+                    appControl.serialControl.focusStop()
                 }
             }
 
-            Slider {
+            QQC1.Slider {
                 id: focusSlider
                 anchors.margins: 20
                 style: sliderTouchStyle
@@ -145,7 +229,7 @@ Item {
                 maximumValue: 255
 
                 onValueChanged: {
-
+                    appControl.serialControl.setFocusSpeed(focusSlider.value)
                 }
             }
         }
@@ -153,23 +237,58 @@ Item {
         Row {
             spacing: 15
 
-            Button {
-                style: touchStyle
-                text: "Auto Focus"
+            QQC2.Button {
+                id: autoFocusButton
+                contentItem: Text {
+                    text: "Auto Focus"
+                    color: "white"
+                    opacity: 1.0
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    font.pixelSize: 25
+                    font.bold: true
+                    elide: Text.ElideRight
+                }
 
-                onClicked: {
+                background: Rectangle {
+                    implicitWidth: 180
+                    implicitHeight: 60
+                    color: autoFocusButton.down ? "red" : "black"
+                    opacity: 0.5
+                    radius: 5
+                }
 
+                onReleased: {
+                    appControl.serialControl.autoFocus()
                 }
             }
 
-            Button {
-                style: touchStyle
-                text: "Manual Focus"
+            QQC2.Button {
+                id: manualFocusButton
+                contentItem: Text {
+                    text: "Manual Focus"
+                    color: "white"
+                    opacity: 1.0
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    font.pixelSize: 25
+                    font.bold: true
+                    elide: Text.ElideRight
+                }
 
-                onClicked: {
+                background: Rectangle {
+                    implicitWidth: 180
+                    implicitHeight: 60
+                    color: manualFocusButton.down ? "red" : "black"
+                    opacity: 0.5
+                    radius: 5
+                }
 
+                onReleased: {
+                    appControl.serialControl.manualFocus()
                 }
             }
+
         }
     }
 

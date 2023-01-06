@@ -26,7 +26,34 @@ class SerialControl : public RingQueue
 {
     Q_OBJECT
 
+    Q_PROPERTY(quint8 zoomSpeed READ zoomSpeed NOTIFY sigDataChanged)
+
+
 public:
+
+    Q_INVOKABLE void zoomIn();
+    Q_INVOKABLE void zoomOut();
+    Q_INVOKABLE void zoomStop();
+    Q_INVOKABLE void focusFar();
+    Q_INVOKABLE void focusNear();
+    Q_INVOKABLE void focusStop();
+    Q_INVOKABLE void autoFocus();
+    Q_INVOKABLE void manualFocus();
+    Q_INVOKABLE void setZoomSpeed(const quint8 speed);
+    Q_INVOKABLE void setFocusSpeed(const quint8 speed);
+
+
+    Q_INVOKABLE void tiltUp();
+    Q_INVOKABLE void tiltDown();
+    Q_INVOKABLE void tiltStop();
+    Q_INVOKABLE void panLeft();
+    Q_INVOKABLE void panRight();
+    Q_INVOKABLE void panStop();
+    Q_INVOKABLE void setPanTiltSpeed(const quint8 speed);
+
+
+
+
     ///
     /// \brief SerialControl default constructor
     ///
@@ -77,6 +104,8 @@ public:
     /// The result
     bool isConnected() const;
 
+    quint8 zoomSpeed() const;
+
 private:
 
     ///
@@ -96,38 +125,18 @@ private:
         QSerialPort::FlowControl flowControl;
     };
 
-    ///
-    /// \brief The Commands enum
-    ///
-    /// this enum stores all commands which should handle by shortkey
-    /// whether keyboard shortkey or gamepad shortkeys.
-    ///
-    enum Commands
-    {
-       Command_StartTrack        = 0xc1,
-       Command_StopTrack         = 0xc2,
-       Command_PanTiltOsd        = 0xc3,
-       Command_PositionReport    = 0xc4,
-       Command_ResetCmd          = 0xc5,
-       Command_                  = 0xc7,
-       Command_GateResize        = 0xc8,
-       Command_ChangeTrackType   = 0xc9,
-       Command_OsdExhibition     = 0xca,
-       Command_ClaheActivation   = 0xCb,
-       Command_ReticleMovement   = 0xe2
-    };
-
-
     QSerialPort *m_serialPort;
 
+    quint8 _zoomSpeed;
+    quint8 _focusSpeed;
+    quint8 _panTiltSpeed;
+    int _repeatCounter;
 
     // Private Functions
     void writeDataOnPlatformsSerialPort(const QByteArray &data);
-    void sendCommand(const QByteArray &data);
     quint8 crc8(const QByteArray &data);
     int bytesToInt(QByteArray data, int start, int length, bool reverse = false);
-
-
+    void sendCommand1(const quint8 &command, const quint8 &param);
 
 private Q_SLOTS:
     void sltReadData(QByteArray data);
@@ -138,6 +147,7 @@ private Q_SLOTS:
 Q_SIGNALS:
     /* platform property event signals */
     void sigWriteData(QByteArray data);
+    void sigDataChanged();
 };
 
 #endif // SERIALCONTROL_H
