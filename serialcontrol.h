@@ -27,6 +27,9 @@ class SerialControl : public RingQueue
     Q_OBJECT
 
     Q_PROPERTY(quint8 zoomSpeed READ zoomSpeed NOTIFY sigDataChanged)
+    Q_PROPERTY(quint8 panTiltSpeed READ panTiltSpeed WRITE setPanTiltSpeed NOTIFY sigDataChanged)
+    Q_PROPERTY(quint8 zoomSpeed READ zoomSpeed WRITE setZoomSpeed NOTIFY sigDataChanged)
+    Q_PROPERTY(quint8 focusSpeed READ focusSpeed WRITE setFocusSpeed NOTIFY sigDataChanged)
 
 
 public:
@@ -106,6 +109,10 @@ public:
 
     quint8 zoomSpeed() const;
 
+    quint8 panTiltSpeed() const;
+
+    quint8 focusSpeed() const;
+
 private:
 
     ///
@@ -148,6 +155,7 @@ Q_SIGNALS:
     /* platform property event signals */
     void sigWriteData(QByteArray data);
     void sigDataChanged();
+
 };
 
 #endif // SERIALCONTROL_H

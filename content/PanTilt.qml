@@ -1,3 +1,5 @@
+
+
 /****************************************************************************
 **
 ** Copyright (C) 2016 The Qt Company Ltd.
@@ -47,7 +49,6 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-
 import QtQuick 2.2
 import QtQuick.Controls.Styles 1.1
 
@@ -80,18 +81,17 @@ Item {
     Column {
         spacing: 40
 
-
         QQC1.Slider {
             id: panTilTSlider
             anchors.margins: 20
             style: sliderTouchStyle
-            value: 100
-
+            value: appControl.serialControl.panTiltSpeed
+            updateValueWhileDragging: false
             minimumValue: 0
             maximumValue: 255
 
             onValueChanged: {
-                appControl.serialControl.setPanTiltSpeed(panTilTSlider.value)
+                appControl.serialControl.panTiltSpeed = panTilTSlider.value
             }
         }
 
@@ -197,7 +197,6 @@ Item {
                 appControl.serialControl.tiltStop()
             }
         }
-
     }
 
     Component {

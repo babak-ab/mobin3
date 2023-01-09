@@ -1,3 +1,5 @@
+
+
 /****************************************************************************
 **
 ** Copyright (C) 2016 The Qt Company Ltd.
@@ -47,7 +49,6 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-
 import QtQuick 2.2
 import QtQuick.Controls.Styles 1.1
 
@@ -57,9 +58,9 @@ import QtQuick.Controls 1.4 as QQC1
 import AppControl 1.0
 
 Item {
-    width: parent.width
-    height: parent.height
 
+    //width: parent.width
+    //height: parent.height
     property real progress: 0
 
     SequentialAnimation on progress {
@@ -147,13 +148,13 @@ Item {
                 id: zoomSlider
                 anchors.margins: 20
                 style: sliderTouchStyle
-                value: 100
-
+                value: appControl.serialControl.zoomSpeed
+                updateValueWhileDragging: false
                 minimumValue: 0
                 maximumValue: 255
 
                 onValueChanged: {
-                    appControl.serialControl.setZoomSpeed(zoomSlider.value)
+                    appControl.serialControl.zoomSpeed = zoomSlider.value
                 }
             }
         }
@@ -224,12 +225,12 @@ Item {
                 id: focusSlider
                 anchors.margins: 20
                 style: sliderTouchStyle
-                value: 100
+                value: appControl.serialControl.focusSpeed
                 minimumValue: 0
                 maximumValue: 255
-
+                updateValueWhileDragging: false
                 onValueChanged: {
-                    appControl.serialControl.setFocusSpeed(focusSlider.value)
+                    appControl.serialControl.focusSpeed = focusSlider.value
                 }
             }
         }
@@ -288,7 +289,6 @@ Item {
                     appControl.serialControl.manualFocus()
                 }
             }
-
         }
     }
 

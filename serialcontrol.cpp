@@ -93,7 +93,18 @@ bool SerialControl::isConnected() const
 
 quint8 SerialControl::zoomSpeed() const
 {
+    qDebug() << "sdfsd" << _zoomSpeed;
     return _zoomSpeed;
+}
+
+quint8 SerialControl::panTiltSpeed() const
+{
+    return _panTiltSpeed;
+}
+
+quint8 SerialControl::focusSpeed() const
+{
+    return _focusSpeed;
 }
 
 void SerialControl::writeDataOnPlatformsSerialPort(const QByteArray &data)
@@ -266,6 +277,7 @@ void SerialControl::setZoomSpeed(const quint8 speed)
 {
     _zoomSpeed = speed;
 
+    qDebug() << "SPPED1" << speed;
     Q_EMIT sigDataChanged();
 }
 
@@ -321,6 +333,8 @@ void SerialControl::panStop()
 void SerialControl::setPanTiltSpeed(const quint8 speed)
 {
     _panTiltSpeed = speed;
+
+    qDebug() << "SSSSSSSSSSSSSSSSSSS" << speed;
 
     Q_EMIT sigDataChanged();
 }
