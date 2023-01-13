@@ -334,9 +334,21 @@ void SerialControl::setPanTiltSpeed(const quint8 speed)
 {
     _panTiltSpeed = speed;
 
-    qDebug() << "SSSSSSSSSSSSSSSSSSS" << speed;
-
     Q_EMIT sigDataChanged();
+}
+
+void SerialControl::setSelectedCamera(const SerialControl::CameraSelection camera)
+{
+    _selectedCamera = camera;
+
+    sendCommand1(63, camera);
+}
+
+void SerialControl::setSelectedFilter(const SerialControl::FilterSelection filter)
+{
+    _selectedFilter = filter;
+
+    sendCommand1(63, filter);
 }
 
 void SerialControl::sendCommand1(const quint8 &command,

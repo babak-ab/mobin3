@@ -31,8 +31,22 @@ class SerialControl : public RingQueue
     Q_PROPERTY(quint8 zoomSpeed READ zoomSpeed WRITE setZoomSpeed NOTIFY sigDataChanged)
     Q_PROPERTY(quint8 focusSpeed READ focusSpeed WRITE setFocusSpeed NOTIFY sigDataChanged)
 
-
 public:
+
+    enum CameraSelection {
+        CameraSelection_ContinuousZoom = 1,
+        CameraSelection_Spotter = 2,
+        CameraSelection_SWIRSpotter = 3
+    };
+    Q_ENUM(CameraSelection)
+
+    enum FilterSelection {
+        FilterSelection_ColorFilter = 0,
+        FilterSelection_NIRFilter = 1,
+        FilterSelection_LaserFilter = 2
+    };
+    Q_ENUM(FilterSelection)
+
 
     Q_INVOKABLE void zoomIn();
     Q_INVOKABLE void zoomOut();
@@ -45,7 +59,6 @@ public:
     Q_INVOKABLE void setZoomSpeed(const quint8 speed);
     Q_INVOKABLE void setFocusSpeed(const quint8 speed);
 
-
     Q_INVOKABLE void tiltUp();
     Q_INVOKABLE void tiltDown();
     Q_INVOKABLE void tiltStop();
@@ -53,6 +66,9 @@ public:
     Q_INVOKABLE void panRight();
     Q_INVOKABLE void panStop();
     Q_INVOKABLE void setPanTiltSpeed(const quint8 speed);
+
+    Q_INVOKABLE void setSelectedCamera(const CameraSelection camera);
+    Q_INVOKABLE void setSelectedFilter(const FilterSelection filter);
 
 
 
@@ -138,6 +154,9 @@ private:
     quint8 _focusSpeed;
     quint8 _panTiltSpeed;
     int _repeatCounter;
+
+    CameraSelection _selectedCamera;
+    FilterSelection _selectedFilter;
 
     // Private Functions
     void writeDataOnPlatformsSerialPort(const QByteArray &data);

@@ -24,6 +24,7 @@ int main(int argc, char* argv[])
         Qt::QueuedConnection);
 
     qmlRegisterType<AppControl>("AppControl", 1, 0, "AppControl");
+    qmlRegisterType<SerialControl>("SerialControl", 1, 0, "SerialControl");
 
     engine.rootContext()->setContextProperty("appControl", &app_control);
     engine.rootContext()->setContextProperty("software_version", SOFTWARE_VERSION);
