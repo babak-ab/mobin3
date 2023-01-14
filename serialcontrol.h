@@ -30,6 +30,11 @@ class SerialControl : public RingQueue
     Q_PROPERTY(quint8 panTiltSpeed READ panTiltSpeed WRITE setPanTiltSpeed NOTIFY sigDataChanged)
     Q_PROPERTY(quint8 zoomSpeed READ zoomSpeed WRITE setZoomSpeed NOTIFY sigDataChanged)
     Q_PROPERTY(quint8 focusSpeed READ focusSpeed WRITE setFocusSpeed NOTIFY sigDataChanged)
+    Q_PROPERTY(quint16 focusPosition READ focusPosition WRITE setFocusPosition NOTIFY sigDataChanged)
+    Q_PROPERTY(quint16 fovPosition READ fovPosition WRITE setFovPosition NOTIFY sigDataChanged)
+    Q_PROPERTY(DefogMode defogMode READ defogMode WRITE setDefogMode NOTIFY sigDataChanged)
+    Q_PROPERTY(GammaLevel gammaLevel READ gammaLevel WRITE setGammaLevel NOTIFY sigDataChanged)
+    Q_PROPERTY(bool digitalZoom READ digitalZoom WRITE enableDigitalZoom NOTIFY sigDataChanged)
 
 public:
 
@@ -47,6 +52,25 @@ public:
     };
     Q_ENUM(FilterSelection)
 
+    enum DefogMode {
+        DefogMode_Off = 0,
+        DefogMode_Low = 1,
+        DefogMode_Medium = 2,
+        DefogMode_High = 3
+    };
+    Q_ENUM(DefogMode)
+
+    enum GammaLevel {
+        GammaLevel_Level1 = 1,
+        GammaLevel_Level2 = 2,
+    };
+    Q_ENUM(GammaLevel)
+
+    enum NoiseReductionMode {
+        NoiseReductionMode_Low = 1,
+        NoiseReductionMode_High = 2,
+    };
+    Q_ENUM(NoiseReductionMode)
 
     Q_INVOKABLE void zoomIn();
     Q_INVOKABLE void zoomOut();
@@ -58,6 +82,15 @@ public:
     Q_INVOKABLE void manualFocus();
     Q_INVOKABLE void setZoomSpeed(const quint8 speed);
     Q_INVOKABLE void setFocusSpeed(const quint8 speed);
+    Q_INVOKABLE void setFovPosition(const quint16 position);
+    Q_INVOKABLE void gotoFov(const quint16 position);
+    Q_INVOKABLE void setFocusPosition(const quint16 position);
+    Q_INVOKABLE void gotoFocus(const quint16 position);
+    Q_INVOKABLE void gotoFovFocus(const quint16 fovPosition,
+                                  const quint16 focusPosition);
+    Q_INVOKABLE void setPosition(const quint8 positionNumber);
+    Q_INVOKABLE void clearPosition(const quint8 positionNumber);
+
 
     Q_INVOKABLE void tiltUp();
     Q_INVOKABLE void tiltDown();
@@ -69,6 +102,11 @@ public:
 
     Q_INVOKABLE void setSelectedCamera(const CameraSelection camera);
     Q_INVOKABLE void setSelectedFilter(const FilterSelection filter);
+    Q_INVOKABLE void setDefogMode(const DefogMode mode);
+    Q_INVOKABLE void setGammaLevel(const GammaLevel level);
+    Q_INVOKABLE void setNoiseReductionMode(const NoiseReductionMode mode);
+
+    Q_INVOKABLE void enableDigitalZoom(const bool state);
 
 
 
@@ -129,6 +167,15 @@ public:
 
     quint8 focusSpeed() const;
 
+    quint16 focusPosition() const;
+
+    quint16 fovPosition() const;
+
+    DefogMode defogMode() const;
+
+    GammaLevel gammaLevel() const;
+
+    bool digitalZoom() const;
 private:
 
     ///
@@ -152,17 +199,25 @@ private:
 
     quint8 _zoomSpeed;
     quint8 _focusSpeed;
+    quint16 _focusPosition;
+    quint16 _fovPosition;
     quint8 _panTiltSpeed;
     int _repeatCounter;
 
-    CameraSelection _selectedCamera;
-    FilterSelection _selectedFilter;
+    CameraSelection _selectedCamera = CameraSelection_ContinuousZoom;
+    FilterSelection _selectedFilter = FilterSelection_ColorFilter;
+    DefogMode _defogMode = DefogMode_High;
+    GammaLevel _gammaLevel = GammaLevel_Level1;
+    NoiseReductionMode _noiseReductionMode = NoiseReductionMode_High;
+    bool _isDigitalZoomEnabled = false;
 
     // Private Functions
     void writeDataOnPlatformsSerialPort(const QByteArray &data);
     quint8 crc8(const QByteArray &data);
     int bytesToInt(QByteArray data, int start, int length, bool reverse = false);
     void sendCommand1(const quint8 &command, const quint8 &param);
+    void sendCommand2(const quint8 &command, const quint16 &param);
+    void sendCommand3(const quint8 &command, const quint16 &param1, const quint16 &param2);
 
 private Q_SLOTS:
     void sltReadData(QByteArray data);

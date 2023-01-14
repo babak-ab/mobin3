@@ -93,7 +93,6 @@ bool SerialControl::isConnected() const
 
 quint8 SerialControl::zoomSpeed() const
 {
-    qDebug() << "sdfsd" << _zoomSpeed;
     return _zoomSpeed;
 }
 
@@ -105,6 +104,31 @@ quint8 SerialControl::panTiltSpeed() const
 quint8 SerialControl::focusSpeed() const
 {
     return _focusSpeed;
+}
+
+quint16 SerialControl::focusPosition() const
+{
+    return _focusPosition;
+}
+
+quint16 SerialControl::fovPosition() const
+{
+    return _fovPosition;
+}
+
+SerialControl::DefogMode SerialControl::defogMode() const
+{
+    return _defogMode;
+}
+
+SerialControl::GammaLevel SerialControl::gammaLevel() const
+{
+    return _gammaLevel;
+}
+
+bool SerialControl::digitalZoom() const
+{
+    return _isDigitalZoomEnabled;
 }
 
 void SerialControl::writeDataOnPlatformsSerialPort(const QByteArray &data)
@@ -277,7 +301,6 @@ void SerialControl::setZoomSpeed(const quint8 speed)
 {
     _zoomSpeed = speed;
 
-    qDebug() << "SPPED1" << speed;
     Q_EMIT sigDataChanged();
 }
 
@@ -286,6 +309,45 @@ void SerialControl::setFocusSpeed(const quint8 speed)
     _focusSpeed = speed;
 
     Q_EMIT sigDataChanged();
+}
+
+void SerialControl::setFovPosition(const quint16 position)
+{
+    _fovPosition = position;
+
+    Q_EMIT sigDataChanged();
+}
+
+void SerialControl::gotoFov(const quint16 position)
+{
+    sendCommand2(59, position);
+}
+
+void SerialControl::setFocusPosition(const quint16 position)
+{
+    _focusPosition = position;
+
+    Q_EMIT sigDataChanged();
+}
+
+void SerialControl::gotoFocus(const quint16 position)
+{
+    sendCommand2(60, position);
+}
+
+void SerialControl::gotoFovFocus(const quint16 fovPosition, const quint16 focusPosition)
+{
+    sendCommand3(60, fovPosition, focusPosition);
+}
+
+void SerialControl::setPosition(const quint8 positionNumber)
+{
+    sendCommand1(111, positionNumber);
+}
+
+void SerialControl::clearPosition(const quint8 positionNumber)
+{
+    sendCommand1(112, positionNumber);
 }
 
 void SerialControl::tiltUp()
@@ -351,6 +413,41 @@ void SerialControl::setSelectedFilter(const SerialControl::FilterSelection filte
     sendCommand1(63, filter);
 }
 
+void SerialControl::setDefogMode(const SerialControl::DefogMode mode)
+{
+    _defogMode = mode;
+
+    sendCommand1(60, mode);
+}
+
+void SerialControl::setGammaLevel(const SerialControl::GammaLevel level)
+{
+    _gammaLevel = (GammaLevel)(level + 1);
+
+    sendCommand1(61, _gammaLevel);
+}
+
+void SerialControl::setNoiseReductionMode(const SerialControl::NoiseReductionMode mode)
+{
+    _noiseReductionMode = (NoiseReductionMode)(mode + 1);
+
+    sendCommand1(62, _noiseReductionMode);
+}
+
+void SerialControl::enableDigitalZoom(const bool state)
+{
+    _isDigitalZoomEnabled = state;
+
+    quint8 param;
+    if (state) {
+        param = 1;
+    } else {
+        param = 2;
+    }
+
+    sendCommand1(85, param);
+}
+
 void SerialControl::sendCommand1(const quint8 &command,
                                            const quint8 &param)
 {
@@ -362,6 +459,44 @@ void SerialControl::sendCommand1(const quint8 &command,
     data.append(static_cast<quint8>(1));
     data.append(static_cast<quint8>(command));
     data.append(static_cast<quint8>(param));
+    data.append(static_cast<quint8>(checkSum));
+
+    Q_EMIT sigWriteData(data);
+}
+
+void SerialControl::sendCommand2(const quint8 &command,
+                                 const quint16 &param)
+{
+    quint8 checkSum = command + (param / 256) + (param % 256) + 1;
+
+    QByteArray data;
+    data.append(static_cast<quint8>(104));
+    data.append(static_cast<quint8>(4));
+    data.append(static_cast<quint8>(1));
+    data.append(static_cast<quint8>(command));
+    data.append(static_cast<quint8>(param / 256));
+    data.append(static_cast<quint8>(param % 256));
+    data.append(static_cast<quint8>(checkSum));
+
+    Q_EMIT sigWriteData(data);
+}
+
+void SerialControl::sendCommand3(const quint8 &command,
+                                 const quint16 &param1,
+                                 const quint16 &param2)
+{
+
+    quint8 checkSum = command + (param1 / 256) + (param1 % 256) + (param2 / 256) + (param2 % 256) + 1;
+
+    QByteArray data;
+    data.append(static_cast<quint8>(104));
+    data.append(static_cast<quint8>(6));
+    data.append(static_cast<quint8>(1));
+    data.append(static_cast<quint8>(command));
+    data.append(static_cast<quint8>(param1 / 256));
+    data.append(static_cast<quint8>(param1 % 256));
+    data.append(static_cast<quint8>(param2 / 256));
+    data.append(static_cast<quint8>(param2 % 256));
     data.append(static_cast<quint8>(checkSum));
 
     Q_EMIT sigWriteData(data);

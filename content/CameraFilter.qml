@@ -64,13 +64,19 @@ Item {
         spacing: 30
 
         QQC2.GroupBox {
-            title: "Camera: "
             font.pixelSize: 25
+
+            label: QQC2.Label {
+                text: " Camera: "
+                color: "black"
+                elide: Text.ElideRight
+            }
+
             background: Rectangle {
                 implicitWidth: 100
                 implicitHeight: 60
-                color: "black"
-                opacity: 0.5
+                color: "white"
+                opacity: 0.4
                 radius: 5
             }
             Column {
@@ -161,13 +167,19 @@ Item {
         }
 
         QQC2.GroupBox {
-            title: "Filter: "
             font.pixelSize: 25
+
+            label: QQC2.Label {
+                text: " Filter: "
+                color: "black"
+                elide: Text.ElideRight
+            }
+
             background: Rectangle {
                 implicitWidth: 100
                 implicitHeight: 60
-                color: "black"
-                opacity: 0.5
+                color: "white"
+                opacity: 0.4
                 radius: 5
             }
             Column {

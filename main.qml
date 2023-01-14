@@ -166,19 +166,19 @@ ApplicationWindow {
         }
         ListElement {
             title: "FOV"
-            page: "content/TabBarPage.qml"
+            page: "content/FOV.qml"
         }
         ListElement {
             title: "Settings"
-            page: "content/TextInputPage.qml"
+            page: "content/Settings.qml"
         }
         ListElement {
             title: "Advanced Settings"
-            page: "content/ListPage.qml"
+            page: "content/AdvancedSettings.qml"
         }
         ListElement {
             title: "Menu"
-            page: "content/ButtonPage.qml"
+            page: "content/TabBarPage.qml"
         }
         ListElement {
             title: "Illuminator"

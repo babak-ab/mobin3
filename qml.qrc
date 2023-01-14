@@ -12,7 +12,7 @@
         <file>content/CameraFilter.qml</file>
         <file>content/PanTilt.qml</file>
         <file>content/TabBarPage.qml</file>
-        <file>content/TextInputPage.qml</file>
+        <file>content/FOV.qml</file>
         <file>Images/button_default.png</file>
         <file>Images/button_pressed.png</file>
         <file>Images/navigation_next_item.png</file>
@@ -31,5 +31,7 @@
         <file>Images/right-pan-icon.png</file>
         <file>Images/up-tilt-icon.png</file>
         <file>Images/down-tilt-icon.png</file>
+        <file>content/Settings.qml</file>
+        <file>content/AdvancedSettings.qml</file>
     </qresource>
 </RCC>
