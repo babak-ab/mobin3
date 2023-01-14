@@ -72,6 +72,21 @@ public:
     };
     Q_ENUM(NoiseReductionMode)
 
+    enum ContrastLevel {
+        ContrastLevel_Level1 = 1,
+        ContrastLevel_Level2 = 2,
+        ContrastLevel_Level3 = 3
+    };
+    Q_ENUM(ContrastLevel)
+
+    enum BrightnessLevel {
+        BrightnessLevel_Level1 = 1,
+        BrightnessLevel_Level2 = 2,
+        BrightnessLevel_Level3 = 3,
+        BrightnessLevel_Level4 = 4
+    };
+    Q_ENUM(BrightnessLevel)
+
     Q_INVOKABLE void zoomIn();
     Q_INVOKABLE void zoomOut();
     Q_INVOKABLE void zoomStop();
@@ -107,6 +122,22 @@ public:
     Q_INVOKABLE void setNoiseReductionMode(const NoiseReductionMode mode);
 
     Q_INVOKABLE void enableDigitalZoom(const bool state);
+
+    Q_INVOKABLE void setContrastMode(const quint8 level);
+    Q_INVOKABLE void setBrightnessLevel(const quint8 level);
+    Q_INVOKABLE void setMode(const quint8 mode);
+
+    Q_INVOKABLE void showMenuPressed();
+    Q_INVOKABLE void showMenuReleased();
+    Q_INVOKABLE void menuUpPressed();
+    Q_INVOKABLE void menuUpReleased();
+    Q_INVOKABLE void menuDownPressed();
+    Q_INVOKABLE void menuDownReleased();
+    Q_INVOKABLE void menuLeftPressed();
+    Q_INVOKABLE void menuLeftReleased();
+    Q_INVOKABLE void menuRightPressed();
+    Q_INVOKABLE void menuRightReleased();
+    Q_INVOKABLE void menuESCReleased();
 
 
 
@@ -210,6 +241,9 @@ private:
     GammaLevel _gammaLevel = GammaLevel_Level1;
     NoiseReductionMode _noiseReductionMode = NoiseReductionMode_High;
     bool _isDigitalZoomEnabled = false;
+    quint8 _contrastLevel = ContrastLevel_Level2;
+    quint8 _brightnessLevel = 1;
+    quint8 _mode = 1;
 
     // Private Functions
     void writeDataOnPlatformsSerialPort(const QByteArray &data);

@@ -33,8 +33,8 @@ ApplicationWindow {
             id: menuButton
             icon.source: "Images/menu-icon.png"
             icon.color: "transparent"
-            icon.height: 60
-            icon.width: 60
+            icon.height: 70
+            icon.width: 70
             background: Rectangle {
                 color: "black"
                 opacity: 0.6
@@ -178,11 +178,11 @@ ApplicationWindow {
         }
         ListElement {
             title: "Menu"
-            page: "content/TabBarPage.qml"
+            page: "content/Menu.qml"
         }
         ListElement {
             title: "Illuminator"
-            page: "content/ButtonPage.qml"
+            page: "content/TabBarPage.qml"
         }
         ListElement {
             title: "Sending Mode"

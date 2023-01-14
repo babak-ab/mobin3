@@ -448,6 +448,82 @@ void SerialControl::enableDigitalZoom(const bool state)
     sendCommand1(85, param);
 }
 
+void SerialControl::setContrastMode(const quint8 level)
+{
+    _contrastLevel = level + 1;
+
+    sendCommand1(116, _contrastLevel);
+}
+
+void SerialControl::setBrightnessLevel(const quint8 level)
+{
+    _brightnessLevel = level + 1;
+
+    sendCommand1(115, _brightnessLevel);
+}
+
+void SerialControl::setMode(const quint8 mode)
+{
+    _mode = mode + 1;
+
+    sendCommand1(117, _mode);
+}
+
+void SerialControl::showMenuPressed()
+{
+    sendCommand1(64, 1);
+}
+
+void SerialControl::showMenuReleased()
+{
+    sendCommand1(64, 0);
+}
+
+void SerialControl::menuUpPressed()
+{
+    sendCommand1(65, 1);
+}
+
+void SerialControl::menuUpReleased()
+{
+    sendCommand1(65, 0);
+}
+
+void SerialControl::menuDownPressed()
+{
+    sendCommand1(66, 1);
+}
+
+void SerialControl::menuDownReleased()
+{
+    sendCommand1(66, 0);
+}
+
+void SerialControl::menuLeftPressed()
+{
+    sendCommand1(84, 1);
+}
+
+void SerialControl::menuLeftReleased()
+{
+    sendCommand1(84, 0);
+}
+
+void SerialControl::menuRightPressed()
+{
+    sendCommand1(83, 1);
+}
+
+void SerialControl::menuRightReleased()
+{
+    sendCommand1(83, 0);
+}
+
+void SerialControl::menuESCReleased()
+{
+    sendCommand1(63, 1);
+}
+
 void SerialControl::sendCommand1(const quint8 &command,
                                            const quint8 &param)
 {

@@ -143,7 +143,7 @@ Item {
             }
 
             QQC2.SpinBox {
-                id: gamaSpinbox
+                id: brightnessSpinbox
                 from: 0
                 to: items.length - 1
                 value: 0 // "high"
@@ -167,8 +167,8 @@ Item {
                 }
 
                 onValueChanged: {
-                    appControl.serialControl.setGammaLevel(
-                                gamaSpinbox.value)
+                    appControl.serialControl.setBrightnessLevel(
+                                brightnessSpinbox.value)
                 }
             }
         }
@@ -191,7 +191,7 @@ Item {
             }
 
             QQC2.SpinBox {
-                id: noiseReductionSpinbox
+                id: modeSpinbox
                 from: 0
                 to: items.length - 1
                 value: 3 // "high"
@@ -215,36 +215,8 @@ Item {
                 }
 
                 onValueChanged: {
-                    appControl.serialControl.setNoiseReductionMode(
-                                noiseReductionSpinbox.value)
-                }
-            }
-        }
-
-        QQC2.GroupBox {
-            font.pixelSize: 25
-
-            label: QQC2.Label {
-                text: " Digital Zoom: "
-                color: "black"
-                elide: Text.ElideRight
-            }
-
-            background: Rectangle {
-                implicitWidth: 100
-                implicitHeight: 60
-                color: "gray"
-                opacity: 0.4
-                radius: 5
-            }
-
-            QQC1.Switch {
-                id: digitalZoomSwitch
-                style: switchStyle
-
-                onCheckedChanged: {
-                    appControl.serialControl.enableDigitalZoom(
-                                digitalZoomSwitch.checked)
+                    appControl.serialControl.setMode(
+                                modeSpinbox.value)
                 }
             }
         }
