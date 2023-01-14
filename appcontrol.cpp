@@ -14,12 +14,6 @@ AppControl::AppControl(QObject* parent)
     : QObject(parent)
 {
 
-//    _buttonModel = new ButtonModel;
-//    _buttonModel->addButton(new Button("Button1", QPoint(500, 5)));
-//    _buttonModel->addButton(new Button("Button2", QPoint(900, 5)));
-//    _buttonModel->addButton(new Button("Button3", QPoint(1300, 5)));
-
-
     // Fill the serial port names
     foreach (const QSerialPortInfo &serialPortInfo, QSerialPortInfo::availablePorts())
     {
@@ -37,24 +31,9 @@ AppControl::~AppControl()
 {
 }
 
-ButtonModel* AppControl::buttonModel() const
-{
-    return _buttonModel;
-}
-
-void AppControl::setButtonModel(ButtonModel* buttonModel)
-{
-    _buttonModel = buttonModel;
-}
-
 void AppControl::setSerialPortName(QString portName)
 {
     _serialPortName = portName;
-}
-
-void AppControl::zoomIn()
-{
-    qDebug() << "VCVCVCVCV";
 }
 
 QString AppControl::messageTitle() const

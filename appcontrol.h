@@ -18,7 +18,6 @@
 class AppControl : public QObject {
     Q_OBJECT
 
-    Q_PROPERTY(ButtonModel* buttonModel READ buttonModel NOTIFY signalVideoAdapter)
     Q_PROPERTY(SerialControl* serialControl READ serialControl NOTIFY signalVideoAdapter)
     Q_PROPERTY(QStringList serialPortList READ serialPortList NOTIFY signalVideoAdapter);
     Q_PROPERTY(QString messageTitle READ messageTitle NOTIFY sigThrowSerialMessageRequested);
@@ -29,7 +28,7 @@ public:
     ~AppControl();
 
 private:
-    ButtonModel* _buttonModel;
+//    ButtonModel* _buttonModel;
 
     SerialControl *_serialControl;
     bool _isSerialPortOpened;
@@ -44,14 +43,10 @@ public:
     Q_INVOKABLE bool connectToSerialPort();
     Q_INVOKABLE void disconnectSerialPort();
     Q_INVOKABLE void setSerialPortName(QString portName);
-    Q_INVOKABLE void zoomIn();
 
 
     QString messageTitle() const;
     QString messageText() const;
-
-    ButtonModel* buttonModel() const;
-    void setButtonModel(ButtonModel* buttonModel);
 
     QStringList serialPortList() const;
 
