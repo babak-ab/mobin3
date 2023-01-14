@@ -88,10 +88,11 @@ Item {
             background: Rectangle {
                 implicitWidth: 100
                 implicitHeight: 60
-                color: "white"
+                color: "gray"
                 opacity: 0.4
                 radius: 5
             }
+
 
             QQC2.SpinBox {
                 id: contrastSpinbox
@@ -118,8 +119,8 @@ Item {
                 }
 
                 onValueChanged: {
-                    appControl.serialControl.setDefogMode(
-                                defogSpinbox.value)
+                    appControl.serialControl.setContrastMode(
+                                contrastSpinbox.value)
                 }
             }
         }
@@ -136,7 +137,7 @@ Item {
             background: Rectangle {
                 implicitWidth: 100
                 implicitHeight: 60
-                color: "white"
+                color: "gray"
                 opacity: 0.4
                 radius: 5
             }
@@ -184,7 +185,7 @@ Item {
             background: Rectangle {
                 implicitWidth: 100
                 implicitHeight: 60
-                color: "white"
+                color: "gray"
                 opacity: 0.4
                 radius: 5
             }
@@ -232,7 +233,7 @@ Item {
             background: Rectangle {
                 implicitWidth: 100
                 implicitHeight: 60
-                color: "white"
+                color: "gray"
                 opacity: 0.4
                 radius: 5
             }
