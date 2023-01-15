@@ -77,237 +77,178 @@ Item {
     Column {
         spacing: 40
         //anchors.centerIn: parent
-
         Row {
             spacing: 25
-            QQC2.Button {
-                id: gotoFovButton
-                contentItem: Text {
-                    text: "Goto FOV"
-                    color: "white"
-                    opacity: 1.0
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    font.pixelSize: 25
-                    font.bold: true
-                    elide: Text.ElideRight
-                }
-
-                background: Rectangle {
-                    implicitWidth: 180
-                    implicitHeight: 60
-                    color: gotoFovButton.down ? "red" : "black"
+            Text {
+                Rectangle {
+                    implicitWidth: parent.width
+                    implicitHeight: parent.height
                     opacity: 0.5
-                    radius: 5
-                }
-
-                onReleased: {
-                    appControl.serialControl.gotoFov(
-                                gotoFovSlider.value)
-                }
-            }
-
-            QQC1.Slider {
-                id: gotoFovSlider
-                anchors.margins: 20
-                anchors.topMargin: 50
-                style: sliderTouchStyle
-                value: appControl.serialControl.fovPosition
-                updateValueWhileDragging: false
-                minimumValue: 0
-                maximumValue: 65535
-
-                onValueChanged: {
-                    appControl.serialControl.fovPosition = gotoFovSlider.value
-                }
-            }
-        }
-
-        Row {
-            spacing: 25
-            QQC2.Button {
-                id: gotoFocusButton
-                contentItem: Text {
-                    text: "Goto Focus"
+                    border.width: 1
+                    radius: 2
                     color: "white"
-                    opacity: 1.0
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    font.pixelSize: 25
-                    font.bold: true
-                    elide: Text.ElideRight
                 }
 
-                background: Rectangle {
-                    implicitWidth: 180
-                    implicitHeight: 60
-                    color: gotoFocusButton.down ? "red" : "black"
-                    opacity: 0.5
-                    radius: 5
-                }
-
-                onReleased: {
-                    appControl.serialControl.gotoFocus(
-                                gotoFocusSlider.value)
-                }
-            }
-
-            QQC1.Slider {
-                id: gotoFocusSlider
-                anchors.margins: 20
-                anchors.topMargin: 50
-                style: sliderTouchStyle
-                value: appControl.serialControl.focusPosition
-                updateValueWhileDragging: false
-                minimumValue: 0
-                maximumValue: 65535
-
-                onValueChanged: {
-                    appControl.serialControl.focusPosition = gotoFocusSlider.value
-                }
-            }
-        }
-
-        QQC2.Button {
-            id: gotoFovFocusButton
-            contentItem: Text {
-                text: "Goto FOV & Focus"
-                color: "white"
-                opacity: 1.0
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
+                text: qsTr("Illuminator: ")
+                //anchors.centerIn: parent
+                opacity: 1
+                color: "black"
                 font.pixelSize: 25
-                font.bold: true
-                elide: Text.ElideRight
+                renderType: Text.NativeRendering
             }
 
-            background: Rectangle {
-                implicitWidth: 180
-                implicitHeight: 60
-                color: gotoFovFocusButton.down ? "red" : "black"
-                opacity: 0.5
-                radius: 5
-            }
+            QQC1.Switch {
+                id: illuminatorOnOffSwitch
+                style: switchStyle
 
-            onReleased: {
-                appControl.serialControl.gotoFovFocus(
-                            gotoFovSlider.value,
-                            gotoFocusSlider.value)
+                onCheckedChanged: {
+                    appControl.serialControl.enableIlluminator(
+                                illuminatorOnOffSwitch.checked)
+                }
             }
         }
 
-        QQC2.GroupBox {
-            font.pixelSize: 25
+        Row {
+            spacing: 25
+            QQC2.Button {
+                id: setBrightnessButton
+                contentItem: Text {
+                    text: "Set Brightness"
+                    color: "white"
+                    opacity: 1.0
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    font.pixelSize: 25
+                    font.bold: true
+                    elide: Text.ElideRight
+                }
 
-            label: QQC2.Label {
-                text: " Positions: "
-                color: "black"
-                elide: Text.ElideRight
+                background: Rectangle {
+                    implicitWidth: 180
+                    implicitHeight: 60
+                    color: setBrightnessButton.down ? "red" : "black"
+                    opacity: 0.5
+                    radius: 5
+                }
+
+                onReleased: {
+                    appControl.serialControl.setIlluminatorBrightness(
+                                brightnessSlider.value)
+                }
             }
 
-            background: Rectangle {
-                implicitWidth: 100
-                implicitHeight: 60
-                color: "black"
-                opacity: 0.5
-                radius: 5
+            QQC1.Slider {
+                id: brightnessSlider
+                anchors.margins: 20
+                anchors.topMargin: 50
+                style: sliderTouchStyle
+                value: appControl.serialControl.illuminatorBrightnessLevel
+                updateValueWhileDragging: false
+                minimumValue: 0
+                maximumValue: 255
+
+                onValueChanged: {
+                    appControl.serialControl.illuminatorBrightnessLevel = brightnessSlider.value
+                }
             }
-            Column {
-                spacing: 25
-                QQC2.SpinBox {
-                    id: positionSpinBox
-                    from: 1
-                    to: 100
-                    value: 1
+        }
 
-                    background: Rectangle {
-                        implicitWidth: 100
-                        implicitHeight: 60
-                        color: "black"
-                        opacity: 0.4
-                        radius: 5
-                    }
+        Row {
+            spacing: 25
+            QQC2.Button {
+                id: smallerAngleButton
+                contentItem: Text {
+                    text: "Smaller Angle"
+                    color: "white"
+                    opacity: 1.0
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    font.pixelSize: 25
+                    font.bold: true
+                    elide: Text.ElideRight
                 }
 
-                QQC2.Button {
-                    id: setPositionButton
-                    contentItem: Text {
-                        text: "Set Position"
-                        color: "white"
-                        opacity: 1.0
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                        font.pixelSize: 25
-                        font.bold: true
-                        elide: Text.ElideRight
-                    }
-
-                    background: Rectangle {
-                        implicitWidth: 180
-                        implicitHeight: 60
-                        color: setPositionButton.down ? "red" : "black"
-                        opacity: 0.5
-                        radius: 5
-                    }
-
-                    onReleased: {
-                        appControl.serialControl.setPosition(
-                                    positionSpinBox.value)
-                    }
+                background: Rectangle {
+                    implicitWidth: 180
+                    implicitHeight: 60
+                    color: smallerAngleButton.down ? "red" : "black"
+                    opacity: 0.5
+                    radius: 5
                 }
 
-                QQC2.Button {
-                    id: clearPositionButton
-                    contentItem: Text {
-                        text: "Clear Position"
-                        color: "white"
-                        opacity: 1.0
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                        font.pixelSize: 25
-                        font.bold: true
-                        elide: Text.ElideRight
-                    }
+                onReleased: {
+                    appControl.serialControl.setIlluminatorSmallerAngle()
+                }
+            }
 
-                    background: Rectangle {
-                        implicitWidth: 180
-                        implicitHeight: 60
-                        color: clearPositionButton.down ? "red" : "black"
-                        opacity: 0.5
-                        radius: 5
-                    }
-
-                    onReleased: {
-                        appControl.serialControl.clearPosition(
-                                    positionSpinBox.value)
-                    }
+            QQC2.Button {
+                id: largerAngleButton
+                contentItem: Text {
+                    text: "Larger Angle"
+                    color: "white"
+                    opacity: 1.0
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    font.pixelSize: 25
+                    font.bold: true
+                    elide: Text.ElideRight
                 }
 
-                QQC2.Button {
-                    id: gotoPositionButton
-                    contentItem: Text {
-                        text: "Goto Position"
-                        color: "white"
-                        opacity: 1.0
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                        font.pixelSize: 25
-                        font.bold: true
-                        elide: Text.ElideRight
-                    }
+                background: Rectangle {
+                    implicitWidth: 180
+                    implicitHeight: 60
+                    color: largerAngleButton.down ? "red" : "black"
+                    opacity: 0.5
+                    radius: 5
+                }
 
-                    background: Rectangle {
-                        implicitWidth: 180
-                        implicitHeight: 60
-                        color: gotoPositionButton.down ? "red" : "black"
-                        opacity: 0.5
-                        radius: 5
-                    }
+                onReleased: {
+                    appControl.serialControl.setIlluminatorLargerAngle()
+                }
+            }
+        }
 
-                    onReleased: {
-                        appControl.serialControl.gotoPosition(
-                                    positionSpinBox.value)
-                    }
+        Row {
+            spacing: 25
+            QQC2.Button {
+                id: setAngleOffsetButton
+                contentItem: Text {
+                    text: "Set Angle Offset"
+                    color: "white"
+                    opacity: 1.0
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    font.pixelSize: 25
+                    font.bold: true
+                    elide: Text.ElideRight
+                }
+
+                background: Rectangle {
+                    implicitWidth: 180
+                    implicitHeight: 60
+                    color: setAngleOffsetButton.down ? "red" : "black"
+                    opacity: 0.5
+                    radius: 5
+                }
+
+                onReleased: {
+                    appControl.serialControl.setIlluminatorAngleOffset(
+                                angleOffsetSlider.value)
+                }
+            }
+
+            QQC1.Slider {
+                id: angleOffsetSlider
+                anchors.margins: 20
+                anchors.topMargin: 50
+                style: sliderTouchStyle
+                value: appControl.serialControl.illuminatorAngleOffset
+                updateValueWhileDragging: false
+                minimumValue: 1
+                maximumValue: 20
+
+                onValueChanged: {
+                    appControl.serialControl.illuminatorAngleOffset = angleOffsetSlider.value
                 }
             }
         }
@@ -381,4 +322,53 @@ Item {
             }
         }
     }
+
+    Component {
+        id: switchStyle
+        SwitchStyle {
+
+            groove: Rectangle {
+                implicitHeight: 50
+                implicitWidth: 152
+                Rectangle {
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    anchors.bottom: parent.bottom
+                    width: parent.width/2 - 2
+                    height: 20
+                    anchors.margins: 2
+                    color: control.checked ? "#468bb7" : "#222"
+                    Behavior on color {ColorAnimation {}}
+                    Text {
+                        font.pixelSize: 23
+                        color: "white"
+                        anchors.centerIn: parent
+                        text: "ON"
+                    }
+                }
+                Item {
+                    width: parent.width/2
+                    height: parent.height
+                    anchors.right: parent.right
+                    Text {
+                        font.pixelSize: 23
+                        color: "white"
+                        anchors.centerIn: parent
+                        text: "OFF"
+                    }
+                }
+                color: "#222"
+                border.color: "#444"
+                border.width: 2
+            }
+            handle: Rectangle {
+                width: parent.parent.width/2
+                height: control.height
+                color: "#444"
+                border.color: "#555"
+                border.width: 2
+            }
+        }
+    }
+
 }

@@ -116,6 +116,16 @@ quint16 SerialControl::fovPosition() const
     return _fovPosition;
 }
 
+quint8 SerialControl::illuminatorBrightnessLevel() const
+{
+    return _illuminatorBrightness;
+}
+
+quint8 SerialControl::illuminatorAngleOffset() const
+{
+    return _illuminatorAngleOffset;
+}
+
 SerialControl::DefogMode SerialControl::defogMode() const
 {
     return _defogMode;
@@ -448,6 +458,63 @@ void SerialControl::enableDigitalZoom(const bool state)
     sendCommand1(85, param);
 }
 
+void SerialControl::enableIlluminator(const bool state)
+{
+    _isIlluminatorEnabled = state;
+
+    quint8 param;
+    if (state) {
+        param = 2;
+    } else {
+        param = 1;
+    }
+
+    sendCommand1(90, param);
+}
+
+void SerialControl::setIlluminatorBrightness(const quint8 brightness)
+{
+    _illuminatorBrightness = brightness;
+
+    sendCommand1(91, _contrastLevel);
+}
+
+void SerialControl::setIlluminatorSmallerAngle()
+{
+    quint8 param = 1;
+
+    sendCommand1(93, param);
+}
+
+void SerialControl::setIlluminatorLargerAngle()
+{
+    quint8 param = 2;
+
+    sendCommand1(93, param);
+}
+
+void SerialControl::setIlluminatorAngleOffset(const quint8 offset)
+{
+    _illuminatorAngleOffset = offset;
+
+    sendCommand1(92, offset);
+}
+
+void SerialControl::setRequestSendingMode()
+{
+    sendCommand1(12, 0);
+}
+
+void SerialControl::setStatusSendingMode()
+{
+    sendCommand4(80);
+}
+
+void SerialControl::setContinuousSendingMode(const quint8 interval)
+{
+    sendCommand1(12, interval);
+}
+
 void SerialControl::setContrastMode(const quint8 level)
 {
     _contrastLevel = level + 1;
@@ -577,3 +644,19 @@ void SerialControl::sendCommand3(const quint8 &command,
 
     Q_EMIT sigWriteData(data);
 }
+
+void SerialControl::sendCommand4(const quint8 &command)
+{
+
+    quint8 checkSum = command + 1;
+
+    QByteArray data;
+    data.append(static_cast<quint8>(104));
+    data.append(static_cast<quint8>(2));
+    data.append(static_cast<quint8>(1));
+    data.append(static_cast<quint8>(command));
+    data.append(static_cast<quint8>(checkSum));
+
+    Q_EMIT sigWriteData(data);
+}
+

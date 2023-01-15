@@ -83,36 +83,19 @@ Item {
                 Rectangle {
                     implicitWidth: parent.width
                     implicitHeight: parent.height
-                    opacity: 0.2
+                    opacity: 0.5
                     border.width: 1
                     radius: 2
-                    color: "black"
+                    color: "white"
                 }
 
                 text: qsTr("Serial Port:")
                 //anchors.centerIn: parent
                 opacity: 1
-                color: "#FFFFFF"
+                color: "black"
                 font.pixelSize: 23
                 renderType: Text.NativeRendering
             }
-
-//            ComboBox {
-//                id: portName
-//                activeFocusOnPress: true
-//                style: comboTouchStyle
-
-//                model: appControl.serialPortList
-
-//                currentIndex: 0
-//                width: 200
-
-//                onCurrentIndexChanged: {
-//                    appControl.setSerialPortName(portName.currentText)
-//                }
-//            }
-
-
 
             QQC2.ComboBox {
                 id: control

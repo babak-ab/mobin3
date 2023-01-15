@@ -35,6 +35,8 @@ class SerialControl : public RingQueue
     Q_PROPERTY(DefogMode defogMode READ defogMode WRITE setDefogMode NOTIFY sigDataChanged)
     Q_PROPERTY(GammaLevel gammaLevel READ gammaLevel WRITE setGammaLevel NOTIFY sigDataChanged)
     Q_PROPERTY(bool digitalZoom READ digitalZoom WRITE enableDigitalZoom NOTIFY sigDataChanged)
+    Q_PROPERTY(quint8 illuminatorBrightnessLevel READ illuminatorBrightnessLevel WRITE setIlluminatorBrightness NOTIFY sigDataChanged)
+    Q_PROPERTY(quint8 illuminatorAngleOffset READ illuminatorAngleOffset WRITE setIlluminatorAngleOffset NOTIFY sigDataChanged)
 
 public:
 
@@ -87,6 +89,7 @@ public:
     };
     Q_ENUM(BrightnessLevel)
 
+
     Q_INVOKABLE void zoomIn();
     Q_INVOKABLE void zoomOut();
     Q_INVOKABLE void zoomStop();
@@ -138,6 +141,18 @@ public:
     Q_INVOKABLE void menuRightPressed();
     Q_INVOKABLE void menuRightReleased();
     Q_INVOKABLE void menuESCReleased();
+
+    Q_INVOKABLE void enableIlluminator(const bool state);
+    Q_INVOKABLE void setIlluminatorBrightness(const quint8 brightness);
+    Q_INVOKABLE void setIlluminatorSmallerAngle();
+    Q_INVOKABLE void setIlluminatorLargerAngle();
+    Q_INVOKABLE void setIlluminatorAngleOffset(const quint8 offset);
+
+    Q_INVOKABLE void setRequestSendingMode();
+    Q_INVOKABLE void setStatusSendingMode();
+
+    Q_INVOKABLE void setContinuousSendingMode(const quint8 interval);
+
 
 
 
@@ -202,6 +217,10 @@ public:
 
     quint16 fovPosition() const;
 
+    quint8 illuminatorBrightnessLevel() const;
+
+    quint8 illuminatorAngleOffset() const;
+
     DefogMode defogMode() const;
 
     GammaLevel gammaLevel() const;
@@ -241,9 +260,12 @@ private:
     GammaLevel _gammaLevel = GammaLevel_Level1;
     NoiseReductionMode _noiseReductionMode = NoiseReductionMode_High;
     bool _isDigitalZoomEnabled = false;
+    bool _isIlluminatorEnabled = false;
     quint8 _contrastLevel = ContrastLevel_Level2;
     quint8 _brightnessLevel = 1;
     quint8 _mode = 1;
+    quint8 _illuminatorBrightness = 0;
+    quint8 _illuminatorAngleOffset = 1;
 
     // Private Functions
     void writeDataOnPlatformsSerialPort(const QByteArray &data);
@@ -252,6 +274,7 @@ private:
     void sendCommand1(const quint8 &command, const quint8 &param);
     void sendCommand2(const quint8 &command, const quint16 &param);
     void sendCommand3(const quint8 &command, const quint16 &param1, const quint16 &param2);
+    void sendCommand4(const quint8 &command);
 
 private Q_SLOTS:
     void sltReadData(QByteArray data);
@@ -265,5 +288,6 @@ Q_SIGNALS:
     void sigDataChanged();
 
 };
+
 
 #endif // SERIALCONTROL_H

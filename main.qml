@@ -182,11 +182,11 @@ ApplicationWindow {
         }
         ListElement {
             title: "Illuminator"
-            page: "content/TabBarPage.qml"
+            page: "content/Illuminator.qml"
         }
         ListElement {
             title: "Sending Mode"
-            page: "content/ButtonPage.qml"
+            page: "content/SendingMode.qml"
         }
         ListElement {
             title: "Connections"

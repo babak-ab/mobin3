@@ -75,8 +75,8 @@ Item {
             background: Rectangle {
                 implicitWidth: 100
                 implicitHeight: 60
-                color: "white"
-                opacity: 0.4
+                color: "black"
+                opacity: 0.5
                 radius: 5
             }
             Column {
@@ -178,8 +178,8 @@ Item {
             background: Rectangle {
                 implicitWidth: 100
                 implicitHeight: 60
-                color: "white"
-                opacity: 0.4
+                color: "black"
+                opacity: 0.5
                 radius: 5
             }
             Column {
