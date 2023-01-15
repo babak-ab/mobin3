@@ -76,25 +76,28 @@ Item {
 
     Column {
         spacing: 40
+
+
+        Text {
+            text: "  Connections: "
+            font.family: "Helvetica"
+            font.pointSize: 25
+            color: "white"
+            style: Text.Outline;
+            styleColor: "#fc0303"
+        }
+
         Row {
 
             spacing: 15
-            Text {
-                Rectangle {
-                    implicitWidth: parent.width
-                    implicitHeight: parent.height
-                    opacity: 0.5
-                    border.width: 1
-                    radius: 2
-                    color: "white"
-                }
 
-                text: qsTr("Serial Port:")
-                //anchors.centerIn: parent
-                opacity: 1
-                color: "black"
-                font.pixelSize: 23
-                renderType: Text.NativeRendering
+            Text {
+                text: "Serial Port: "
+                font.family: "Helvetica"
+                font.pointSize: 15
+                color: "white"
+                style: Text.Outline;
+                styleColor: "black"
             }
 
             QQC2.ComboBox {
@@ -201,6 +204,7 @@ Item {
                 border.width: 1
                 radius: 2
                 color: "black"
+                border.color: "white"
             }
 
             Text {

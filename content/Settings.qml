@@ -75,22 +75,35 @@ Item {
     }
 
     Column {
-        spacing: 20
+        spacing: 40
+
+        Text {
+            text: "  Settings: "
+            font.family: "Helvetica"
+            font.pointSize: 25
+            color: "white"
+            style: Text.Outline;
+            styleColor: "#fc0303"
+        }
+
         QQC2.GroupBox {
             font.pixelSize: 25
 
             label: QQC2.Label {
                 text: " Defog: "
-                color: "black"
+                color: "white"
                 elide: Text.ElideRight
+                style: Text.Outline;
+                styleColor: "black"
             }
 
             background: Rectangle {
                 implicitWidth: 100
                 implicitHeight: 60
-                color: "white"
-                opacity: 0.4
+                color: "black"
+                opacity: 0.5
                 radius: 5
+                border.color: "white"
             }
 
         QQC2.SpinBox {
@@ -129,16 +142,19 @@ Item {
 
             label: QQC2.Label {
                 text: " Gamma: "
-                color: "black"
+                color: "white"
                 elide: Text.ElideRight
+                style: Text.Outline;
+                styleColor: "black"
             }
 
             background: Rectangle {
                 implicitWidth: 100
                 implicitHeight: 60
-                color: "white"
-                opacity: 0.4
+                color: "black"
+                opacity: 0.5
                 radius: 5
+                border.color: "white"
             }
 
         QQC2.SpinBox {
@@ -177,16 +193,19 @@ Item {
 
             label: QQC2.Label {
                 text: " Noise Reduction: "
-                color: "black"
+                color: "white"
                 elide: Text.ElideRight
+                style: Text.Outline;
+                styleColor: "black"
             }
 
             background: Rectangle {
                 implicitWidth: 100
                 implicitHeight: 60
-                color: "white"
+                color: "black"
                 opacity: 0.4
                 radius: 5
+                border.color: "white"
             }
 
         QQC2.SpinBox {
@@ -225,16 +244,19 @@ Item {
 
             label: QQC2.Label {
                 text: " Digital Zoom: "
-                color: "black"
+                color: "white"
                 elide: Text.ElideRight
+                style: Text.Outline;
+                styleColor: "black"
             }
 
             background: Rectangle {
                 implicitWidth: 100
                 implicitHeight: 60
-                color: "white"
+                color: "black"
                 opacity: 0.4
                 radius: 5
+                border.color: "white"
             }
 
             QQC1.Switch {

@@ -81,6 +81,26 @@ Item {
     Column {
         spacing: 40
 
+        Text {
+            text: "  Pan & Tilt: "
+            font.family: "Helvetica"
+            font.pointSize: 25
+            color: "white"
+            style: Text.Outline;
+            styleColor: "#fc0303"
+        }
+
+        Row {
+            spacing: 10
+            Text {
+                text: "Speed:"
+                font.family: "Helvetica"
+                font.pointSize: 15
+                color: "white"
+                style: Text.Outline;
+                styleColor: "black"
+            }
+
         QQC1.Slider {
             id: panTilTSlider
             anchors.margins: 20
@@ -94,7 +114,7 @@ Item {
                 appControl.serialControl.panTiltSpeed = panTilTSlider.value
             }
         }
-
+        }
         QQC2.Button {
             id: upTiltButton
             icon.source: "qrc:/Images/up-arrow.png"

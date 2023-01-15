@@ -63,13 +63,24 @@ Item {
     Column {
         spacing: 30
 
+        Text {
+            text: "  Camera & Filter: "
+            font.family: "Helvetica"
+            font.pointSize: 25
+            color: "white"
+            style: Text.Outline;
+            styleColor: "#fc0303"
+        }
+
         QQC2.GroupBox {
             font.pixelSize: 25
 
             label: QQC2.Label {
                 text: " Camera: "
-                color: "black"
+                color: "White"
                 elide: Text.ElideRight
+                style: Text.Outline;
+                styleColor: "black"
             }
 
             background: Rectangle {
@@ -78,7 +89,9 @@ Item {
                 color: "black"
                 opacity: 0.5
                 radius: 5
+                border.color: "white"
             }
+
             Column {
                 spacing: 25
 
@@ -91,9 +104,10 @@ Item {
                     background: Rectangle {
                         implicitWidth: 100
                         implicitHeight: 60
-                        color: continuousZoom.checked ? "red" : "black"
+                        color: continuousZoom.checked ? "red" : "gray"
                         opacity: 0.5
                         radius: 5
+                        border.color: "white"
                     }
 
                     onClicked: {
@@ -118,9 +132,10 @@ Item {
                     background: Rectangle {
                         implicitWidth: 100
                         implicitHeight: 60
-                        color: spotter.checked ? "red" : "black"
+                        color: spotter.checked ? "red" : "gray"
                         opacity: 0.5
                         radius: 5
+                        border.color: "white"
                     }
 
                     onClicked: {
@@ -145,9 +160,10 @@ Item {
                         implicitWidth: 100
                         implicitHeight: 60
                         visible: control.checked
-                        color: swirSpotter.checked ? "red" : "black"
+                        color: swirSpotter.checked ? "red" : "gray"
                         opacity: 0.5
                         radius: 5
+                        border.color: "white"
                     }
 
                     onClicked: {
@@ -171,8 +187,10 @@ Item {
 
             label: QQC2.Label {
                 text: " Filter: "
-                color: "black"
+                color: "White"
                 elide: Text.ElideRight
+                style: Text.Outline;
+                styleColor: "black"
             }
 
             background: Rectangle {
@@ -181,7 +199,9 @@ Item {
                 color: "black"
                 opacity: 0.5
                 radius: 5
+                border.color: "white"
             }
+
             Column {
                 spacing: 25
 
@@ -194,9 +214,10 @@ Item {
                     background: Rectangle {
                         implicitWidth: 100
                         implicitHeight: 60
-                        color: colorFilter.checked ? "red" : "black"
+                        color: colorFilter.checked ? "red" : "gray"
                         opacity: 0.5
                         radius: 5
+                        border.color: "white"
                     }
 
                     onClicked: {
@@ -213,9 +234,10 @@ Item {
                     background: Rectangle {
                         implicitWidth: 100
                         implicitHeight: 60
-                        color: nirFilter.checked ? "red" : "black"
+                        color: nirFilter.checked ? "red" : "gray"
                         opacity: 0.5
                         radius: 5
+                        border.color: "white"
                     }
 
                     onClicked: {
@@ -235,9 +257,10 @@ Item {
                         implicitWidth: 100
                         implicitHeight: 60
                         visible: control.checked
-                        color: laserFilter.checked ? "red" : "black"
+                        color: laserFilter.checked ? "red" : "gray"
                         opacity: 0.5
                         radius: 5
+                        border.color: "white"
                     }
 
                     onClicked: {
@@ -257,9 +280,10 @@ Item {
                         implicitWidth: 100
                         implicitHeight: 60
                         visible: control.checked
-                        color: bwFilter.checked ? "red" : "black"
+                        color: bwFilter.checked ? "red" : "gray"
                         opacity: 0.5
                         radius: 5
+                        border.color: "white"
                     }
 
                     onClicked: {
@@ -279,9 +303,10 @@ Item {
                         implicitWidth: 100
                         implicitHeight: 60
                         visible: control.checked
-                        color: gwFilter.checked ? "red" : "black"
+                        color: gwFilter.checked ? "red" : "gray"
                         opacity: 0.5
                         radius: 5
+                        border.color: "white"
                     }
 
                     onClicked: {

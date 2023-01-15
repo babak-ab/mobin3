@@ -77,6 +77,15 @@ Item {
     Column {
         spacing: 40
 
+        Text {
+            text: "  Menu: "
+            font.family: "Helvetica"
+            font.pointSize: 25
+            color: "white"
+            style: Text.Outline;
+            styleColor: "#fc0303"
+        }
+
         QQC2.Button {
             id: upButton
             icon.source: "qrc:/Images/up-tilt-icon.png"
@@ -145,6 +154,7 @@ Item {
                         color: menuButton.down ? "red" : "black"
                         opacity: 0.5
                         radius: 5
+                        border.color: "white"
                     }
 
                     onPressed: {
@@ -169,6 +179,7 @@ Item {
                         color: escButton.down ? "red" : "black"
                         opacity: 0.5
                         radius: 5
+                        border.color: "white"
                     }
 
                     onReleased: {

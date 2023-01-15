@@ -65,15 +65,27 @@ ScrollView {
     flickableItem.interactive: true
 
     Column {
-        spacing: 30
+        spacing: 40
+
+
+        Text {
+            text: "  Sending Mode: "
+            font.family: "Helvetica"
+            font.pointSize: 25
+            color: "white"
+            style: Text.Outline;
+            styleColor: "#fc0303"
+        }
 
         QQC2.GroupBox {
             font.pixelSize: 25
 
             label: QQC2.Label {
                 text: " Sending Mode: "
-                color: "black"
+                color: "white"
                 elide: Text.ElideRight
+                style: Text.Outline;
+                styleColor: "black"
             }
 
             background: Rectangle {
@@ -82,6 +94,7 @@ ScrollView {
                 color: "black"
                 opacity: 0.5
                 radius: 5
+                border.color: "white"
             }
 
             Column {
@@ -96,13 +109,15 @@ ScrollView {
                     background: Rectangle {
                         implicitWidth: 100
                         implicitHeight: 60
-                        color: requestSendingMode.checked ? "red" : "black"
+                        color: requestSendingMode.checked ? "red" : "gray"
                         opacity: 0.5
                         radius: 5
+                        border.color: "white"
                     }
 
                     onClicked: {
                         continuousSendingModeSpinBox.visible = false;
+                        msec.visible = false
 
                         appControl.serialControl.setRequestSendingMode()
                     }
@@ -117,13 +132,15 @@ ScrollView {
                     background: Rectangle {
                         implicitWidth: 100
                         implicitHeight: 60
-                        color: statusSendingMode.checked ? "red" : "black"
+                        color: statusSendingMode.checked ? "red" : "gray"
                         opacity: 0.5
                         radius: 5
+                        border.color: "white"
                     }
 
                     onClicked: {
                         continuousSendingModeSpinBox.visible = false;
+                        msec.visible = false
 
                         appControl.serialControl.setStatusSendingMode()
                     }
@@ -139,32 +156,53 @@ ScrollView {
                         implicitWidth: 100
                         implicitHeight: 60
                         visible: control.checked
-                        color: continuousSendingMode.checked ? "red" : "black"
+                        color: continuousSendingMode.checked ? "red" : "gray"
                         opacity: 0.5
                         radius: 5
+                        border.color: "white"
                     }
 
                     onClicked: {
                         continuousSendingModeSpinBox.visible = true;
+                        msec.visible = true
 
                         appControl.serialControl.setContinuousSendingMode(
                                     continuousSendingModeSpinBox.value)
                     }
                 }
 
-                QQC2.SpinBox {
-                    id: continuousSendingModeSpinBox
-                    from: 1
-                    to: 255
-                    value: 1
-                    visible: false
+                Row {
+                    spacing: 10
 
-                    background: Rectangle {
-                        implicitWidth: 100
-                        implicitHeight: 60
-                        color: "black"
-                        opacity: 0.5
-                        radius: 5
+                    QQC2.SpinBox {
+                        id: continuousSendingModeSpinBox
+                        from: 1
+                        to: 255
+                        value: 1
+                        visible: false
+
+                        background: Rectangle {
+                            implicitWidth: 100
+                            implicitHeight: 60
+                            color: "black"
+                            opacity: 0.5
+                            radius: 5
+                            border.color: "white"
+                        }
+                    }
+
+                    Text {
+
+                        id: msec
+                        visible: false
+                        text: "msec"
+                        font.family: "Helvetica"
+
+                        font.pointSize: 15
+                        color: "white"
+                        style: Text.Outline;
+                        styleColor: "black"
+                        anchors.topMargin: 25
                     }
                 }
             }

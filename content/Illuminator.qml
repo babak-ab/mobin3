@@ -76,25 +76,25 @@ Item {
 
     Column {
         spacing: 40
-        //anchors.centerIn: parent
+
+        Text {
+            text: "  Illuminator: "
+            font.family: "Helvetica"
+            font.pointSize: 25
+            color: "white"
+            style: Text.Outline;
+            styleColor: "#fc0303"
+        }
+
         Row {
             spacing: 25
             Text {
-                Rectangle {
-                    implicitWidth: parent.width
-                    implicitHeight: parent.height
-                    opacity: 0.5
-                    border.width: 1
-                    radius: 2
-                    color: "white"
-                }
-
-                text: qsTr("Illuminator: ")
-                //anchors.centerIn: parent
-                opacity: 1
-                color: "black"
-                font.pixelSize: 25
-                renderType: Text.NativeRendering
+                text: "Illuminator: "
+                font.family: "Helvetica"
+                font.pointSize: 15
+                color: "white"
+                style: Text.Outline;
+                styleColor: "black"
             }
 
             QQC1.Switch {
@@ -129,6 +129,7 @@ Item {
                     color: setBrightnessButton.down ? "red" : "black"
                     opacity: 0.5
                     radius: 5
+                    border.color: "white"
                 }
 
                 onReleased: {
@@ -174,6 +175,7 @@ Item {
                     color: smallerAngleButton.down ? "red" : "black"
                     opacity: 0.5
                     radius: 5
+                    border.color: "white"
                 }
 
                 onReleased: {
@@ -200,6 +202,7 @@ Item {
                     color: largerAngleButton.down ? "red" : "black"
                     opacity: 0.5
                     radius: 5
+                    border.color: "white"
                 }
 
                 onReleased: {
@@ -229,6 +232,7 @@ Item {
                     color: setAngleOffsetButton.down ? "red" : "black"
                     opacity: 0.5
                     radius: 5
+                    border.color: "white"
                 }
 
                 onReleased: {

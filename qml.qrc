@@ -37,5 +37,6 @@
         <file>Images/up-arrow.png</file>
         <file>Images/down-arrow.png</file>
         <file>content/Illuminator.qml</file>
+        <file>Images/record-icon.png</file>
     </qresource>
 </RCC>

@@ -75,22 +75,35 @@ Item {
     }
 
     Column {
-        spacing: 20
+        spacing: 40
+
+        Text {
+            text: "  Advanced Settings: "
+            font.family: "Helvetica"
+            font.pointSize: 25
+            color: "white"
+            style: Text.Outline;
+            styleColor: "#fc0303"
+        }
+
         QQC2.GroupBox {
             font.pixelSize: 25
 
             label: QQC2.Label {
                 text: " Contrast: "
-                color: "black"
+                color: "white"
                 elide: Text.ElideRight
+                style: Text.Outline;
+                styleColor: "black"
             }
 
             background: Rectangle {
                 implicitWidth: 100
                 implicitHeight: 60
-                color: "gray"
-                opacity: 0.4
+                color: "black"
+                opacity: 0.5
                 radius: 5
+                border.color: "white"
             }
 
 
@@ -130,16 +143,19 @@ Item {
 
             label: QQC2.Label {
                 text: " Brightness: "
-                color: "black"
+                color: "white"
                 elide: Text.ElideRight
+                style: Text.Outline;
+                styleColor: "black"
             }
 
             background: Rectangle {
                 implicitWidth: 100
                 implicitHeight: 60
-                color: "gray"
-                opacity: 0.4
+                color: "black"
+                opacity: 0.5
                 radius: 5
+                border.color: "white"
             }
 
             QQC2.SpinBox {
@@ -178,16 +194,19 @@ Item {
 
             label: QQC2.Label {
                 text: " Mode: "
-                color: "black"
+                color: "white"
                 elide: Text.ElideRight
+                style: Text.Outline;
+                styleColor: "black"
             }
 
             background: Rectangle {
                 implicitWidth: 100
                 implicitHeight: 60
-                color: "gray"
-                opacity: 0.4
+                color: "black"
+                opacity: 0.5
                 radius: 5
+                border.color: "white"
             }
 
             QQC2.SpinBox {

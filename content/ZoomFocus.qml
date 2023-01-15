@@ -57,6 +57,7 @@ import QtQuick.Controls 1.4 as QQC1
 
 import AppControl 1.0
 
+
 Item {
 
     //width: parent.width
@@ -81,6 +82,15 @@ Item {
     Column {
         spacing: 40
 
+        Text {
+            text: "  Zoom & Focus: "
+            font.family: "Helvetica"
+            font.pointSize: 25
+            color: "white"
+            style: Text.Outline;
+            styleColor: "#fc0303"
+        }
+
         Row {
             spacing: 15
 
@@ -103,6 +113,7 @@ Item {
                     color: zoomInButton.down ? "red" : "black"
                     opacity: 0.5
                     radius: 5
+                    border.color: "white"
                 }
 
                 onPressed: {
@@ -133,6 +144,7 @@ Item {
                     color: zoomOutButton.down ? "red" : "black"
                     opacity: 0.5
                     radius: 5
+                    border.color: "white"
                 }
 
                 onPressed: {
@@ -152,6 +164,7 @@ Item {
                 updateValueWhileDragging: false
                 minimumValue: 0
                 maximumValue: 255
+
 
                 onValueChanged: {
                     appControl.serialControl.zoomSpeed = zoomSlider.value
@@ -180,6 +193,7 @@ Item {
                     color: focusFarButton.down ? "red" : "black"
                     opacity: 0.5
                     radius: 5
+                    border.color: "white"
                 }
 
                 onPressed: {
@@ -210,6 +224,7 @@ Item {
                     color: focusNearButton.down ? "red" : "black"
                     opacity: 0.5
                     radius: 5
+                    border.color: "white"
                 }
 
                 onPressed: {
@@ -257,6 +272,7 @@ Item {
                     color: autoFocusButton.down ? "red" : "black"
                     opacity: 0.5
                     radius: 5
+                    border.color: "white"
                 }
 
                 onReleased: {
@@ -283,6 +299,7 @@ Item {
                     color: manualFocusButton.down ? "red" : "black"
                     opacity: 0.5
                     radius: 5
+                    border.color: "white"
                 }
 
                 onReleased: {
@@ -291,6 +308,8 @@ Item {
             }
         }
     }
+
+
 
     Component {
         id: touchStyle

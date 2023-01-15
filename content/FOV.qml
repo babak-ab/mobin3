@@ -76,7 +76,15 @@ Item {
 
     Column {
         spacing: 40
-        //anchors.centerIn: parent
+
+        Text {
+            text: "  FOV: "
+            font.family: "Helvetica"
+            font.pointSize: 25
+            color: "white"
+            style: Text.Outline;
+            styleColor: "#fc0303"
+        }
 
         Row {
             spacing: 25
@@ -99,6 +107,7 @@ Item {
                     color: gotoFovButton.down ? "red" : "black"
                     opacity: 0.5
                     radius: 5
+                    border.color: "white"
                 }
 
                 onReleased: {
@@ -144,6 +153,7 @@ Item {
                     color: gotoFocusButton.down ? "red" : "black"
                     opacity: 0.5
                     radius: 5
+                    border.color: "white"
                 }
 
                 onReleased: {
@@ -187,6 +197,7 @@ Item {
                 color: gotoFovFocusButton.down ? "red" : "black"
                 opacity: 0.5
                 radius: 5
+                border.color: "white"
             }
 
             onReleased: {
@@ -201,8 +212,10 @@ Item {
 
             label: QQC2.Label {
                 text: " Positions: "
-                color: "black"
+                color: "white"
                 elide: Text.ElideRight
+                style: Text.Outline;
+                styleColor: "black"
             }
 
             background: Rectangle {
@@ -211,7 +224,9 @@ Item {
                 color: "black"
                 opacity: 0.5
                 radius: 5
+                border.color: "white"
             }
+
             Column {
                 spacing: 25
                 QQC2.SpinBox {
@@ -223,9 +238,10 @@ Item {
                     background: Rectangle {
                         implicitWidth: 100
                         implicitHeight: 60
-                        color: "black"
-                        opacity: 0.4
+                        color: "gray"
+                        opacity: 0.5
                         radius: 5
+                        border.color: "white"
                     }
                 }
 
@@ -245,9 +261,10 @@ Item {
                     background: Rectangle {
                         implicitWidth: 180
                         implicitHeight: 60
-                        color: setPositionButton.down ? "red" : "black"
+                        color: setPositionButton.down ? "red" : "gray"
                         opacity: 0.5
                         radius: 5
+                        border.color: "white"
                     }
 
                     onReleased: {
@@ -272,9 +289,10 @@ Item {
                     background: Rectangle {
                         implicitWidth: 180
                         implicitHeight: 60
-                        color: clearPositionButton.down ? "red" : "black"
+                        color: clearPositionButton.down ? "red" : "gray"
                         opacity: 0.5
                         radius: 5
+                        border.color: "white"
                     }
 
                     onReleased: {
@@ -299,9 +317,10 @@ Item {
                     background: Rectangle {
                         implicitWidth: 180
                         implicitHeight: 60
-                        color: gotoPositionButton.down ? "red" : "black"
+                        color: gotoPositionButton.down ? "red" : "gray"
                         opacity: 0.5
                         radius: 5
+                        border.color: "white"
                     }
 
                     onReleased: {
