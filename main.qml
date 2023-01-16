@@ -82,7 +82,6 @@ ApplicationWindow {
         }
     }
 
-
     VideoRender {
         id: videoRender
         anchors.fill: parent
@@ -90,17 +89,17 @@ ApplicationWindow {
         Camera {
             id: camera
             captureMode: Camera.CaptureVideo
-//            property string fileName: "test.mp4"
-//            property string path: "/home/babak/Videos/"
-//            onFileNameChanged: {
-//                camera.videoRecorder.outputLocation = path + fileName
-//            }
+            property string fileName: "test.mp4"
+            property string path: "/home/babak/Videos/"
+            onFileNameChanged: {
+                camera.videoRecorder.outputLocation = path + fileName
+            }
 
-//            videoRecorder {
-//                resolution: "640x480"
-//                frameRate: 30
-//                mediaContainer: "mp4"
-//            }
+            videoRecorder {
+                resolution: "640x480"
+                frameRate: 30
+                mediaContainer: "mp4"
+            }
         }
     }
 
