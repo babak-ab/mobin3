@@ -195,7 +195,7 @@ Item {
             style: touchStyle
             anchors.horizontalCenter: parent.horizontalCenter
             checkable: true
-            checked: false
+            checked: appControl.serialControl.isConnected
 
             Rectangle {
                 implicitWidth: parent.width

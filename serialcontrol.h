@@ -37,6 +37,7 @@ class SerialControl : public RingQueue
     Q_PROPERTY(bool digitalZoom READ digitalZoom WRITE enableDigitalZoom NOTIFY sigDataChanged)
     Q_PROPERTY(quint8 illuminatorBrightnessLevel READ illuminatorBrightnessLevel WRITE setIlluminatorBrightness NOTIFY sigDataChanged)
     Q_PROPERTY(quint8 illuminatorAngleOffset READ illuminatorAngleOffset WRITE setIlluminatorAngleOffset NOTIFY sigDataChanged)
+    Q_PROPERTY(bool isConnected READ isConnected NOTIFY sigDataChanged)
 
 public:
 
@@ -152,9 +153,6 @@ public:
     Q_INVOKABLE void setStatusSendingMode();
 
     Q_INVOKABLE void setContinuousSendingMode(const quint8 interval);
-
-
-
 
 
     ///
