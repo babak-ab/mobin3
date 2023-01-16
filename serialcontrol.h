@@ -154,6 +154,7 @@ public:
 
     Q_INVOKABLE void setContinuousSendingMode(const quint8 interval);
 
+    Q_INVOKABLE QString serialportName() const;
 
     ///
     /// \brief SerialControl default constructor
@@ -204,6 +205,8 @@ public:
     /// \return
     /// The result
     bool isConnected() const;
+
+
 
     quint8 zoomSpeed() const;
 

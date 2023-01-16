@@ -184,10 +184,11 @@ Item {
                     }
                 }
 
-                currentIndex: 0
+                currentIndex: appControl.findSerialPortName(
+                                  appControl.serialControl.serialportName())
 
                 onCurrentIndexChanged: {
-                    appControl.setSerialPortName(portName.currentText)
+                    appControl.setSerialPortName(currentText)
                 }
             }
         }

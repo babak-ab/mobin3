@@ -36,6 +36,16 @@ void AppControl::setSerialPortName(QString portName)
     _serialPortName = portName;
 }
 
+int AppControl::findSerialPortName(QString portName)
+{
+    for(int i = 0;i<_serialPortList.size();i++){
+        if(_serialPortList[i].contains(portName)){
+            return i;
+        }
+    }
+    return 0;
+}
+
 QString AppControl::messageTitle() const
 {
     return _messageTitle;

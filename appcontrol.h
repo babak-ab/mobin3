@@ -43,7 +43,7 @@ public:
     Q_INVOKABLE bool connectToSerialPort();
     Q_INVOKABLE void disconnectSerialPort();
     Q_INVOKABLE void setSerialPortName(QString portName);
-
+    Q_INVOKABLE int findSerialPortName(QString portName);
 
     QString messageTitle() const;
     QString messageText() const;
