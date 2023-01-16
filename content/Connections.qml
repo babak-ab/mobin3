@@ -144,7 +144,6 @@ Item {
                 }
 
                 contentItem: Text {
-                    //                    QQC2.leftPadding: 0
                     anchors.leftMargin: control.indicator.width + control.spacing
 
                     text: control.displayText
@@ -174,8 +173,6 @@ Item {
                         implicitHeight: contentHeight
                         model: control.popup.visible ? control.delegateModel : null
                         currentIndex: control.highlightedIndex
-
-                        //                        ScrollIndicator.vertical: QQC2.ScrollIndicator { }
                     }
 
                     background: Rectangle {
@@ -186,10 +183,6 @@ Item {
 
                 currentIndex: appControl.findSerialPortName(
                                   appControl.serialControl.serialportName())
-
-                onCurrentIndexChanged: {
-                    appControl.setSerialPortName(currentText)
-                }
             }
         }
 
@@ -221,6 +214,8 @@ Item {
             }
 
             onClicked: {
+
+                appControl.setSerialPortName(control.currentText)
 
                 if (connectText.text == "Connect") {
 
@@ -261,33 +256,6 @@ Item {
                 color: "white"
                 text: control.currentText
             }
-
-            //                // drop-down customization here
-            //                property Component __dropDownStyle: MenuStyle {
-            //                    __maxPopupHeight: 600
-
-            //                    __menuItemType: "comboboxitem"
-
-            //                    frame: Rectangle {              // background
-            //                        color: "#FFACACAC"
-            //                    }
-
-            //                    itemDelegate.label: Text {
-            //                        verticalAlignment: Text.AlignVCenter
-            //                        horizontalAlignment: Text.AlignHCenter
-            //                        font.pointSize: 12
-            //                        font.family: "sans serif"
-            //                        color: styleData.selected ?  "#FF6BC1E5" : "#FF404040"
-            //                        text: styleData.text
-            //                    }
-
-            //                    itemDelegate.background: Rectangle {  // selection of an item
-            //                        color: styleData.selected ?  "#FF404040" : "#FFECECEC"
-            //                    }
-
-            //                    __scrollerStyle: ScrollViewStyle { }
-            //                }
-            //            }
         }
     }
 

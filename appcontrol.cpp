@@ -34,15 +34,19 @@ AppControl::~AppControl()
 void AppControl::setSerialPortName(QString portName)
 {
     _serialPortName = portName;
+
+    qDebug() << "_serialPortName: " << _serialPortName;
 }
 
 int AppControl::findSerialPortName(QString portName)
 {
     for(int i = 0;i<_serialPortList.size();i++){
+        qDebug() << "port name: " << _serialPortList[i] << portName;
         if(_serialPortList[i].contains(portName)){
             return i;
         }
     }
+
     return 0;
 }
 
@@ -84,6 +88,7 @@ void AppControl::disconnectSerialPort()
 
 QStringList AppControl::serialPortList() const
 {
+    qDebug() << "_serialPortList: " << _serialPortList;
     return _serialPortList;
 }
 
