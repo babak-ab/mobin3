@@ -1,3 +1,5 @@
+
+
 /****************************************************************************
 **
 ** Copyright (C) 2016 The Qt Company Ltd.
@@ -47,7 +49,6 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-
 import QtQuick 2.12
 import QtQuick.Controls 1.4 as QQC1
 import QtQuick.Controls.Styles 1.1
@@ -77,13 +78,12 @@ Item {
     Column {
         spacing: 40
 
-
         Text {
             text: "  Connections: "
             font.family: "Helvetica"
             font.pointSize: 25
             color: "white"
-            style: Text.Outline;
+            style: Text.Outline
             styleColor: "#fc0303"
         }
 
@@ -96,7 +96,7 @@ Item {
                 font.family: "Helvetica"
                 font.pointSize: 15
                 color: "white"
-                style: Text.Outline;
+                style: Text.Outline
                 styleColor: "black"
             }
 
@@ -127,22 +127,24 @@ Item {
 
                     Connections {
                         target: control
-                        function onPressedChanged() { canvas.requestPaint(); }
+                        function onPressedChanged() {
+                            canvas.requestPaint()
+                        }
                     }
 
                     onPaint: {
-                        context.reset();
-                        context.moveTo(0, 0);
-                        context.lineTo(width, 0);
-                        context.lineTo(width / 2, height);
-                        context.closePath();
-                        context.fillStyle = control.pressed ? "#17a81a" : "black";
-                        context.fill();
+                        context.reset()
+                        context.moveTo(0, 0)
+                        context.lineTo(width, 0)
+                        context.lineTo(width / 2, height)
+                        context.closePath()
+                        context.fillStyle = control.pressed ? "#17a81a" : "black"
+                        context.fill()
                     }
                 }
 
                 contentItem: Text {
-//                    QQC2.leftPadding: 0
+                    //                    QQC2.leftPadding: 0
                     anchors.leftMargin: control.indicator.width + control.spacing
 
                     text: control.displayText
@@ -173,7 +175,7 @@ Item {
                         model: control.popup.visible ? control.delegateModel : null
                         currentIndex: control.highlightedIndex
 
-//                        ScrollIndicator.vertical: QQC2.ScrollIndicator { }
+                        //                        ScrollIndicator.vertical: QQC2.ScrollIndicator { }
                     }
 
                     background: Rectangle {
@@ -192,7 +194,7 @@ Item {
 
         QQC1.Button {
             id: connectionButton
-            style: touchStyle
+            style: appControl.serialControl.isConnected ? pressedTouchStyle : touchStyle
             anchors.horizontalCenter: parent.horizontalCenter
             checkable: true
             checked: appControl.serialControl.isConnected
@@ -210,11 +212,11 @@ Item {
             Text {
                 id: connectText
                 anchors.fill: parent
-                   horizontalAlignment: Text.AlignHCenter
+                horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 font.pixelSize: 24
                 color: "#FFFFFF"
-                text: "Connect"
+                text: appControl.serialControl.isConnected ? "Disconnect" : "Connect"
             }
 
             onClicked: {
@@ -259,34 +261,32 @@ Item {
                 text: control.currentText
             }
 
+            //                // drop-down customization here
+            //                property Component __dropDownStyle: MenuStyle {
+            //                    __maxPopupHeight: 600
 
+            //                    __menuItemType: "comboboxitem"
 
-//                // drop-down customization here
-//                property Component __dropDownStyle: MenuStyle {
-//                    __maxPopupHeight: 600
+            //                    frame: Rectangle {              // background
+            //                        color: "#FFACACAC"
+            //                    }
 
-//                    __menuItemType: "comboboxitem"
+            //                    itemDelegate.label: Text {
+            //                        verticalAlignment: Text.AlignVCenter
+            //                        horizontalAlignment: Text.AlignHCenter
+            //                        font.pointSize: 12
+            //                        font.family: "sans serif"
+            //                        color: styleData.selected ?  "#FF6BC1E5" : "#FF404040"
+            //                        text: styleData.text
+            //                    }
 
-//                    frame: Rectangle {              // background
-//                        color: "#FFACACAC"
-//                    }
+            //                    itemDelegate.background: Rectangle {  // selection of an item
+            //                        color: styleData.selected ?  "#FF404040" : "#FFECECEC"
+            //                    }
 
-//                    itemDelegate.label: Text {
-//                        verticalAlignment: Text.AlignVCenter
-//                        horizontalAlignment: Text.AlignHCenter
-//                        font.pointSize: 12
-//                        font.family: "sans serif"
-//                        color: styleData.selected ?  "#FF6BC1E5" : "#FF404040"
-//                        text: styleData.text
-//                    }
-
-//                    itemDelegate.background: Rectangle {  // selection of an item
-//                        color: styleData.selected ?  "#FF404040" : "#FFECECEC"
-//                    }
-
-//                    __scrollerStyle: ScrollViewStyle { }
-//                }
-//            }
+            //                    __scrollerStyle: ScrollViewStyle { }
+            //                }
+            //            }
         }
     }
 
