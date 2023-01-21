@@ -64,22 +64,24 @@ ApplicationWindow {
             }
         }
 
-        Button {
-            text: "Record"
-            checkable: true
-            highlighted: checked
-            onClicked: {
-                if (checked) {
-                    var dt = new Date().toLocaleString(Qt.locale(),
-                                                       "yyyy-MM-dd_hh_mm_ss")
+        //        Button {
+        //            text: "Record"
+        //            checkable: true
+        //            highlighted: checked
+        //            onClicked: {
+        //                if (checked) {
+        //                    var dt = new Date().toLocaleString(Qt.locale(),
+        //                                                       "yyyy-MM-dd_hh_mm_ss")
 
-                    camera.fileName = "video_" + dt + ".mp4"
-                    camera.videoRecorder.record()
-                } else {
-                    camera.videoRecorder.stop()
-                }
-            }
-        }
+        //                    camera.fileName = camera.path + "video_" + dt + ".mp4"
+
+        //                    console.log("fileName: ", camera.fileName)
+        //                    camera.videoRecorder.record()
+        //                } else {
+        //                    camera.videoRecorder.stop()
+        //                }
+        //            }
+        //        }
     }
 
     VideoRender {
@@ -90,7 +92,7 @@ ApplicationWindow {
             id: camera
             captureMode: Camera.CaptureVideo
             property string fileName: "test.mp4"
-            property string path: "/home/babak/Videos/"
+            property string path: "C:/Users/Morteza/Desktop/record/"
             onFileNameChanged: {
                 camera.videoRecorder.outputLocation = path + fileName
             }
@@ -103,28 +105,259 @@ ApplicationWindow {
         }
     }
 
-    Button {
-        id: cameraSwitchButton
-        icon.source: "qrc:/Images/switch-camera.png"
-        icon.color: "white"
-        icon.height: 60
-        icon.width: 60
-        anchors.top: parent.top
-        anchors.right: parent.right
-        anchors.margins: 25
+    Column {
+        anchors.fill: parent
+        Button {
+            id: recordButton
+            icon.source: "qrc:/Images/record-icon.png"
+            icon.color: "white"
+            icon.height: 60
+            icon.width: 60
+            anchors.top: parent.top
+            anchors.right: parent.right
+            anchors.margins: 15
 
-        background: Rectangle {
-            color: "black"
-            opacity: 0.6
-        }
+            checkable: true
+            highlighted: checked
 
-        MouseArea {
-            anchors.fill: parent
+            background: Rectangle {
+                color: "black"
+                opacity: 0.5
+            }
 
             onClicked: {
-                console.log("cccccccc")
+                if (checked) {
+                    var dt = new Date().toLocaleString(Qt.locale(),
+                                                       "yyyy-MM-dd_hh_mm_ss")
+
+                    camera.fileName = camera.path + "video_" + dt + ".mp4"
+
+                    console.log("fileName: ", camera.fileName)
+                    camera.videoRecorder.record()
+                } else {
+                    camera.videoRecorder.stop()
+                }
             }
         }
+
+
+
+        //        Button {
+        //            id: testButton
+        //            contentItem: Text {
+        //                text: "Zoom In"
+        //                color: "white"
+        //                opacity: 1.0
+        //                horizontalAlignment: Text.AlignHCenter
+        //                verticalAlignment: Text.AlignVCenter
+        //                font.pixelSize: 25
+        //                font.bold: true
+        //                elide: Text.ElideRight
+        //            }
+
+        //            background: Rectangle {
+        //                implicitWidth: 180
+        //                implicitHeight: 60
+        //                color: zoomInButton.down ? "red" : "black"
+        //                opacity: 0.5
+        //                radius: 5
+        //                border.color: "white"
+        //            }
+
+        //            onPressed: {
+        //                appControl.serialControl.zoomIn()
+        //            }
+
+        //            onReleased: {
+        //                appControl.serialControl.zoomStop()
+        //            }
+        //        }
+
+    }
+
+    ButtonGroup {
+
+        buttons: column.children
+        onClicked: console.log("clicked:", button.text)
+    }
+
+    Column {
+
+        id: column
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+        anchors.margins: 15
+
+        Button {
+            id: zoomInButton
+            icon.source: "qrc:/Images/zoom-in-icon.png"
+            icon.color: "white"
+            icon.height: 60
+            icon.width: 60
+
+            background: Rectangle {
+                opacity: 0.5
+                color: zoomInButton.down ? "red" : "black"
+            }
+
+            onPressed: {
+                appControl.serialControl.zoomIn()
+            }
+
+            onReleased: {
+                appControl.serialControl.zoomStop()
+            }
+        }
+
+        Button {
+            id: zoomOutButton
+            icon.source: "qrc:/Images/zoom-out-icon.png"
+            icon.color: "white"
+            icon.height: 60
+            icon.width: 60
+
+            background: Rectangle {
+                color: zoomOutButton.down ? "red" : "black"
+                opacity: 0.5
+            }
+
+
+            onPressed: {
+                appControl.serialControl.zoomOut()
+            }
+
+            onReleased: {
+                appControl.serialControl.zoomStop()
+            }
+        }
+
+        Button {
+            id: focusFarButton
+            icon.source: "qrc:/Images/focus-far.png"
+            icon.color: "white"
+            icon.height: 60
+            icon.width: 60
+
+            background: Rectangle {
+                opacity: 0.5
+                color: focusFarButton.down ? "red" : "black"
+            }
+
+            onPressed: {
+                appControl.serialControl.focusFar()
+            }
+
+            onReleased: {
+                appControl.serialControl.focusStop()
+            }
+        }
+
+
+        Button {
+            id: focusNearButton
+            icon.source: "qrc:/Images/focus-near.png"
+            icon.color: "white"
+            icon.height: 60
+            icon.width: 60
+
+            background: Rectangle {
+                opacity: 0.5
+                color: focusNearButton.down ? "red" : "black"
+            }
+
+            onPressed: {
+                appControl.serialControl.focusNear()
+            }
+
+            onReleased: {
+                appControl.serialControl.focusStop()
+            }
+        }
+
+        Button {
+            id: leftPanButton
+            icon.source: "qrc:/Images/left-arrow.png"
+            icon.color: "white"
+            icon.height: 60
+            icon.width: 60
+
+            background: Rectangle {
+                color: leftPanButton.down ? "red" : "black"
+                opacity: 0.5
+            }
+
+            onPressed: {
+                appControl.serialControl.panLeft()
+            }
+
+            onReleased: {
+                appControl.serialControl.panStop()
+            }
+        }
+
+        Button {
+            id: rightPanButton
+            icon.source: "qrc:/Images/right-arrow.png"
+            icon.color: "white"
+            icon.height: 60
+            icon.width: 60
+
+            background: Rectangle {
+                color: rightPanButton.down ? "red" : "black"
+                opacity: 0.5
+            }
+
+            onPressed: {
+                appControl.serialControl.panRight()
+            }
+
+            onReleased: {
+                appControl.serialControl.panStop()
+            }
+        }
+
+        Button {
+            id: upTiltButton
+            icon.source: "qrc:/Images/up-arrow.png"
+            icon.color: "white"
+            icon.height: 60
+            icon.width: 60
+
+            background: Rectangle {
+                color: upTiltButton.down ? "red" : "black"
+                opacity: 0.5
+            }
+
+            onPressed: {
+                appControl.serialControl.tiltUp()
+            }
+
+            onReleased: {
+                appControl.serialControl.tiltStop()
+            }
+        }
+
+        Button {
+            id: downTiltButton
+            icon.source: "qrc:/Images/down-arrow.png"
+            icon.color: "white"
+            icon.height: 60
+            icon.width: 60
+
+            background: Rectangle {
+                color: downTiltButton.down ? "red" : "black"
+                opacity: 0.5
+            }
+
+            onPressed: {
+                appControl.serialControl.tiltDown()
+            }
+
+            onReleased: {
+                appControl.serialControl.tiltStop()
+            }
+        }
+
     }
 
     Repeater {
@@ -229,65 +462,4 @@ ApplicationWindow {
             }
         }
     }
-
-    //    Drawer {
-    //        id: drawer
-    //        width: 0.4 * root.width
-    //        height: root.height
-
-    //        contentItem: Item {
-    //            anchors.fill: parent
-
-    //            ColumnLayout {
-    //                anchors.fill: parent
-    //                RowLayout {
-    //                    Layout.fillWidth: true
-    //                    ToolButton {
-    //                        text: qsTr("<")
-    //                        onClicked: drawer.close()
-
-    //                    }
-    //                    Label {
-    //                        text: "Menu"
-
-    //                    }
-    //                }
-    //                MenuSeparator {
-    //                    Layout.fillWidth: true
-    //                }
-    //                ListView {
-    //                    Layout.fillWidth: true
-    //                    Layout.fillHeight: true
-    //                    model: ContactModel {}
-
-    //                    focus: true
-    //                    delegate: ColumnLayout {
-    //                        width: drawer.width
-    //                        height: 60
-
-    //                        RowLayout {
-    //                            Layout.fillHeight: true
-    //                            Label {
-    //                                text: name
-    //                            }
-    //                            Item {
-    //                                Layout.fillWidth: true
-    //                            }
-    //                            ToolButton {
-    //                                text: qsTr(">")
-    //                            }
-    //                        }
-    //                        Rectangle {
-    //                            width: parent.width
-    //                            height: 1
-    //                        }
-    //                    }
-    //                }
-    //                Item {
-    //                    Layout.fillHeight: true
-    //                    Layout.fillWidth: true
-    //                }
-    //            }
-    //        }
-    //    }
 }

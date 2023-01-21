@@ -24,7 +24,6 @@
         <file>content/Connections.qml</file>
         <file>Images/Icon.png</file>
         <file>Images/Icon.ico</file>
-        <file>Images/switch-camera.png</file>
         <file>Images/left-pan-icon.png</file>
         <file>Images/right-pan-icon.png</file>
         <file>Images/up-tilt-icon.png</file>
@@ -38,5 +37,9 @@
         <file>Images/down-arrow.png</file>
         <file>content/Illuminator.qml</file>
         <file>Images/record-icon.png</file>
+        <file>Images/zoom-in-icon.png</file>
+        <file>Images/zoom-out-icon.png</file>
+        <file>Images/focus-far.png</file>
+        <file>Images/focus-near.png</file>
     </qresource>
 </RCC>

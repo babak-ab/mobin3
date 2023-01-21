@@ -277,7 +277,7 @@ void SerialControl::focusStop()
 
 void SerialControl::autoFocus()
 {
-    sendCommand1(195, 1);
+    sendCommand1(199, 1);
 
     //Repeat command to increase reliability of stopping process
     if (_repeatCounter++ < 2)
@@ -288,7 +288,7 @@ void SerialControl::autoFocus()
 
 void SerialControl::manualFocus()
 {
-    sendCommand1(199, 1);
+    sendCommand1(195, 1);
 
     //Repeat command to increase reliability of stopping process
     if (_repeatCounter++ < 2)
