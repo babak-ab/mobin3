@@ -5,21 +5,23 @@ SerialControl::SerialControl(QObject* parent)
 {
     RingQueue::initialize();
     QObject::connect(this, &RingQueue::sigReadData,
-        this, &SerialControl::sltReadData, Qt::DirectConnection);
+                     this, &SerialControl::sltReadData, Qt::DirectConnection);
     QObject::connect(this, &RingQueue::sigWriteData,
-        this, &SerialControl::sigWriteData, Qt::DirectConnection);
+                     this, &SerialControl::sigWriteData, Qt::DirectConnection);
 
     m_serialPort = new QSerialPort;
     QObject::connect(m_serialPort, &QSerialPort::readyRead,
-        this, &SerialControl::sltReadSeialPortData);
+                     this, &SerialControl::sltReadSeialPortData);
 
     QObject::connect(this, &SerialControl::sigWriteData,
-        this, &SerialControl::sltWriteSerialPortData);
+                     this, &SerialControl::sltWriteSerialPortData);
 
     _zoomSpeed = 100;
     _focusSpeed = 100;
     _panTiltSpeed = 100;
     _repeatCounter = 0;
+
+    init_crc8();
 }
 
 SerialControl::~SerialControl()
@@ -53,9 +55,122 @@ bool SerialControl::disconnectSerialPort()
 
 QByteArray SerialControl::interpret(IRQueue<quint8>* queueRead)
 {
-    quint8 data1;
-    if (!queueRead->dequeue(data1))
+    quint8 firstByte = 0x00;
+    quint8 lengthByte = 0x00;
+    quint8 crcValue = 0x00;
+
+    if (!queueRead->dequeue(firstByte))
+    {
         return QByteArray();
+    }
+
+    if (firstByte != 0xAA)
+    {
+        return QByteArray();
+    }
+
+
+    if (!queueRead->dequeue(lengthByte))
+    {
+        return QByteArray();
+    }
+
+    if (lengthByte != static_cast<char>(0x0A) &&
+            lengthByte != static_cast<char>(0x0B))
+    {
+        return QByteArray();
+    }
+
+    QByteArray packet(lengthByte + 2, 0x00);
+
+    packet[0] = firstByte;
+    packet[1] = lengthByte;
+
+    for (int i = 2; i < lengthByte + 2; i++)
+    {
+        quint8 data;
+
+        if (!queueRead->dequeue(data))
+        {
+            return QByteArray();
+        }
+
+        packet[i] = data;
+    }
+
+    std::cerr << packet.toHex(' ').toStdString() << std::endl;
+
+    // calculate crc
+    {
+        quint8 *crcInput = new quint8;
+
+        for (int i = 2; i < lengthByte; i++)
+        {
+            //  std::cerr << packet.toHex().at(2 * i) << packet.toHex().at(2 * i + 1) << " ";
+            crcInput[i - 2] = packet.at(i);
+        }
+
+        crcValue = crc8(crcInput, lengthByte - 2);
+
+        delete crcInput;
+    }
+
+    QByteArray crc(1, crcValue);
+
+    //  std::cerr << "\n" << crc.toHex().toStdString() << std::endl;
+
+    // check first, second and crc bytes
+    if (/*crcValue == packet.at(lengthByte)*/ true)
+    {
+        // byte 2 and byte 3    => FOV
+        {
+            quint16 fovValue = 0x0000;
+            fovValue |= (0xFF00) & (static_cast<quint16>(packet.at(2)) << 8);
+            fovValue |= (0x00FF) & (static_cast<quint16>(packet.at(3)));
+
+            double fovRealValue = static_cast<double>(fovValue) / 1000.0;
+        }
+        // byte 4 and byte 5    => Focus
+        {
+            quint16 focusValue = 0x0000;
+            focusValue |= (0xFF00) & (static_cast<quint16>(packet.at(4)) << 8);
+            focusValue |= (0x00FF) & (static_cast<quint16>(packet.at(5)));
+        }
+        // byte 6 and byte 7    => Status
+        {
+            quint16 statusValue = 0x0000;
+            statusValue |= (0xFF00) & (static_cast<quint16>(packet.at(6)) << 8);
+            statusValue |= (0x00FF) & (static_cast<quint16>(packet.at(7)));
+
+            quint8 gammaLevel = 0x03 & statusValue;
+            quint8 noiseLevel = 0x02 & statusValue;
+
+
+        }
+        // byte 8               => Sensor
+        // byte 9               => Version
+        // byte 10              => Extra Status
+
+    }
+
+
+
+
+    //    if (data1 == 0xAA)
+    //    {
+    //        QByteArray byteArray;
+    //        if (!queueRead->dequeue(data2))
+    //        {
+    //         return QByteArray();
+    //        }
+
+    //        if (data2 == 10 ||
+    //                data2 == 11)
+    //        {
+    //            std::cerr << " sjdkfjksadjf " << std::endl;
+    //        }
+    //    }
+
 
     //    if (data1 == 0x80) {
     //        quint8 data2;
@@ -144,17 +259,6 @@ void SerialControl::writeDataOnPlatformsSerialPort(const QByteArray& data)
         m_serialPort->write(data);
         qDebug() << "write data :" << data.toHex(' ');
     }
-}
-
-quint8 SerialControl::crc8(const QByteArray& data)
-{
-    quint8 sum = 0;
-
-    for (auto byte : data) {
-        sum += byte;
-    }
-
-    return sum;
 }
 
 int SerialControl::bytesToInt(QByteArray data, int start, int length, bool reverse)
@@ -587,7 +691,7 @@ void SerialControl::menuESCReleased()
 }
 
 void SerialControl::sendCommand1(const quint8& command,
-    const quint8& param)
+                                 const quint8& param)
 {
     quint8 checkSum = command + param + 1;
 
@@ -603,7 +707,7 @@ void SerialControl::sendCommand1(const quint8& command,
 }
 
 void SerialControl::sendCommand2(const quint8& command,
-    const quint16& param)
+                                 const quint16& param)
 {
     quint8 checkSum = command + (param / 256) + (param % 256) + 1;
 
@@ -620,8 +724,8 @@ void SerialControl::sendCommand2(const quint8& command,
 }
 
 void SerialControl::sendCommand3(const quint8& command,
-    const quint16& param1,
-    const quint16& param2)
+                                 const quint16& param1,
+                                 const quint16& param2)
 {
 
     quint8 checkSum = command + (param1 / 256) + (param1 % 256) + (param2 / 256) + (param2 % 256) + 1;
@@ -653,4 +757,32 @@ void SerialControl::sendCommand4(const quint8& command)
     data.append(static_cast<quint8>(checkSum));
 
     Q_EMIT sigWriteData(data);
+}
+
+void SerialControl::init_crc8()
+{
+    qint32 k = 0;
+    quint8 crc;
+
+    for (quint8 i = 0; i < 255; i++) {
+        crc = i;
+        for (int j = 0; j < 8; j++) {
+            if ((crc & 0x80) == 0x80)
+                k = 7;
+            else
+                k = 0;
+            crc = static_cast<quint8>((crc << 1) ^ k);
+            crc8_table[i] = crc & 0xFF;
+        }
+    }
+}
+
+quint8 SerialControl::crc8(quint8 buf[], quint8 len) const
+{
+    quint8 crc;
+    crc = 0xFF;
+    for (int i = 0; i < len; i++) {
+        crc = crc8_table[(crc & 0xFF) ^ buf[i]];
+    }
+    return crc ^ 0xFF;
 }

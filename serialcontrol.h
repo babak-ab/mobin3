@@ -8,6 +8,8 @@
 #include <QMessageBox>
 #include <QSerialPortInfo>
 
+#include <iostream>
+
 #include "utils/cursor.h"
 #include "utils/ringqueue.h"
 
@@ -268,14 +270,19 @@ private:
     quint8 _illuminatorBrightness = 0;
     quint8 _illuminatorAngleOffset = 1;
 
+    quint8 crc8_table[256];
+
     // Private Functions
     void writeDataOnPlatformsSerialPort(const QByteArray &data);
-    quint8 crc8(const QByteArray &data);
     int bytesToInt(QByteArray data, int start, int length, bool reverse = false);
     void sendCommand1(const quint8 &command, const quint8 &param);
     void sendCommand2(const quint8 &command, const quint16 &param);
     void sendCommand3(const quint8 &command, const quint16 &param1, const quint16 &param2);
     void sendCommand4(const quint8 &command);
+
+    void init_crc8();
+    quint8 crc8(quint8 buf[], quint8 len) const;
+
 
 private Q_SLOTS:
     void sltReadData(QByteArray data);
