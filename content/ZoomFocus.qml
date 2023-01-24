@@ -209,7 +209,6 @@ Item {
             }
         }
 
-
         QQC2.GroupBox {
             font.pixelSize: 25
 
@@ -327,10 +326,6 @@ Item {
         }
 
 
-
-
-
-
         QQC2.GroupBox {
             font.pixelSize: 25
 
@@ -357,7 +352,7 @@ Item {
                 QQC2.RadioButton {
                     id: autoFocusButton
                     text: "Auto Focus"
-                    checked: true
+                    checked: appControl.serialControl.focusMode
                     font.pixelSize: 25
 
                     background: Rectangle {
@@ -370,14 +365,14 @@ Item {
                     }
 
                     onClicked: {
-                        appControl.serialControl.autoFocus()
+                        appControl.serialControl.focusMode = autoFocusButton.checked
                     }
                 }
 
                 QQC2.RadioButton {
                     id: manualFocusButton
                     text: "Manual Focus"
-                    checked: false
+                    checked: !appControl.serialControl.focusMode
                     font.pixelSize: 25
 
                     background: Rectangle {
@@ -390,7 +385,7 @@ Item {
                     }
 
                     onClicked: {
-                        appControl.serialControl.manualFocus()
+                        appControl.serialControl.focusMode = autoFocusButton.checked
                     }
                 }
             }

@@ -40,6 +40,7 @@ class SerialControl : public RingQueue
     Q_PROPERTY(quint8 illuminatorBrightnessLevel READ illuminatorBrightnessLevel WRITE setIlluminatorBrightness NOTIFY sigDataChanged)
     Q_PROPERTY(quint8 illuminatorAngleOffset READ illuminatorAngleOffset WRITE setIlluminatorAngleOffset NOTIFY sigDataChanged)
     Q_PROPERTY(bool isConnected READ isConnected NOTIFY sigDataChanged)
+    Q_PROPERTY(bool focusMode READ focusMode WRITE setFocusMode NOTIFY sigDataChanged)
 
 public:
 
@@ -99,8 +100,9 @@ public:
     Q_INVOKABLE void focusFar();
     Q_INVOKABLE void focusNear();
     Q_INVOKABLE void focusStop();
-    Q_INVOKABLE void autoFocus();
-    Q_INVOKABLE void manualFocus();
+//    Q_INVOKABLE void autoFocus();
+//    Q_INVOKABLE void manualFocus();
+    Q_INVOKABLE void setFocusMode(const bool mode);
     Q_INVOKABLE void setZoomSpeed(const quint8 speed);
     Q_INVOKABLE void setFocusSpeed(const quint8 speed);
     Q_INVOKABLE void setFovPosition(const quint16 position);
@@ -229,6 +231,8 @@ public:
     GammaLevel gammaLevel() const;
 
     bool digitalZoom() const;
+
+    bool focusMode() const;
 private:
 
     ///
@@ -250,25 +254,26 @@ private:
 
     QSerialPort *m_serialPort;
 
-    quint8 _zoomSpeed;
-    quint8 _focusSpeed;
-    quint16 _focusPosition;
-    quint16 _fovPosition;
-    quint8 _panTiltSpeed;
-    int _repeatCounter;
+    quint8 m_zoomSpeed;
+    quint8 m_focusSpeed;
+    quint16 m_focusPosition;
+    quint16 m_fovPosition;
+    quint8 m_panTiltSpeed;
+    int m_repeatCounter;
+    bool m_focusMode;
 
-    CameraSelection _selectedCamera = CameraSelection_ContinuousZoom;
-    FilterSelection _selectedFilter = FilterSelection_ColorFilter;
-    DefogMode _defogMode = DefogMode_High;
-    GammaLevel _gammaLevel = GammaLevel_Level1;
-    NoiseReductionMode _noiseReductionMode = NoiseReductionMode_High;
-    bool _isDigitalZoomEnabled = false;
-    bool _isIlluminatorEnabled = false;
-    quint8 _contrastLevel = ContrastLevel_Level2;
-    quint8 _brightnessLevel = 1;
-    quint8 _mode = 1;
-    quint8 _illuminatorBrightness = 0;
-    quint8 _illuminatorAngleOffset = 1;
+    CameraSelection m_selectedCamera;
+    FilterSelection m_selectedFilter;
+    DefogMode m_defogMode;
+    GammaLevel m_gammaLevel;
+    NoiseReductionMode m_noiseReductionMode;
+    bool m_isDigitalZoomEnabled;
+    bool m_isIlluminatorEnabled;
+    quint8 m_contrastLevel;
+    quint8 m_brightnessLevel;
+    quint8 m_mode;
+    quint8 m_illuminatorBrightness;
+    quint8 milluminatorAngleOffset;
 
     quint8 crc8_table[256];
 
@@ -280,8 +285,12 @@ private:
     void sendCommand3(const quint8 &command, const quint16 &param1, const quint16 &param2);
     void sendCommand4(const quint8 &command);
 
+    void autoFocus();
+    void manualFocus();
+
     void init_crc8();
     quint8 crc8(quint8 buf[], quint8 len) const;
+
 
 
 private Q_SLOTS:
