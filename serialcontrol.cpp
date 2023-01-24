@@ -144,79 +144,72 @@ QByteArray SerialControl::interpret(IRQueue<quint8>* queueRead)
             fovValue |= (0x00FF) & (static_cast<quint16>(packet.at(3)));
 
             double fovRealValue = static_cast<double>(fovValue) / 1000.0;
+
+            std::cerr << " fovValue " << fovRealValue << " ";
         }
         // byte 4 and byte 5    => Focus
         {
             quint16 focusValue = 0x0000;
             focusValue |= (0xFF00) & (static_cast<quint16>(packet.at(4)) << 8);
             focusValue |= (0x00FF) & (static_cast<quint16>(packet.at(5)));
+
+            std::cerr << " focusValue " << focusValue << " ";
         }
         // byte 6 and byte 7    => Status
         {
             quint16 statusValue = 0x0000;
-            statusValue |= (0xFF00) & (static_cast<quint16>(packet.at(6)) << 8);
-            statusValue |= (0x00FF) & (static_cast<quint16>(packet.at(7)));
+            statusValue |= (0x00FF) & (static_cast<quint16>(packet.at(6)));
+            statusValue |= (0xFF00) & (static_cast<quint16>(packet.at(7)) << 8);
 
-            quint8 gammaLevel   = 0x0003 & statusValue; // 0000 0000 0000 00XX
-            quint8 noiseLevel   = 0x000C & statusValue; // 0000 0000 0000 XX00
-            quint8 focusMode    = 0x0030 & statusValue; // 0000 0000 00XX 0000
-            quint8 sendingMode  = 0x00C0 & statusValue; // 0000 0000 XX00 0000
+            GammaLevel gammaLevel           = static_cast<GammaLevel>((0x0003 & statusValue));                          // 0000 0000 0000 00XX
+            NoiseReductionMode noiseLevel   = static_cast<NoiseReductionMode>(0x0003 & ((0x000C & statusValue) >> 2));  // 0000 0000 0000 XX00
+            FocusModes focusMode            = static_cast<FocusModes>(0x0003 & ((0x0030 & statusValue) >> 4));          // 0000 0000 00XX 0000
+            SendingModes sendingMode        = static_cast<SendingModes>(0x0003 & ((0x00C0 & statusValue) >> 6));        // 0000 0000 XX00 0000
 
-            quint8 vedioMode    = 0x0300 & statusValue; // 0000 00XX 0000 0000
-            quint8 filtermode   = 0x1C00 & statusValue; // 000X XX00 0000 0000
-            quint8 defogMode    = 0xE000 & statusValue; // XXX0 0000 0000 0000
+            VideoModes vedioMode            = static_cast<VideoModes>(0x0003 & ((0x0300 & statusValue) >> 8));          // 0000 00XX 0000 0000
+            FilterModes filtermode          = static_cast<FilterModes>(0x0007 & ((0x1C00 & statusValue) >> 10));        // 000X XX00 0000 0000
+            DefogMode defogMode             = static_cast<DefogMode>(0x0007 & ((0xE000 & statusValue) >> 13));          // XXX0 0000 0000 0000
+
+            std::cerr << " statusValue " << statusValue << " ";
+            std::cerr << " gammaLevel " << gammaLevel << " ";
+            std::cerr << " noiseLevel " << noiseLevel << " ";
+            std::cerr << " focusMode " << focusMode << " ";
+            std::cerr << " sendingMode " << sendingMode << " ";
+            std::cerr << " vedioMode " << vedioMode << " ";
+            std::cerr << " filtermode " << filtermode << " ";
+            std::cerr << " defogMode " << defogMode << " ";
         }
         // byte 8               => Sensor
         {
-            quint8 sensorValue =
+            SensorValues sensorValue = static_cast<SensorValues>(packet.at(8));
+
+            std::cerr << " sensorValue " << sensorValue << " ";
         }
         // byte 9               => Version
-        // byte 10              => Extra Status
+        {
+            quint8 panelVersion = packet.at(9);
 
+            std::cerr << " panelVersion " << panelVersion << " ";
+        }
+        // byte 10              => Extra Status
+        {
+            if (packet.count() == 13)
+            {
+                quint8 extraStatus = packet.at(10);
+
+                ContrastLevel contrasLevel      = static_cast<ContrastLevel>((0x0003 & extraStatus));                   // 0000 00XX
+                BrightnessLevel brightnessLevel = static_cast<BrightnessLevel>(0x0003 & ((0x000C & extraStatus) >> 2)); // 0000 XX00
+                ModeLevels modeLevel            = static_cast<ModeLevels>(0x0007 & ((0x0700 & extraStatus) >> 4));      // 0XXX 0000
+
+                std::cerr << " contrasLevel " << contrasLevel << " ";
+                std::cerr << " brightnessLevel " << brightnessLevel << " ";
+                std::cerr << " modeLevel " << modeLevel << " ";
+            }
+        }
+
+        std::cerr << std::endl << std::endl;
     }
 
-
-
-
-    //    if (data1 == 0xAA)
-    //    {
-    //        QByteArray byteArray;
-    //        if (!queueRead->dequeue(data2))
-    //        {
-    //         return QByteArray();
-    //        }
-
-    //        if (data2 == 10 ||
-    //                data2 == 11)
-    //        {
-    //            std::cerr << " sjdkfjksadjf " << std::endl;
-    //        }
-    //    }
-
-
-    //    if (data1 == 0x80) {
-    //        quint8 data2;
-    //        if (!queueRead->dequeue(data2))
-    //            return QByteArray();
-
-    //        if (data2 == ReceiveType_ReticlePositionReport)
-    //        {
-    //            std::vector<quint8> arrValidData(10);
-    //            arrValidData[0] = data1;
-    //            arrValidData[1] = data2;
-
-    //            bool state = queueRead->dequeue(arrValidData.data() + 2, 8);
-
-    //            if (state == false)
-    //                return QByteArray();
-
-    //            return QByteArray(reinterpret_cast<const char*>(arrValidData.data()), 10);
-    //        }
-    //        else
-    //        {
-    //            return QByteArray();
-    //        }
-    //    }
     return QByteArray();
 }
 

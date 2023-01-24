@@ -28,7 +28,6 @@ class SerialControl : public RingQueue
 {
     Q_OBJECT
 
-    Q_PROPERTY(quint8 zoomSpeed READ zoomSpeed NOTIFY sigDataChanged)
     Q_PROPERTY(quint8 panTiltSpeed READ panTiltSpeed WRITE setPanTiltSpeed NOTIFY sigDataChanged)
     Q_PROPERTY(quint8 zoomSpeed READ zoomSpeed WRITE setZoomSpeed NOTIFY sigDataChanged)
     Q_PROPERTY(quint8 focusSpeed READ focusSpeed WRITE setFocusSpeed NOTIFY sigDataChanged)
@@ -45,54 +44,112 @@ class SerialControl : public RingQueue
 public:
 
     enum CameraSelection {
-        CameraSelection_ContinuousZoom = 1,
-        CameraSelection_Spotter = 2,
-        CameraSelection_SWIRSpotter = 3
+        CameraSelection_ContinuousZoom  = 1,
+        CameraSelection_Spotter         = 2,
+        CameraSelection_SWIRSpotter     = 3
     };
     Q_ENUM(CameraSelection)
 
     enum FilterSelection {
-        FilterSelection_ColorFilter = 0,
-        FilterSelection_NIRFilter = 1,
-        FilterSelection_LaserFilter = 2
+        FilterSelection_ColorFilter     = 0,
+        FilterSelection_NIRFilter       = 1,
+        FilterSelection_LaserFilter     = 2
     };
     Q_ENUM(FilterSelection)
 
     enum DefogMode {
-        DefogMode_Off = 0,
-        DefogMode_Low = 1,
-        DefogMode_Medium = 2,
-        DefogMode_High = 3
+        DefogMode_Off                   = 0x00,
+        DefogMode_Low                   = 0x01,
+        DefogMode_Medium                = 0x02,
+        DefogMode_High                  = 0x03
     };
     Q_ENUM(DefogMode)
 
     enum GammaLevel {
-        GammaLevel_Level1 = 1,
-        GammaLevel_Level2 = 2,
+        GammaLevel_Level1               = 0x01,
+        GammaLevel_Level2               = 0x02,
     };
     Q_ENUM(GammaLevel)
 
     enum NoiseReductionMode {
-        NoiseReductionMode_Low = 1,
-        NoiseReductionMode_High = 2,
+        NoiseReductionMode_Low          = 0x01,
+        NoiseReductionMode_High         = 0x02,
     };
     Q_ENUM(NoiseReductionMode)
 
+    enum FocusModes
+    {
+        FocusMode_Unknown               = -1,
+        FocusMode_Manual                = 0x01,
+        FocusMode_Auto                  = 0x02
+    };
+    Q_ENUM(FocusModes)
+
+    enum SendingModes
+    {
+        SendingMode_Unknown             = -1,
+        SendingMode_Continouse          = 0x01,
+        SendingMode_Request             = 0x02
+    };
+    Q_ENUM(SendingModes)
+
+    enum VideoModes
+    {
+        VideoMode_Unknown               = -1,
+        VideoMode_WomWoo                = 0x01,
+        VideoMode_Spotter               = 0x02,
+        VideoMode_SWIR_Spotter          = 0x03
+    };
+    Q_ENUM(VideoModes)
+
+    enum FilterModes
+    {
+        FilterMode_Unknown              = -1,
+        FilterMode_Fault                = 0x00,
+        FilterMode_VIS                  = 0x01,
+        FilterMode_NIR                  = 0x02,
+        FilterMode_1064                 = 0x03
+    };
+    Q_ENUM(FilterModes)
+
+    enum SensorValues
+    {
+        SensorValue_Unknown             = -1,
+        SensorValue_Farabin3            = 0x00,
+        SensorValue_Farabin5            = 0x01,
+        SensorValue_Farabin5B           = 0x02,
+        SensorValue_Farabin9            = 0x03,
+        SensorValue_Farabin18           = 0x04,
+        SensorValue_Farabin315          = 0x05,
+        SensorValue_Farabin315i3        = 0x06,
+    };
+    Q_ENUM(SensorValues)
+
     enum ContrastLevel {
-        ContrastLevel_Level1 = 1,
-        ContrastLevel_Level2 = 2,
-        ContrastLevel_Level3 = 3
+        ContrastLevel_Level1            = 0x01,
+        ContrastLevel_Level2            = 0x02,
+        ContrastLevel_Level3            = 0x03
     };
     Q_ENUM(ContrastLevel)
 
     enum BrightnessLevel {
-        BrightnessLevel_Level1 = 1,
-        BrightnessLevel_Level2 = 2,
-        BrightnessLevel_Level3 = 3,
-        BrightnessLevel_Level4 = 4
+        BrightnessLevel_Level1          = 0x00,
+        BrightnessLevel_Level2          = 0x01,
+        BrightnessLevel_Level3          = 0x02,
+        BrightnessLevel_Level4          = 0x03
     };
     Q_ENUM(BrightnessLevel)
 
+    enum ModeLevels
+    {
+        ModeLevel_Unknown               = -1,
+        ModeLevel_Level1                = 0x01,
+        ModeLevel_Level2                = 0x02,
+        ModeLevel_Level3                = 0x03,
+        ModeLevel_Level4                = 0x04,
+        ModeLevel_Level5                = 0x05
+    };
+    Q_ENUM(ModeLevels)
 
     Q_INVOKABLE void zoomIn();
     Q_INVOKABLE void zoomOut();
