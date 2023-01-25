@@ -14,7 +14,10 @@ GamepadController::GamepadController()
     //    connect(m_timer, &QTimer::timeout,
     //            this, &GamepadController::sltTimerFinished);
 
-    initialize();
+    QTimer::singleShot(5000, this, [this]() {
+        initialize();
+    });
+
 }
 
 GamepadController::~GamepadController()
@@ -35,8 +38,10 @@ GamepadController::~GamepadController()
 
 void GamepadController::initialize()
 {
+    qDebug() << " controller -- " << QGamepadManager::instance()->connectedGamepads().count();
     for (auto device : QGamepadManager::instance()->connectedGamepads())
     {
+        qDebug() << " controller loop ";
         if (m_gamepad != Q_NULLPTR)
         {
             delete m_gamepad;
@@ -155,6 +160,8 @@ void GamepadController::removeConnections()
 
 void GamepadController::keyHandler(const GamepadController::Buttons &button, double &value)
 {
+    std::cerr << " game pad key handler " << std::endl;
+    return;
     if (deathBand(button,  value))
     {
         if (m_pressedButtons.indexOf(button) == -1)

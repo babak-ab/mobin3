@@ -13,9 +13,15 @@
 #include <QtGamepad/QGamepadManager>
 
 // **********************************************************************
+// C++ MODULES USED
+// **********************************************************************
+#include <iostream>
+
+// **********************************************************************
 // MODULES USED
 // **********************************************************************
 #include "GamepadController_global.h"
+
 
 ///
 /// \brief third-party module to add gamepad shortcut feature to project

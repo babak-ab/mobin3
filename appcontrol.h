@@ -32,6 +32,8 @@ private:
 //    ButtonModel* _buttonModel;
 
     SerialControl *_serialControl;
+    GamepadController m_gamepad;
+
     bool _isSerialPortOpened;
     QStringList _serialPortList;
 
