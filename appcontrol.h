@@ -14,6 +14,7 @@
 
 #include "buttonmodel.h"
 #include "serialcontrol.h"
+#include "GamepadController.h"
 
 class AppControl : public QObject {
     Q_OBJECT

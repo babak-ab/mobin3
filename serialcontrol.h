@@ -57,6 +57,7 @@ public:
     };
     Q_ENUM(FilterSelection)
 
+<<<<<<< Updated upstream
     enum DefogMode {
         DefogMode_Off                   = 0x00,
         DefogMode_Low                   = 0x01,
@@ -65,6 +66,8 @@ public:
     };
     Q_ENUM(DefogMode)
 
+=======
+>>>>>>> Stashed changes
     enum GammaLevel {
         GammaLevel_Level1               = 0x01,
         GammaLevel_Level2               = 0x02,
@@ -112,6 +115,7 @@ public:
     };
     Q_ENUM(FilterModes)
 
+<<<<<<< Updated upstream
     enum SensorValues
     {
         SensorValue_Unknown             = -1,
@@ -122,6 +126,26 @@ public:
         SensorValue_Farabin18           = 0x04,
         SensorValue_Farabin315          = 0x05,
         SensorValue_Farabin315i3        = 0x06,
+=======
+    enum DefogMode {
+        DefogMode_Off                   = 0x00,
+        DefogMode_Low                   = 0x01,
+        DefogMode_Medium                = 0x02,
+        DefogMode_High                  = 0x03
+    };
+    Q_ENUM(DefogMode)
+
+    enum SensorValues
+    {
+        SensorValue_Unknown             = -1,
+        SensorValue_Farabin3            = 0x01,
+        SensorValue_Farabin5            = 0x02,
+        SensorValue_Farabin5B           = 0x03,
+        SensorValue_Farabin9            = 0x04,
+        SensorValue_Farabin18           = 0x05,
+        SensorValue_Farabin315          = 0x06,
+        SensorValue_Farabin315i3        = 0x07,
+>>>>>>> Stashed changes
     };
     Q_ENUM(SensorValues)
 
@@ -267,8 +291,6 @@ public:
     /// The result
     bool isConnected() const;
 
-
-
     quint8 zoomSpeed() const;
 
     quint8 panTiltSpeed() const;
@@ -290,6 +312,10 @@ public:
     bool digitalZoom() const;
 
     bool focusMode() const;
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 private:
 
     ///
@@ -311,28 +337,54 @@ private:
 
     QSerialPort *m_serialPort;
 
+<<<<<<< Updated upstream
     quint8 m_zoomSpeed;
     quint8 m_focusSpeed;
     quint16 m_focusPosition;
     quint16 m_fovPosition;
+=======
+    quint16 m_fovPosition;
+    quint16 m_focusPosition;
+    quint8 m_zoomSpeed;
+    quint8 m_focusSpeed;
+>>>>>>> Stashed changes
     quint8 m_panTiltSpeed;
     int m_repeatCounter;
     bool m_focusMode;
 
     CameraSelection m_selectedCamera;
     FilterSelection m_selectedFilter;
+<<<<<<< Updated upstream
     DefogMode m_defogMode;
     GammaLevel m_gammaLevel;
     NoiseReductionMode m_noiseReductionMode;
     bool m_isDigitalZoomEnabled;
     bool m_isIlluminatorEnabled;
+=======
+
+    GammaLevel m_gammaLevel;
+    NoiseReductionMode m_noiseReductionMode;
+    DefogMode m_defogMode;
+    SendingModes m_sendingMode; // initialize in constructor
+    VideoModes m_videoMode; // initialize
+    FilterModes m_filterMode; // initialize
+    SensorValues m_sensorValue; // initialize
+>>>>>>> Stashed changes
     quint8 m_contrastLevel;
     quint8 m_brightnessLevel;
     quint8 m_mode;
     quint8 m_illuminatorBrightness;
     quint8 milluminatorAngleOffset;
+<<<<<<< Updated upstream
 
     quint8 crc8_table[256];
+=======
+    quint8 m_crc8_table[256];
+    quint8 m_panelVersion; // initialize
+
+    bool m_isDigitalZoomEnabled;
+    bool m_isIlluminatorEnabled;
+>>>>>>> Stashed changes
 
     // Private Functions
     void writeDataOnPlatformsSerialPort(const QByteArray &data);
@@ -360,7 +412,6 @@ Q_SIGNALS:
     /* platform property event signals */
     void sigWriteData(QByteArray data);
     void sigDataChanged();
-
 };
 
 

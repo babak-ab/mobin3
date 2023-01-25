@@ -119,20 +119,24 @@ QByteArray SerialControl::interpret(IRQueue<quint8>* queueRead)
     {
         quint8 *crcInput = new quint8;
 
-        for (int i = 2; i < lengthByte; i++)
+        for (int i = 2; i < packet.count() - 2; i++)
         {
-            //  std::cerr << packet.toHex().at(2 * i) << packet.toHex().at(2 * i + 1) << " ";
+            std::cerr << packet.toHex().at(2 * i) << packet.toHex().at(2 * i + 1) << " ";
             crcInput[i - 2] = packet.at(i);
         }
+        std::cerr << std::endl;
 
         crcValue = crc8(crcInput, lengthByte - 2);
 
         delete crcInput;
     }
 
-    QByteArray crc(1, crcValue);
+    QByteArray crc(2, 0x00);
+    crc[0] = crcValue;
+    crc[1] = packet.at(10);
 
-    //  std::cerr << "\n" << crc.toHex().toStdString() << std::endl;
+    std::cerr << "CHECKSUM : " << crc.toHex(' ').toStdString() << std::endl;
+
 
     // check first, second and crc bytes
     if (/*crcValue == packet.at(lengthByte)*/ true)
@@ -143,9 +147,13 @@ QByteArray SerialControl::interpret(IRQueue<quint8>* queueRead)
             fovValue |= (0xFF00) & (static_cast<quint16>(packet.at(2)) << 8);
             fovValue |= (0x00FF) & (static_cast<quint16>(packet.at(3)));
 
+<<<<<<< Updated upstream
             double fovRealValue = static_cast<double>(fovValue) / 1000.0;
 
             std::cerr << " fovValue " << fovRealValue << " ";
+=======
+            m_fovPosition = fovValue;
+>>>>>>> Stashed changes
         }
         // byte 4 and byte 5    => Focus
         {
@@ -153,7 +161,11 @@ QByteArray SerialControl::interpret(IRQueue<quint8>* queueRead)
             focusValue |= (0xFF00) & (static_cast<quint16>(packet.at(4)) << 8);
             focusValue |= (0x00FF) & (static_cast<quint16>(packet.at(5)));
 
+<<<<<<< Updated upstream
             std::cerr << " focusValue " << focusValue << " ";
+=======
+            m_focusPosition = focusValue;
+>>>>>>> Stashed changes
         }
         // byte 6 and byte 7    => Status
         {
@@ -166,6 +178,7 @@ QByteArray SerialControl::interpret(IRQueue<quint8>* queueRead)
             FocusModes focusMode            = static_cast<FocusModes>(0x0003 & ((0x0030 & statusValue) >> 4));          // 0000 0000 00XX 0000
             SendingModes sendingMode        = static_cast<SendingModes>(0x0003 & ((0x00C0 & statusValue) >> 6));        // 0000 0000 XX00 0000
 
+<<<<<<< Updated upstream
             VideoModes vedioMode            = static_cast<VideoModes>(0x0003 & ((0x0300 & statusValue) >> 8));          // 0000 00XX 0000 0000
             FilterModes filtermode          = static_cast<FilterModes>(0x0007 & ((0x1C00 & statusValue) >> 10));        // 000X XX00 0000 0000
             DefogMode defogMode             = static_cast<DefogMode>(0x0007 & ((0xE000 & statusValue) >> 13));          // XXX0 0000 0000 0000
@@ -178,16 +191,35 @@ QByteArray SerialControl::interpret(IRQueue<quint8>* queueRead)
             std::cerr << " vedioMode " << vedioMode << " ";
             std::cerr << " filtermode " << filtermode << " ";
             std::cerr << " defogMode " << defogMode << " ";
+=======
+            VideoModes videoMode            = static_cast<VideoModes>(0x0003 & ((0x0300 & statusValue) >> 8));          // 0000 00XX 0000 0000
+            FilterModes filterMode          = static_cast<FilterModes>(0x0007 & ((0x1C00 & statusValue) >> 10));        // 000X XX00 0000 0000
+            DefogMode defogMode             = static_cast<DefogMode>(0x0007 & ((0xE000 & statusValue) >> 13));          // XXX0 0000 0000 0000
+
+            m_gammaLevel = gammaLevel;
+            m_noiseReductionMode = noiseLevel;
+            m_focusMode = focusMode; // boolean
+            m_sendingMode = sendingMode;
+
+            m_videoMode = videoMode;
+            m_filterMode = filterMode;
+            m_defogMode = defogMode;
+>>>>>>> Stashed changes
         }
         // byte 8               => Sensor
         {
             SensorValues sensorValue = static_cast<SensorValues>(packet.at(8));
 
+<<<<<<< Updated upstream
             std::cerr << " sensorValue " << sensorValue << " ";
+=======
+            m_sensorValue = sensorValue;
+>>>>>>> Stashed changes
         }
         // byte 9               => Version
         {
             quint8 panelVersion = packet.at(9);
+<<<<<<< Updated upstream
 
             std::cerr << " panelVersion " << panelVersion << " ";
         }
@@ -208,6 +240,26 @@ QByteArray SerialControl::interpret(IRQueue<quint8>* queueRead)
         }
 
         std::cerr << std::endl << std::endl;
+=======
+
+            m_panelVersion = panelVersion;
+        }
+        // byte 10              => Extra Status
+        {
+            if (packet.count() == 13)
+            {
+                quint8 extraStatus = packet.at(10);
+
+                ContrastLevel contrasLevel      = static_cast<ContrastLevel>((0x0003 & extraStatus));                   // 0000 00XX
+                BrightnessLevel brightnessLevel = static_cast<BrightnessLevel>(0x0003 & ((0x000C & extraStatus) >> 2)); // 0000 XX00
+                ModeLevels modeLevel            = static_cast<ModeLevels>(0x0007 & ((0x0700 & extraStatus) >> 4));      // 0XXX 0000
+
+                m_contrastLevel = contrasLevel;
+                m_brightnessLevel = brightnessLevel;
+                m_mode = modeLevel;
+            }
+        }
+>>>>>>> Stashed changes
     }
 
     return QByteArray();
@@ -307,6 +359,7 @@ int SerialControl::bytesToInt(QByteArray data, int start, int length, bool rever
 
 void SerialControl::sltReadData(QByteArray data)
 {
+    Q_UNUSED(data);
     //    if (static_cast<quint8>(data.at(1) == ReceiveType::ReceiveType_ReticlePositionReport))
     //    {
     //        quint8 data2;
@@ -798,25 +851,38 @@ void SerialControl::init_crc8()
     qint32 k = 0;
     quint8 crc;
 
-    for (quint8 i = 0; i < 255; i++) {
+    for (quint8 i = 0; i < 255; i++)
+    {
         crc = i;
-        for (int j = 0; j < 8; j++) {
+
+        for (int j = 0; j < 8; j++)
+        {
             if ((crc & 0x80) == 0x80)
+            {
                 k = 7;
+            }
             else
+            {
                 k = 0;
+            }
+
             crc = static_cast<quint8>((crc << 1) ^ k);
-            crc8_table[i] = crc & 0xFF;
+
+            m_crc8_table[i] = crc & 0xFF;
         }
     }
 }
 
 quint8 SerialControl::crc8(quint8 buf[], quint8 len) const
 {
-    quint8 crc;
-    crc = 0xFF;
-    for (int i = 0; i < len; i++) {
-        crc = crc8_table[(crc & 0xFF) ^ buf[i]];
+    quint8 crc = 0xFF;
+
+    for (int i = 0; i < len; i++)
+    {
+        crc = m_crc8_table[(crc & 0xFF) ^ buf[i]];
     }
+//    for (quint8 *p = buf; len > 0; ++p, --len)
+//        crc = m_crc8_table[(crc & 0xFF) ^ *p];0
+
     return crc ^ 0xFF;
 }
