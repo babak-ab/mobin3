@@ -252,7 +252,6 @@ ApplicationWindow {
             }
         }
 
-
         Button {
             id: focusNearButton
             icon.source: "qrc:/Images/focus-near.png"

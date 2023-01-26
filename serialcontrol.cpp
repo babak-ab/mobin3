@@ -113,18 +113,14 @@ QByteArray SerialControl::interpret(IRQueue<quint8>* queueRead)
         packet[i] = data;
     }
 
-    std::cerr << packet.toHex(' ').toStdString() << std::endl;
-
     // calculate crc
     {
         quint8 *crcInput = new quint8;
 
         for (int i = 2; i < packet.count() - 2; i++)
         {
-            std::cerr << packet.toHex().at(2 * i) << packet.toHex().at(2 * i + 1) << " ";
             crcInput[i - 2] = packet.at(i);
         }
-        std::cerr << std::endl;
 
         crcValue = crc8(crcInput, lengthByte - 2);
 

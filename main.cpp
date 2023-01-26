@@ -4,11 +4,10 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 
-#include <QGamepad>
-#include <QGamepadManager>
-
 int main(int argc, char* argv[])
 {
+    QGamepadManager *manager = QGamepadManager::instance();
+
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
@@ -35,6 +34,13 @@ int main(int argc, char* argv[])
     engine.load(url);
 
     app.setWindowIcon(QIcon("://Images/Icon.png"));
+
+    qApp->processEvents();
+
+    GamepadController *gamepadController = new GamepadController();
+
+    app_control.setGamepadController(gamepadController);
+
 
     return app.exec();
 }

@@ -32,7 +32,7 @@ private:
 //    ButtonModel* _buttonModel;
 
     SerialControl *_serialControl;
-    GamepadController m_gamepad;
+    GamepadController *m_gamepadController;
 
     bool _isSerialPortOpened;
     QStringList _serialPortList;
@@ -41,6 +41,9 @@ private:
 
     QString _messageTitle;
     QString _messageText;
+
+    void processGamepadCommand(const CommandPacket &packet);
+
 public:
 
     Q_INVOKABLE bool connectToSerialPort();
@@ -55,7 +58,11 @@ public:
 
     SerialControl* serialControl() const;
 
+    void setGamepadController(GamepadController *gamepadController);
+
 private Q_SLOTS:
+    void sltExecuteCommandRequested(const CommandPacket &packet);
+
 
 Q_SIGNALS:
     void signalVideoAdapter();

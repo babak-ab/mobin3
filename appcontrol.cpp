@@ -31,6 +31,83 @@ AppControl::~AppControl()
 {
 }
 
+void AppControl::processGamepadCommand(const CommandPacket &packet)
+{
+    switch (packet.command)
+    {
+    case Command_ZoomIn:
+    {
+        _serialControl->setZoomSpeed(packet.value);
+        _serialControl->zoomIn();
+        break;
+    }
+    case Command_ZoomOut:
+    {
+        _serialControl->setZoomSpeed(packet.value);
+        _serialControl->zoomOut();
+        break;
+    }
+    case Command_ZoomStop:
+    {
+        _serialControl->zoomStop();
+        break;
+    }
+    case Command_FocusFar:
+    {
+        _serialControl->setFocusSpeed(packet.value);
+        _serialControl->focusFar();
+        break;
+    }
+    case Command_FocusNear:
+    {
+        _serialControl->setFocusSpeed(packet.value);
+        _serialControl->focusNear();
+        break;
+    }
+    case Command_FocusStop:
+    {
+        _serialControl->focusStop();
+        break;
+    }
+    case Command_PanLeft:
+    {
+        _serialControl->setPanTiltSpeed(packet.value);
+        _serialControl->panLeft();
+        break;
+    }
+    case Command_PanRight:
+    {
+        _serialControl->setPanTiltSpeed(packet.value);
+        _serialControl->panRight();
+        break;
+    }
+    case Command_PanStop:
+    {
+        _serialControl->panStop();
+        break;
+    }
+    case Command_TiltUp:
+    {
+        _serialControl->setPanTiltSpeed(packet.value);
+        _serialControl->tiltUp();
+        break;
+    }
+    case Command_TiltDown:
+    {
+        _serialControl->setPanTiltSpeed(packet.value);
+        _serialControl->tiltDown();
+        break;
+    }
+    case Command_TiltStop:
+    {
+        _serialControl->tiltStop();
+        break;
+    }
+    default:
+        return;
+    }
+}
+
 void AppControl::setSerialPortName(QString portName)
 {
     _serialPortName = portName;
@@ -95,4 +172,18 @@ QStringList AppControl::serialPortList() const
 SerialControl *AppControl::serialControl() const
 {
     return _serialControl;
+}
+
+void AppControl::setGamepadController(GamepadController *gamepadController)
+{
+    m_gamepadController = gamepadController;
+
+    connect(m_gamepadController, &GamepadController::sigExecuteCommandRequested,
+            this, &AppControl::sltExecuteCommandRequested);
+}
+
+void AppControl::sltExecuteCommandRequested(const CommandPacket &packet)
+{
+    qDebug() << " --------------------------------- gamepad " << packet.command << packet.value;
+    processGamepadCommand(packet);
 }

@@ -22,6 +22,9 @@
 // **********************************************************************
 #include "GamepadController_global.h"
 
+#define DEATH_BAND_VALUE        0.4
+#define THRESHOLD_VALUE         0.1
+#define TIMER_INTERVAL          300
 
 ///
 /// \brief third-party module to add gamepad shortcut feature to project
@@ -65,25 +68,14 @@ private:
     // **********************************************************************
     // PRIVATE ATTRIBUTES DECLARATION
     // **********************************************************************
-    QGamepad *m_gamepad;
-
     enum Buttons
     {
-        //  Unknown = -1,
-
-        Button_VirtualUp,
-        Button_VirtualRight,
-        Button_VirtualDown,
-        Button_VirtualLeft,
-
         Button_RightAxisX,
         Button_RightAxisY,
         Button_RightAxisClick,
 
         Button_LeftAxisX,
         Button_LeftAxisY,
-        Button_LeftAxisMoves,
-
         Button_LeftAxisClick,
 
         Button_A,
@@ -107,20 +99,11 @@ private:
         Button_XBoxHome // Button_Guide
     };
 
-    struct AxisValue
-    {
-        double x;
-        double y;
-    };
+    QGamepad *m_gamepad;
 
-    QList<Buttons> m_pressedButtons;
-    QList<Buttons> m_pressedButtonsFinal;
+    QVector<CommandPacket> m_commandsBuffer;
 
-    AxisValue m_leftAxisValue;
-
-    double m_rtValue;
-
-    bool m_isAutoFocusEnabled;
+    QTimer m_processCommandsTimer;
 
     // **********************************************************************
     // PRIVATE METHODS DECLARATION
@@ -129,18 +112,23 @@ private:
     void removeConnections();
 
     void keyHandler(const Buttons &button, double &value);
-    bool deathBand(const Buttons &button, const double &value);
 
-    void commandCreator();
+    void commandCreator(const GamepadController::Buttons &button,
+                        const double &value);
 
-    bool isBufferContains(const QList<Buttons> &buffer, const Buttons &button) const;
+    bool deathBandMechanism(const GamepadController::Buttons &button,
+                            double &value) const;
 
-    void finalBufferFiller();
+    void checkCommandAndAppendToBuffer(const Commands &command,
+                                       const quint8 &value);
 
-    Buttons virtualButtonDetector(const float &value, const bool &isVertical) const;
+    quint8 analogValueMapper(const GamepadController::Buttons &button,
+                             const double &value);
+
+    void processNextCommand();
 
 Q_SIGNALS:
-    void sigExecuteCommandRequested(const CommandData &commandData);
+    void sigExecuteCommandRequested(const CommandPacket &packet);
 
 private Q_SLOTS:
     // **********************************************************************

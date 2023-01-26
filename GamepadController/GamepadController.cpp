@@ -4,20 +4,16 @@ GamepadController::GamepadController()
 {
     m_gamepad = Q_NULLPTR;
 
-    //    m_command = Commands::Unknown;
+    initialize();
 
-    //    m_timer = new QTimer;
-    //    m_timer->setInterval(50);
+    m_commandsBuffer = QVector<CommandPacket>();
 
-    m_isAutoFocusEnabled = true;
-
-    //    connect(m_timer, &QTimer::timeout,
-    //            this, &GamepadController::sltTimerFinished);
-
-    QTimer::singleShot(5000, this, [this]() {
-        initialize();
+    m_processCommandsTimer.setInterval(TIMER_INTERVAL);
+    connect(&m_processCommandsTimer, &QTimer::timeout,
+            this, [this]()
+    {
+        processNextCommand();
     });
-
 }
 
 GamepadController::~GamepadController()
@@ -29,19 +25,12 @@ GamepadController::~GamepadController()
         delete m_gamepad;
         m_gamepad = Q_NULLPTR;
     }
-    //    if (m_timer != Q_NULLPTR)
-    //    {
-    //        delete m_timer;
-    //        m_timer = Q_NULLPTR;
-    //    }
 }
 
 void GamepadController::initialize()
 {
-    qDebug() << " controller -- " << QGamepadManager::instance()->connectedGamepads().count();
     for (auto device : QGamepadManager::instance()->connectedGamepads())
     {
-        qDebug() << " controller loop ";
         if (m_gamepad != Q_NULLPTR)
         {
             delete m_gamepad;
@@ -73,7 +62,6 @@ void GamepadController::initialConnections()
             this, &GamepadController::sltButtonXChanged);
     connect(m_gamepad, &QGamepad::buttonYChanged,
             this, &GamepadController::sltButtonYChanged);
-
 
     connect(m_gamepad, &QGamepad::buttonStartChanged,
             this, &GamepadController::sltButtonStartChanged);
@@ -160,312 +148,305 @@ void GamepadController::removeConnections()
 
 void GamepadController::keyHandler(const GamepadController::Buttons &button, double &value)
 {
-    std::cerr << " game pad key handler " << std::endl;
-    return;
-    if (deathBand(button,  value))
-    {
-        if (m_pressedButtons.indexOf(button) == -1)
-        {
-            m_pressedButtons.append(button);
-        }
-    }
-    else
-    {
-        if (m_pressedButtons.indexOf(button) != -1)
-        {
-            m_pressedButtons.removeAt(m_pressedButtons.indexOf(button));
-        }
-    }
+    bool shouldHandleCommand = deathBandMechanism(button, value);
 
-    commandCreator();
+    if (shouldHandleCommand == true)
+    {
+        commandCreator(button, value);
+    }
 }
 
-bool GamepadController::deathBand(const Buttons &button,
-                                  const double &value)
+void GamepadController::commandCreator(const GamepadController::Buttons &button,
+                                       const double &value)
 {
-    if (button >= Buttons::Button_VirtualUp &&
-            button <= Buttons::Button_VirtualLeft)
+    Commands command = Commands::Command_Normal;
+
+    switch (button)
     {
-        if (abs(value) > 0.9)
+    case Button_RightAxisX:
+    {
+        if (value > 0)
+        {
+            command = Commands::Command_PanRight;
+        }
+        else if (value < 0)
+        {
+            command = Commands::Command_PanLeft;
+        }
+        else if (value == 0)
+        {
+            command = Commands::Command_PanStop;
+        }
+        break;
+    }
+    case Button_RightAxisY:
+    {
+        if (value > 0)
+        {
+            command = Commands::Command_TiltUp;
+        }
+        else if (value < 0)
+        {
+            command = Commands::Command_TiltDown;
+        }
+        else if (value == 0)
+        {
+            command = Commands::Command_TiltStop;
+        }
+        break;
+    }
+    case Button_RightAxisClick:
+    {
+        break;
+    }
+        // ==============================================
+    case Button_LeftAxisX:
+    {
+        if (value > 0)
+        {
+            command = Commands::Command_FocusNear;
+        }
+        else if (value < 0)
+        {
+            command = Commands::Command_FocusFar;
+        }
+        else if (value == 0)
+        {
+            command = Commands::Command_FocusStop;
+        }
+        break;
+    }
+    case Button_LeftAxisY:
+    {
+        if (value > 0)
+        {
+            command = Commands::Command_ZoomIn;
+        }
+        else if (value < 0)
+        {
+            command = Commands::Command_ZoomOut;
+        }
+        else if (value == 0)
+        {
+            command = Commands::Command_ZoomStop;
+        }
+        break;
+    }
+    case Button_LeftAxisClick:
+    {
+        break;
+    }
+        // ==============================================
+    case Button_A:
+    {
+        break;
+    }
+    case Button_B:
+    {
+        break;
+    }
+    case Button_X:
+    {
+        break;
+    }
+    case Button_Y:
+    {
+        break;
+    }
+        // ==============================================
+    case Button_Up:
+    {
+        break;
+    }
+    case Button_Down:
+    {
+        break;
+    }
+    case Button_Left:
+    {
+        break;
+    }
+    case Button_Right:
+    {
+        break;
+    }
+        // ==============================================
+    case Button_RB:
+    {
+        break;
+    }
+    case Button_RT:
+    {
+        break;
+    }
+        // ==============================================
+    case Button_LB:
+    {
+        break;
+    }
+    case Button_LT:
+    {
+        break;
+    }
+        // ==============================================
+    case Button_Menu:
+    {
+        break;
+    }
+    case Button_ChangeView:
+    {
+        break;
+    }
+    case Button_XBoxHome:
+    {
+        break;
+    }
+    }
+
+    quint8 mappedValue = analogValueMapper(button, value);
+
+    checkCommandAndAppendToBuffer(command, mappedValue);
+
+    if (m_processCommandsTimer.isActive() == false)
+    {
+        m_processCommandsTimer.start();
+    }
+}
+
+bool GamepadController::deathBandMechanism(const GamepadController::Buttons &button,
+                                           double &value) const
+{
+    // death band for analog buttons
+    if (button == GamepadController::Buttons::Button_LeftAxisX ||
+            button == GamepadController::Buttons::Button_LeftAxisY ||
+            button == GamepadController::Buttons::Button_RightAxisX ||
+            button == GamepadController::Buttons::Button_RightAxisY ||
+            button == GamepadController::Buttons::Button_LT ||
+            button == GamepadController::Buttons::Button_RT)
+    {
+        if (qAbs(value) > DEATH_BAND_VALUE)
         {
             return true;
         }
-    }
-    else if (button == Buttons::Button_LT)
-    {
-        if (abs(value) > 0.9)
+        else if (qAbs(value) < (DEATH_BAND_VALUE) &&
+                 qAbs(value) >= (DEATH_BAND_VALUE - THRESHOLD_VALUE))
         {
+            value = 0;
             return true;
         }
-    }
-    else
-    {
-        if (button != Buttons::Button_RT)
+        else if (qAbs(value) < (DEATH_BAND_VALUE - THRESHOLD_VALUE))
         {
-            if (abs(value) > 0.1)
+            return false;
+        }
+    }
+
+    return true;
+}
+
+void GamepadController::checkCommandAndAppendToBuffer(const Commands &command,
+                                                      const quint8 &value)
+{
+    // check last command to prevent repetitive commands
+    if (m_commandsBuffer.isEmpty() == false)
+    {
+        bool isFound = false;
+
+        QVector<CommandPacket> tempVector;
+
+        for (auto item : m_commandsBuffer)
+        {
+            if (item.command == command)
             {
-                return true;
+                if (isFound == false)
+                {
+                    item.value = value;
+
+                    isFound = true;
+                }
+                else
+                {
+                    continue;
+                }
+
+                tempVector.append(item);
             }
         }
-        else
-        {
-            return true;
-        }
-    }
 
-    return false;
-}
 
-void GamepadController::commandCreator()
-{
-    finalBufferFiller();
-
-    CommandData data;
-
-    /*
-    * this code block wil fill, "pan" and "tilt" bytes of oghab's serial data protocol.
-    *
-    * .----------------------------------------------------------------------.
-    * |  header   |    pan    |   tilt   | command 1 | command 2 | checksum  |
-    * `----------------------------------------------------------------------`
-    * `-----------------------------. 6 bytes .------------------------------`
-    *
-    */
-    {
-        if (isBufferContains(m_pressedButtonsFinal, Buttons::Button_LeftAxisMoves))
-        {
-            data.pan = m_leftAxisValue.x;
-            data.tilt = m_leftAxisValue.y;
-        }
-    }
-
-    /*
-    * this code block will fill, "control 1 section of oghab's serial data protocol.
-    *
-    * .---------------------------------------.
-    * |   lrf   | repeat  |  shift  | command |
-    * `---------------------------------------`
-    * | 1 bit   | 1 bit   | 1 bit   | 5 bits  |
-    * `---------------------------------------`
-    * `-------------. control 1 .-------------`
-    *
-    */
-    {
-        /*
-        * this code block will fill, "shift" bit in control 1 section of oghab's serial data protocol.
-        *
-        * .-----------.
-        * |   shift   |
-        * `-----------`
-        *
-        */
-        if (isBufferContains(m_pressedButtonsFinal, Buttons::Button_LT))
-        {
-            data.shift = ShiftButtonStates::ShiftButtonState_Enable;
-        }
-
-        /*
-        * this code block will fill, "command" bits in control 1 section of oghab's serial data protocol.
-        *
-        * .-----------.
-        * |  command  |
-        * `-----------`
-        *
-        */
-        if (isBufferContains(m_pressedButtonsFinal, Buttons::Button_VirtualUp))
-        {
-            data.command1 = Control1_Commands::Control1_Command_ZoomIn;
-        }
-        else if (isBufferContains(m_pressedButtonsFinal, Buttons::Button_VirtualDown))
-        {
-            data.command1 = Control1_Commands::Control1_Command_ZoomOut;
-        }
-        else if (isBufferContains(m_pressedButtonsFinal, Buttons::Button_VirtualRight))
-        {
-            data.command1 = Control1_Commands::Control1_Command_FocusNear;
-        }
-        else if (isBufferContains(m_pressedButtonsFinal, Buttons::Button_VirtualLeft))
-        {
-            data.command1 = Control1_Commands::Control1_Command_FocusFar;
-        }
-        else if (isBufferContains(m_pressedButtonsFinal, Buttons::Button_Left))
-        {
-            data.command1 = Control1_Commands::Control1_Command_GoPreset1;
-        }
-        else if (isBufferContains(m_pressedButtonsFinal, Buttons::Button_Right))
-        {
-            data.command1 = Control1_Commands::Control1_Command_GoPreset2;
-        }
-        else if (isBufferContains(m_pressedButtonsFinal, Buttons::Button_Y))
-        {
-            data.command1 = Control1_Commands::Control1_Command_StopTracking;
-        }
-        else if (isBufferContains(m_pressedButtonsFinal, Buttons::Button_B))
-        {
-            data.command1 = Control1_Commands::Control1_Command_StartTracking;
-        }
-        else if (isBufferContains(m_pressedButtonsFinal, Buttons::Button_RB) &&
-                 isBufferContains(m_pressedButtonsFinal, Buttons::Button_LB))
-        {
-            data.command1 = Control1_Commands::Control1_Command_Measure;
-        }
-        else if (isBufferContains(m_pressedButtonsFinal, Buttons::Button_A))
-        {
-            data.command1 = Control1_Commands::Control1_Command_IR_Polarity1;
-        }
-        else if (isBufferContains(m_pressedButtonsFinal, Buttons::Button_X))
-        {
-            data.command1 = Control1_Commands::Control1_Command_IR_Polarity2;
-        }
-        else if (isBufferContains(m_pressedButtonsFinal, Buttons::Button_Up))
-        {
-            data.command1 = Control1_Commands::Control1_Command_GoZero;
-        }
-        else
-        {
-            data.command1 = Control1_Commands::Control1_Command_Unknown;
-        }
-    }
-
-    /*
-    * this block will fill, control 2 section of oghab's serial data protocol.
-    *
-    * .-------------------------------------------------------.
-    * | camera type |    fine     |   reserve   | search type |
-    * `-------------------------------------------------------`
-    * | 1 bit       | 3 bits      | 1 bit       | 3 bits      |
-    * `-------------------------------------------------------`
-    * `---------------------. control 2 .---------------------`
-    *
-    */
-    {
-
-        /*
-         *
-         * this condition will fill "camera type" bit in control 2 section of oghab's serial data protocol.
-         *
-         * .-------------.
-         * | camera type |
-         * `-------------`
-         *
-        */
-        if (isBufferContains(m_pressedButtonsFinal, Buttons::Button_Down))
-        {
-            data.switchCamera = true;
-        }
-
-        /*
-         *
-         * this condition will fill "fine" bits in control 2 section of oghab's serial data protocol.
-         *
-         * .-------------.
-         * |    fine     |
-         * `-------------`
-         *
-        */
-        if (isBufferContains(m_pressedButtonsFinal, Buttons::Button_RT))
-        {
-            int value;
-            value = static_cast<int>((m_rtValue * 30) / 6);
-
-            data.fine = Fine(value);
-        }
-    }
-
-    Q_EMIT sigExecuteCommandRequested(data);
-}
-
-bool GamepadController::isBufferContains(const QList<Buttons> &buffer,
-                                         const GamepadController::Buttons &button) const
-{
-    if (buffer.indexOf(button) == -1)
-    {
-        return false;
+        m_commandsBuffer = tempVector;
+        qDebug() << " temp " << tempVector.count() << " " << m_commandsBuffer.count();
     }
     else
     {
-        return true;
+        m_commandsBuffer.append(CommandPacket(command, value));
     }
+
 }
 
-void GamepadController::finalBufferFiller()
+quint8 GamepadController::analogValueMapper(const GamepadController::Buttons &button,
+                                            const double &value)
 {
-    m_pressedButtonsFinal.clear();
-
-    for (auto key : m_pressedButtons)
+    // death band for analog buttons
+    if (button == GamepadController::Buttons::Button_LeftAxisX ||
+            button == GamepadController::Buttons::Button_LeftAxisY ||
+            button == GamepadController::Buttons::Button_RightAxisX ||
+            button == GamepadController::Buttons::Button_RightAxisY ||
+            button == GamepadController::Buttons::Button_LT ||
+            button == GamepadController::Buttons::Button_RT)
     {
-        if (key == Buttons::Button_LeftAxisX || key == Buttons::Button_LeftAxisY)
+        if (qAbs(value) > DEATH_BAND_VALUE)
         {
-            if (!isBufferContains(m_pressedButtonsFinal, Buttons::Button_LeftAxisMoves))
-            {
-                m_pressedButtonsFinal.append(Buttons::Button_LeftAxisMoves);
-            }
+            // value range is between 0.4 ~ 1.0
+            // and, this code will change range
+            // to between 0 ~ 255
+            // using this formula:
+            // m = ([255 / (1.0 - 0.4)] / 10)
+            // newValue = (value - 0.4) * 10 * m -> (value - 0.4) * [(255 * 10) / 6]
+            return static_cast<quint8>(qRound((qAbs(value) - DEATH_BAND_VALUE) * ((255 * 10) / 6)));
         }
         else
         {
-            m_pressedButtonsFinal.append(key);
-        }
-    }
-}
-
-GamepadController::Buttons GamepadController::virtualButtonDetector(const float &value, const bool &isVertical) const
-{
-    if (isVertical)
-    {
-        if (value < 0.0)
-        {
-            return Buttons::Button_VirtualUp;
-        }
-        else
-        {
-            return Buttons::Button_VirtualDown;
+            return static_cast<quint8>(0);
         }
     }
     else
     {
-        if (value > 0.0)
-        {
-            return Buttons::Button_VirtualRight;
-        }
-        else
-        {
-            return Buttons::Button_VirtualLeft;
-        }
+        return static_cast<quint8>(value);
+    }
+}
+
+void GamepadController::processNextCommand()
+{
+    if (m_commandsBuffer.isEmpty() == false)
+    {
+        CommandPacket packet = m_commandsBuffer.takeFirst();
+
+        Q_EMIT sigExecuteCommandRequested(packet);
+    }
+    else
+    {
+        m_processCommandsTimer.stop();
     }
 }
 
 void GamepadController::sltAxisLeftXChanged(double value)
 {
-    m_leftAxisValue.x = value;
-    keyHandler(GamepadController::Buttons::Button_LeftAxisX, m_leftAxisValue.x);
+    keyHandler(GamepadController::Buttons::Button_LeftAxisX, value);
 }
 
 void GamepadController::sltAxisLeftYChanged(double value)
 {
-    m_leftAxisValue.y = value;
-    keyHandler(GamepadController::Buttons::Button_LeftAxisY, m_leftAxisValue.y);
+    keyHandler(GamepadController::Buttons::Button_LeftAxisY, value);
 }
 
 void GamepadController::sltAxisRightXChanged(double value)
 {   
-    if (value != 0.0)
-    {
-        Buttons button;
-        button = virtualButtonDetector(value, false);
-
-        keyHandler(button, value);
-    }
+    keyHandler(GamepadController::Buttons::Button_RightAxisX, value);
 }
 
 void GamepadController::sltAxisRightYChanged(double value)
 {    
-    if (value != 0.0)
-    {
-        Buttons button;
-        button = virtualButtonDetector(value, true);
-
-        keyHandler(button, value);
-    }
+    keyHandler(GamepadController::Buttons::Button_RightAxisY, value);
 }
 
 void GamepadController::sltButtonAChanged(bool value)
@@ -555,9 +536,7 @@ void GamepadController::sltButtonR1Changed(bool value)
 
 void GamepadController::sltButtonR2Changed(double value)
 {
-    m_rtValue = value;
-
-    keyHandler(GamepadController::Buttons::Button_RT, m_rtValue);
+    keyHandler(GamepadController::Buttons::Button_RT, value);
 }
 
 void GamepadController::sltButtonR3Changed(bool value)
@@ -600,12 +579,3 @@ void GamepadController::sltButtonLeftChanged(bool value)
     keyHandler(GamepadController::Buttons::Button_Left, val);
 }
 
-//void GamepadController::sltTimerFinished()
-//{
-//    Q_EMIT sigExecuteCommandRequested(m_command, m_arg);
-
-//    if (m_command == Commands::Unknown)
-//    {
-//        m_timer->stop();
-//    }
-//}
