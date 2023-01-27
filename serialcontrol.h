@@ -28,7 +28,6 @@ class SerialControl : public RingQueue
 {
     Q_OBJECT
 
-    Q_PROPERTY(quint8 zoomSpeed READ zoomSpeed NOTIFY sigDataChanged)
     Q_PROPERTY(quint8 panTiltSpeed READ panTiltSpeed WRITE setPanTiltSpeed NOTIFY sigDataChanged)
     Q_PROPERTY(quint8 zoomSpeed READ zoomSpeed WRITE setZoomSpeed NOTIFY sigDataChanged)
     Q_PROPERTY(quint8 focusSpeed READ focusSpeed WRITE setFocusSpeed NOTIFY sigDataChanged)

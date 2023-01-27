@@ -43,5 +43,4 @@ HEADERS += \
     buttonmodel.h \
     serialcontrol.h
 
-DISTFILES += \
-    CustomButton.qml
+DISTFILES +=

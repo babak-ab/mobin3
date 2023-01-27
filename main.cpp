@@ -6,8 +6,6 @@
 
 int main(int argc, char* argv[])
 {
-    QGamepadManager *manager = QGamepadManager::instance();
-
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);

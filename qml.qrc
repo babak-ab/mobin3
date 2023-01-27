@@ -4,7 +4,6 @@
         <file>qtquickcontrols2.conf</file>
         <file>ContactModel.qml</file>
         <file>VideoRender.qml</file>
-        <file>CustomButton.qml</file>
         <file>Images/menu-icon.png</file>
         <file>content/AndroidDelegate.qml</file>
         <file>content/SendingMode.qml</file>
