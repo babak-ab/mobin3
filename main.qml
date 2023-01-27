@@ -3,6 +3,7 @@ import QtQuick.Window 2.12
 import QtQuick.Controls 2.14
 import QtQuick.Layouts 1.14
 import AppControl 1.0
+import SerialControl 1.0
 import QtMultimedia 5.12
 import "content"
 
@@ -105,17 +106,144 @@ ApplicationWindow {
         }
     }
 
-    Column {
-        anchors.fill: parent
+    Row {
+        spacing: 50
+//        anchors.fill: parent
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.margins: 15
+
+        Text {
+            text: "FOV: " + appControl.serialControl.fovPosition / 1000 + " °"
+            font.family: "Helvetica"
+            font.pointSize: 15
+            color: "white"
+            style: Text.Outline;
+            styleColor: "black"
+        }
+
+        GroupBox {
+            background: Rectangle {
+                implicitWidth: 20
+                implicitHeight: 20
+                color: "black"
+                opacity: 0.5
+                radius: 5
+                border.color: "white"
+            }
+
+            Row {
+                spacing: 10
+
+                Text {
+                    text: "Ratio:  " + appControl.serialControl.illuminatorAngleOffset / 10.0
+                    font.family: "Helvetica"
+                    font.pointSize: 12
+                    color: "white"
+                    style: Text.Outline;
+                    styleColor: "black"
+                }
+
+                Slider {
+                    id: angleOffsetSlider
+                    anchors.margins: 10
+                    //anchors.topMargin: 10
+                    value: appControl.serialControl.illuminatorAngleOffset
+                    from: 1
+                    to: 20
+
+                    onValueChanged: {
+                        if (angleOffsetSlider.value !== appControl.serialControl.illuminatorAngleOffset)
+                            appControl.serialControl.setIlluminatorAngleOffset(
+                                        angleOffsetSlider.value)
+                    }
+                }
+            }
+        }
+
+        GroupBox {
+            font.pixelSize: 20
+
+//            label: Label {
+//                text: "Camera: "
+//                color: "White"
+//                elide: Text.ElideRight
+//                style: Text.Outline;
+//                styleColor: "black"
+//            }
+
+            background: Rectangle {
+                implicitWidth: 60
+                implicitHeight: 40
+                color: "black"
+                opacity: 0.5
+                radius: 5
+                border.color: "white"
+            }
+
+            Row {
+                spacing: 15
+
+//                Text {
+//                    text: "Camera:  "
+//                    font.family: "Helvetica"
+//                    font.pointSize: 15
+//                    color: "white"
+//                    style: Text.Outline;
+//                    styleColor: "black"
+//                }
+
+                RadioButton {
+                    id: continuousZoom
+                    text: "Cont. Zoom"
+                    checked: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_ContinuousZoom
+                    font.pixelSize: 15
+
+                    background: Rectangle {
+                        implicitWidth: 60
+                        implicitHeight: 40
+                        color: continuousZoom.checked ? "red" : "gray"
+                        opacity: 0.5
+                        radius: 5
+                        border.color: "white"
+                    }
+
+                    onClicked: {
+                        appControl.serialControl.setSelectedCamera(
+                                    SerialControl.CameraSelection_ContinuousZoom)
+                    }
+                }
+
+                RadioButton {
+                    id: spotter
+                    text: "Spotter"
+                    checked: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_Spotter
+                    font.pixelSize: 15
+
+                    background: Rectangle {
+                        implicitWidth: 60
+                        implicitHeight: 40
+                        color: spotter.checked ? "red" : "gray"
+                        opacity: 0.5
+                        radius: 5
+                        border.color: "white"
+                    }
+
+                    onClicked: {
+                        appControl.serialControl.setSelectedCamera(
+                                    SerialControl.CameraSelection_Spotter)
+                    }
+                }
+            }
+        }
+
+
         Button {
             id: recordButton
             icon.source: "qrc:/Images/record-icon.png"
             icon.color: "white"
             icon.height: 60
             icon.width: 60
-            anchors.top: parent.top
-            anchors.right: parent.right
-            anchors.margins: 15
 
             checkable: true
             highlighted: checked
@@ -139,40 +267,6 @@ ApplicationWindow {
                 }
             }
         }
-
-
-
-        //        Button {
-        //            id: testButton
-        //            contentItem: Text {
-        //                text: "Zoom In"
-        //                color: "white"
-        //                opacity: 1.0
-        //                horizontalAlignment: Text.AlignHCenter
-        //                verticalAlignment: Text.AlignVCenter
-        //                font.pixelSize: 25
-        //                font.bold: true
-        //                elide: Text.ElideRight
-        //            }
-
-        //            background: Rectangle {
-        //                implicitWidth: 180
-        //                implicitHeight: 60
-        //                color: zoomInButton.down ? "red" : "black"
-        //                opacity: 0.5
-        //                radius: 5
-        //                border.color: "white"
-        //            }
-
-        //            onPressed: {
-        //                appControl.serialControl.zoomIn()
-        //            }
-
-        //            onReleased: {
-        //                appControl.serialControl.zoomStop()
-        //            }
-        //        }
-
     }
 
     ButtonGroup {
@@ -187,6 +281,73 @@ ApplicationWindow {
         anchors.bottom: parent.bottom
         anchors.right: parent.right
         anchors.margins: 15
+
+
+        GroupBox {
+            font.pixelSize: 20
+            anchors.margins: 0
+
+//            label: Label {
+//                text: " Focus: "
+//                color: "White"
+//                elide: Text.ElideRight
+//                style: Text.Outline;
+//                styleColor: "black"
+//            }
+
+            background: Rectangle {
+                implicitWidth: 40
+                implicitHeight: 40
+                color: "black"
+                opacity: 0.5
+                radius: 5
+                border.color: "white"
+            }
+
+            Column {
+                spacing: 10
+
+                RadioButton {
+                    id: autoFocusButton
+                    text: "AF"
+                    checked: appControl.serialControl.focusMode
+                    font.pixelSize: 15
+
+                    background: Rectangle {
+                        implicitWidth: 40
+                        implicitHeight: 40
+                        color: autoFocusButton.checked ? "red" : "gray"
+                        opacity: 0.5
+                        radius: 5
+                        border.color: "white"
+                    }
+
+                    onClicked: {
+                        appControl.serialControl.setFocusMode(autoFocusButton.checked)
+                    }
+                }
+
+                RadioButton {
+                    id: manualFocusButton
+                    text: "MF"
+                    checked: !appControl.serialControl.focusMode
+                    font.pixelSize: 15
+
+                    background: Rectangle {
+                        implicitWidth: 40
+                        implicitHeight: 40
+                        color: manualFocusButton.checked ? "red" : "gray"
+                        opacity: 0.5
+                        radius: 5
+                        border.color: "white"
+                    }
+
+                    onClicked: {
+                        appControl.serialControl.setFocusMode(autoFocusButton.checked)
+                    }
+                }
+            }
+        }
 
         Button {
             id: zoomInButton
@@ -359,28 +520,6 @@ ApplicationWindow {
 
     }
 
-    Repeater {
-        model: appControl.buttonModel
-        CustomButton {
-            id: control
-            _point: pos
-            _text: name
-            _checked: check
-            _visible: model.visible
-
-            MouseArea {
-                anchors.fill: parent
-                propagateComposedEvents: false
-                onPressed: {
-                    model.pressed = true
-                }
-                onReleased: {
-                    model.pressed = false
-                }
-            }
-        }
-    }
-
     ListModel {
         id: pageModel
         ListElement {
@@ -423,6 +562,7 @@ ApplicationWindow {
             title: "Connections"
             page: "content/Connections.qml"
         }
+
     }
 
     StackView {

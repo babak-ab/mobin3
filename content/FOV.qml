@@ -55,8 +55,6 @@ import QtQuick.Controls 2.3 as QQC2
 import QtQuick.Controls 1.2 as QQC1
 
 Item {
-    width: parent.width
-    height: parent.height
 
     property real progress: 0
     SequentialAnimation on progress {
@@ -87,33 +85,16 @@ Item {
         }
 
         Row {
+
             spacing: 25
-            QQC2.Button {
-                id: gotoFovButton
-                contentItem: Text {
-                    text: "Goto FOV"
-                    color: "white"
-                    opacity: 1.0
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    font.pixelSize: 25
-                    font.bold: true
-                    elide: Text.ElideRight
-                }
 
-                background: Rectangle {
-                    implicitWidth: 180
-                    implicitHeight: 60
-                    color: gotoFovButton.down ? "red" : "black"
-                    opacity: 0.5
-                    radius: 5
-                    border.color: "white"
-                }
-
-                onReleased: {
-                    appControl.serialControl.gotoFov(
-                                gotoFovSlider.value)
-                }
+            Text {
+                text: "FOV:  " + appControl.serialControl.fovPosition / 1000 + " °"
+                font.family: "Helvetica"
+                font.pointSize: 15
+                color: "white"
+                style: Text.Outline;
+                styleColor: "black"
             }
 
             QQC1.Slider {
@@ -127,39 +108,24 @@ Item {
                 maximumValue: 65535
 
                 onValueChanged: {
-                    appControl.serialControl.fovPosition = gotoFovSlider.value
+                    if (gotoFovSlider.value !== appControl.serialControl.fovPosition) {
+                        appControl.serialControl.gotoFov(
+                                    gotoFovSlider.value)
+                    }
                 }
             }
         }
 
         Row {
             spacing: 25
-            QQC2.Button {
-                id: gotoFocusButton
-                contentItem: Text {
-                    text: "Goto Focus"
-                    color: "white"
-                    opacity: 1.0
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    font.pixelSize: 25
-                    font.bold: true
-                    elide: Text.ElideRight
-                }
 
-                background: Rectangle {
-                    implicitWidth: 180
-                    implicitHeight: 60
-                    color: gotoFocusButton.down ? "red" : "black"
-                    opacity: 0.5
-                    radius: 5
-                    border.color: "white"
-                }
-
-                onReleased: {
-                    appControl.serialControl.gotoFocus(
-                                gotoFocusSlider.value)
-                }
+            Text {
+                text: "Focus:  " + appControl.serialControl.focusPosition
+                font.family: "Helvetica"
+                font.pointSize: 15
+                color: "white"
+                style: Text.Outline;
+                styleColor: "black"
             }
 
             QQC1.Slider {
@@ -173,37 +139,11 @@ Item {
                 maximumValue: 65535
 
                 onValueChanged: {
-                    appControl.serialControl.focusPosition = gotoFocusSlider.value
+                    if (gotoFocusSlider.value !== appControl.serialControl.focusPosition) {
+                        appControl.serialControl.gotoFocus(
+                                    gotoFocusSlider.value)
+                    }
                 }
-            }
-        }
-
-        QQC2.Button {
-            id: gotoFovFocusButton
-            contentItem: Text {
-                text: "Goto FOV & Focus"
-                color: "white"
-                opacity: 1.0
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                font.pixelSize: 25
-                font.bold: true
-                elide: Text.ElideRight
-            }
-
-            background: Rectangle {
-                implicitWidth: 180
-                implicitHeight: 60
-                color: gotoFovFocusButton.down ? "red" : "black"
-                opacity: 0.5
-                radius: 5
-                border.color: "white"
-            }
-
-            onReleased: {
-                appControl.serialControl.gotoFovFocus(
-                            gotoFovSlider.value,
-                            gotoFocusSlider.value)
             }
         }
 
@@ -234,9 +174,10 @@ Item {
                     from: 1
                     to: 100
                     value: 1
+                    editable: true
 
                     background: Rectangle {
-                        implicitWidth: 100
+                        implicitWidth: 150
                         implicitHeight: 60
                         color: "gray"
                         opacity: 0.5

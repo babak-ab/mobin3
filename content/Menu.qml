@@ -55,8 +55,8 @@ import QtQuick.Controls 2.3 as QQC2
 import QtQuick.Controls 1.4 as QQC1
 
 Item {
-    width: parent.width
-    height: parent.height
+//    width: parent.width
+//    height: parent.height
 
     property real progress: 0
     SequentialAnimation on progress {
@@ -141,7 +141,7 @@ Item {
 
             Column {
                 id: column
-                anchors.verticalCenter: column.verticalCenter
+                //anchors.verticalCenter: column.verticalCenter
                 QQC2.Button {
                     id: menuButton
                     text: "Menu"

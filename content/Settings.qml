@@ -55,8 +55,6 @@ import QtQuick.Controls 2.3 as QQC2
 import QtQuick.Controls 1.4 as QQC1
 
 Item {
-    width: parent.width
-    height: parent.height
 
     property real progress: 0
     SequentialAnimation on progress {
@@ -106,35 +104,37 @@ Item {
                 border.color: "white"
             }
 
-        QQC2.SpinBox {
-            id: defogSpinbox
-            from: 0
-            to: items.length - 1
-            value: 3 // "high"
+            QQC2.SpinBox {
+                id: defogSpinbox
+                from: 0
+                to: items.length - 1
+                value: appControl.serialControl.defogMode
 
-            property var items: ["Off", "Low", "Medium", "High"]
+                property var items: ["Off", "Low", "Medium", "High"]
 
-            validator: RegExpValidator {
-                regExp: new RegExp("(Off|Low|Medium|High)", "i")
-            }
-
-            textFromValue: function(value) {
-                return items[value];
-            }
-
-            valueFromText: function(text) {
-                for (var i = 0; i < items.length; ++i) {
-                    if (items[i].toLowerCase().indexOf(text.toLowerCase()) === 0)
-                        return i
+                validator: RegExpValidator {
+                    regExp: new RegExp("(Off|Low|Medium|High)", "i")
                 }
-                return sb.value
-            }
 
-            onValueChanged: {
-                appControl.serialControl.setDefogMode(
-                defogSpinbox.value)
+                textFromValue: function(value) {
+                    return items[value];
+                }
+
+                valueFromText: function(text) {
+                    for (var i = 0; i < items.length; ++i) {
+                        if (items[i].toLowerCase().indexOf(text.toLowerCase()) === 0)
+                            return i
+                    }
+                    return sb.value
+                }
+
+                onValueChanged: {
+                    if (defogSpinbox.value !== appControl.serialControl.defogMode) {
+                        appControl.serialControl.setDefogMode(
+                                    defogSpinbox.value)
+                    }
+                }
             }
-        }
         }
 
         QQC2.GroupBox {
@@ -157,35 +157,37 @@ Item {
                 border.color: "white"
             }
 
-        QQC2.SpinBox {
-            id: gamaSpinbox
-            from: 0
-            to: items.length - 1
-            value: 0 // "high"
+            QQC2.SpinBox {
+                id: gamaSpinbox
+                from: 0
+                to: items.length - 1
+                value: appControl.serialControl.gammaLevel
 
-            property var items: ["Level 1", "Level 2"]
+                property var items: ["Level 1", "Level 2"]
 
-            validator: RegExpValidator {
-                regExp: new RegExp("(Level 1|Level 2)", "i")
-            }
-
-            textFromValue: function(value) {
-                return items[value];
-            }
-
-            valueFromText: function(text) {
-                for (var i = 0; i < items.length; ++i) {
-                    if (items[i].toLowerCase().indexOf(text.toLowerCase()) === 0)
-                        return i
+                validator: RegExpValidator {
+                    regExp: new RegExp("(Level 1|Level 2)", "i")
                 }
-                return sb.value
-            }
 
-            onValueChanged: {
-                appControl.serialControl.setGammaLevel(
-                gamaSpinbox.value)
+                textFromValue: function(value) {
+                    return items[value];
+                }
+
+                valueFromText: function(text) {
+                    for (var i = 0; i < items.length; ++i) {
+                        if (items[i].toLowerCase().indexOf(text.toLowerCase()) === 0)
+                            return i
+                    }
+                    return sb.value
+                }
+
+                onValueChanged: {
+                    if (gamaSpinbox.value !== appControl.serialControl.gammaLevel) {
+                        appControl.serialControl.setGammaLevel(
+                                    gamaSpinbox.value)
+                    }
+                }
             }
-        }
         }
 
         QQC2.GroupBox {
@@ -208,35 +210,37 @@ Item {
                 border.color: "white"
             }
 
-        QQC2.SpinBox {
-            id: noiseReductionSpinbox
-            from: 0
-            to: items.length - 1
-            value: 3 // "high"
+            QQC2.SpinBox {
+                id: noiseReductionSpinbox
+                from: 0
+                to: items.length - 1
+                value: appControl.serialControl.noiseReductionMode
 
-            property var items: ["Low", "High"]
+                property var items: ["Low", "High"]
 
-            validator: RegExpValidator {
-                regExp: new RegExp("(Low|High)", "i")
-            }
-
-            textFromValue: function(value) {
-                return items[value];
-            }
-
-            valueFromText: function(text) {
-                for (var i = 0; i < items.length; ++i) {
-                    if (items[i].toLowerCase().indexOf(text.toLowerCase()) === 0)
-                        return i
+                validator: RegExpValidator {
+                    regExp: new RegExp("(Low|High)", "i")
                 }
-                return sb.value
-            }
 
-            onValueChanged: {
-                appControl.serialControl.setNoiseReductionMode(
-                noiseReductionSpinbox.value)
+                textFromValue: function(value) {
+                    return items[value];
+                }
+
+                valueFromText: function(text) {
+                    for (var i = 0; i < items.length; ++i) {
+                        if (items[i].toLowerCase().indexOf(text.toLowerCase()) === 0)
+                            return i
+                    }
+                    return sb.value
+                }
+
+                onValueChanged: {
+                    if (noiseReductionSpinbox.value !== appControl.serialControl.noiseReductionMode) {
+                        appControl.serialControl.setNoiseReductionMode(
+                                    noiseReductionSpinbox.value)
+                    }
+                }
             }
-        }
         }
 
         QQC2.GroupBox {
@@ -262,10 +266,13 @@ Item {
             QQC1.Switch {
                 id: digitalZoomSwitch
                 style: switchStyle
+                checked: appControl.serialControl.digitalZoom
 
                 onCheckedChanged: {
-                    appControl.serialControl.enableDigitalZoom(
-                                digitalZoomSwitch.checked)
+                    if (digitalZoomSwitch.checked !== appControl.serialControl.digitalZoom) {
+                        appControl.serialControl.enableDigitalZoom(
+                                    digitalZoomSwitch.checked)
+                    }
                 }
             }
         }

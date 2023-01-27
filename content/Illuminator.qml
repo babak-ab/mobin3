@@ -55,8 +55,6 @@ import QtQuick.Controls 2.3 as QQC2
 import QtQuick.Controls 1.2 as QQC1
 
 Item {
-    width: parent.width
-    height: parent.height
 
     property real progress: 0
     SequentialAnimation on progress {
@@ -89,7 +87,7 @@ Item {
         Row {
             spacing: 25
             Text {
-                text: "Illuminator: "
+                text: "Illuminator Power: "
                 font.family: "Helvetica"
                 font.pointSize: 15
                 color: "white"
@@ -100,56 +98,65 @@ Item {
             QQC1.Switch {
                 id: illuminatorOnOffSwitch
                 style: switchStyle
+                checked: appControl.serialControl.illuminator
 
                 onCheckedChanged: {
-                    appControl.serialControl.enableIlluminator(
-                                illuminatorOnOffSwitch.checked)
+                    if (illuminatorOnOffSwitch.checked !== appControl.serialControl.illuminator) {
+                        appControl.serialControl.enableIlluminator(
+                                    illuminatorOnOffSwitch.checked)
+                    }
                 }
             }
         }
 
-        Row {
-            spacing: 25
-            QQC2.Button {
-                id: setBrightnessButton
-                contentItem: Text {
-                    text: "Set Brightness"
-                    color: "white"
-                    opacity: 1.0
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    font.pixelSize: 25
-                    font.bold: true
-                    elide: Text.ElideRight
-                }
+        QQC2.GroupBox {
+            font.pixelSize: 25
 
-                background: Rectangle {
-                    implicitWidth: 180
-                    implicitHeight: 60
-                    color: setBrightnessButton.down ? "red" : "black"
-                    opacity: 0.5
-                    radius: 5
-                    border.color: "white"
-                }
-
-                onReleased: {
-                    appControl.serialControl.setIlluminatorBrightness(
-                                brightnessSlider.value)
-                }
+            label: QQC2.Label {
+                text: " Illuminator Brightness: "
+                color: "white"
+                elide: Text.ElideRight
+                style: Text.Outline;
+                styleColor: "black"
             }
 
-            QQC1.Slider {
-                id: brightnessSlider
-                anchors.margins: 20
-                anchors.topMargin: 50
-                style: sliderTouchStyle
-                value: appControl.serialControl.illuminatorBrightnessLevel
-                updateValueWhileDragging: false
-                minimumValue: 0
-                maximumValue: 255
+            background: Rectangle {
+                implicitWidth: 80
+                implicitHeight: 60
+                color: "black"
+                opacity: 0.5
+                radius: 5
+                border.color: "white"
+            }
 
-                onValueChanged: {
-                    appControl.serialControl.illuminatorBrightnessLevel = brightnessSlider.value
+            Column {
+                spacing: 20
+
+                Text {
+                    text: "Brightness:  " + appControl.serialControl.illuminatorBrightnessLevel
+                    font.family: "Helvetica"
+                    font.pointSize: 15
+                    color: "white"
+                    style: Text.Outline;
+                    styleColor: "black"
+                }
+
+                QQC1.Slider {
+                    id: brightnessSlider
+                    anchors.margins: 20
+                    anchors.topMargin: 50
+                    style: sliderTouchStyle
+                    value: appControl.serialControl.illuminatorBrightnessLevel
+                    updateValueWhileDragging: false
+                    minimumValue: 0
+                    maximumValue: 255
+
+                    onValueChanged: {
+                        if (brightnessSlider.value !== appControl.serialControl.illuminatorBrightnessLevel) {
+                            appControl.serialControl.setIlluminatorBrightness(
+                                        brightnessSlider.value)
+                        }
+                    }
                 }
             }
         }
@@ -211,48 +218,53 @@ Item {
             }
         }
 
-        Row {
-            spacing: 25
-            QQC2.Button {
-                id: setAngleOffsetButton
-                contentItem: Text {
-                    text: "Set Angle Offset"
-                    color: "white"
-                    opacity: 1.0
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    font.pixelSize: 25
-                    font.bold: true
-                    elide: Text.ElideRight
-                }
+        QQC2.GroupBox {
+            font.pixelSize: 25
 
-                background: Rectangle {
-                    implicitWidth: 180
-                    implicitHeight: 60
-                    color: setAngleOffsetButton.down ? "red" : "black"
-                    opacity: 0.5
-                    radius: 5
-                    border.color: "white"
-                }
-
-                onReleased: {
-                    appControl.serialControl.setIlluminatorAngleOffset(
-                                angleOffsetSlider.value)
-                }
+            label: QQC2.Label {
+                text: " Angle Ratio of the Illuminator: "
+                color: "white"
+                elide: Text.ElideRight
+                style: Text.Outline;
+                styleColor: "black"
             }
 
-            QQC1.Slider {
-                id: angleOffsetSlider
-                anchors.margins: 20
-                anchors.topMargin: 50
-                style: sliderTouchStyle
-                value: appControl.serialControl.illuminatorAngleOffset
-                updateValueWhileDragging: false
-                minimumValue: 1
-                maximumValue: 20
+            background: Rectangle {
+                implicitWidth: 80
+                implicitHeight: 60
+                color: "black"
+                opacity: 0.5
+                radius: 5
+                border.color: "white"
+            }
 
-                onValueChanged: {
-                    appControl.serialControl.illuminatorAngleOffset = angleOffsetSlider.value
+            Column {
+                spacing: 20
+
+                Text {
+                    text: "Ratio:  " + appControl.serialControl.illuminatorAngleOffset / 10.0
+                    font.family: "Helvetica"
+                    font.pointSize: 15
+                    color: "white"
+                    style: Text.Outline;
+                    styleColor: "black"
+                }
+
+                QQC1.Slider {
+                    id: angleOffsetSlider
+                    anchors.margins: 20
+                    anchors.topMargin: 50
+                    style: sliderTouchStyle
+                    value: appControl.serialControl.illuminatorAngleOffset
+                    updateValueWhileDragging: false
+                    minimumValue: 1
+                    maximumValue: 20
+
+                    onValueChanged: {
+                        if (angleOffsetSlider.value !== appControl.serialControl.illuminatorAngleOffset)
+                            appControl.serialControl.setIlluminatorAngleOffset(
+                                        angleOffsetSlider.value)
+                    }
                 }
             }
         }

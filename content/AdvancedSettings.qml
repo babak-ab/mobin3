@@ -55,8 +55,6 @@ import QtQuick.Controls 2.3 as QQC2
 import QtQuick.Controls 1.4 as QQC1
 
 Item {
-    width: parent.width
-    height: parent.height
 
     property real progress: 0
     SequentialAnimation on progress {
@@ -98,7 +96,7 @@ Item {
             }
 
             background: Rectangle {
-                implicitWidth: 100
+                implicitWidth: 150
                 implicitHeight: 60
                 color: "black"
                 opacity: 0.5
@@ -111,7 +109,7 @@ Item {
                 id: contrastSpinbox
                 from: 0
                 to: items.length - 1
-                value: 1 // "contrast 2"
+                value: appControl.serialControl.contrastLevel
 
                 property var items: ["contrast 1", "contrast 2", "contrast 3"]
 
@@ -132,8 +130,10 @@ Item {
                 }
 
                 onValueChanged: {
-                    appControl.serialControl.setContrastMode(
-                                contrastSpinbox.value)
+                    if (contrastSpinbox.value !== appControl.serialControl.contrastLevel) {
+                        appControl.serialControl.setContrastMode(
+                                    contrastSpinbox.value)
+                    }
                 }
             }
         }
@@ -150,7 +150,7 @@ Item {
             }
 
             background: Rectangle {
-                implicitWidth: 100
+                implicitWidth: 150
                 implicitHeight: 60
                 color: "black"
                 opacity: 0.5
@@ -162,7 +162,7 @@ Item {
                 id: brightnessSpinbox
                 from: 0
                 to: items.length - 1
-                value: 0 // "high"
+                value: appControl.serialControl.brightnessLevel
 
                 property var items: ["Brightness 1", "Brightness 2", "Brightness 3", "Brightness 4"]
 
@@ -183,8 +183,10 @@ Item {
                 }
 
                 onValueChanged: {
-                    appControl.serialControl.setBrightnessLevel(
-                                brightnessSpinbox.value)
+                    if (brightnessSpinbox.value !== appControl.serialControl.brightnessLevel) {
+                        appControl.serialControl.setBrightnessLevel(
+                                    brightnessSpinbox.value)
+                    }
                 }
             }
         }
@@ -213,7 +215,7 @@ Item {
                 id: modeSpinbox
                 from: 0
                 to: items.length - 1
-                value: 3 // "high"
+                value: appControl.serialControl.mode
 
                 property var items: ["Mode 1", "Mode 2", "Mode 3", "Mode 4", "Mode 5"]
 
@@ -234,8 +236,10 @@ Item {
                 }
 
                 onValueChanged: {
-                    appControl.serialControl.setMode(
-                                modeSpinbox.value)
+                    if (modeSpinbox.value !== appControl.serialControl.mode) {
+                        appControl.serialControl.setMode(
+                                    modeSpinbox.value)
+                    }
                 }
             }
         }

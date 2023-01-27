@@ -57,8 +57,8 @@ import AppControl 1.0
 import SerialControl 1.0
 
 Item {
-    width: parent.width
-    height: parent.height
+    //    width: parent.width
+    //    height: parent.height
 
     Column {
         spacing: 30
@@ -76,7 +76,7 @@ Item {
             font.pixelSize: 25
 
             label: QQC2.Label {
-                text: " Camera: "
+                text: " Camera Mode: "
                 color: "White"
                 elide: Text.ElideRight
                 style: Text.Outline;
@@ -98,7 +98,7 @@ Item {
                 QQC2.RadioButton {
                     id: continuousZoom
                     text: "Continuous Zoom"
-                    checked: true
+                    checked: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_ContinuousZoom
                     font.pixelSize: 25
 
                     background: Rectangle {
@@ -113,20 +113,13 @@ Item {
                     onClicked: {
                         appControl.serialControl.setSelectedCamera(
                                     SerialControl.CameraSelection_ContinuousZoom)
-
-                        colorFilter.visible = true
-                        nirFilter.visible = true
-                        laserFilter.visible = false
-                        bwFilter.visible = false
-                        gwFilter.visible = false
-
                     }
                 }
 
                 QQC2.RadioButton {
                     id: spotter
                     text: "Spotter"
-                    checked: false
+                    checked: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_Spotter
                     font.pixelSize: 25
 
                     background: Rectangle {
@@ -141,25 +134,18 @@ Item {
                     onClicked: {
                         appControl.serialControl.setSelectedCamera(
                                     SerialControl.CameraSelection_Spotter)
-
-                        colorFilter.visible = true
-                        nirFilter.visible = true
-                        laserFilter.visible = true
-                        bwFilter.visible = false
-                        gwFilter.visible = false
                     }
                 }
 
                 QQC2.RadioButton {
                     id: swirSpotter
                     text: "SWIR Spotter"
-                    checked: false
+                    checked: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_SWIRSpotter
                     font.pixelSize: 25
 
                     background: Rectangle {
                         implicitWidth: 100
                         implicitHeight: 60
-                        visible: control.checked
                         color: swirSpotter.checked ? "red" : "gray"
                         opacity: 0.5
                         radius: 5
@@ -167,16 +153,8 @@ Item {
                     }
 
                     onClicked: {
-                        console.log("swirSpotter")
-
                         appControl.serialControl.setSelectedCamera(
                                     SerialControl.CameraSelection_SWIRSpotter)
-
-                        colorFilter.visible = false
-                        nirFilter.visible = false
-                        laserFilter.visible = false
-                        bwFilter.visible = true
-                        gwFilter.visible = true
                     }
                 }
             }
@@ -186,7 +164,7 @@ Item {
             font.pixelSize: 25
 
             label: QQC2.Label {
-                text: " Filter: "
+                text: " Filter Mode: "
                 color: "White"
                 elide: Text.ElideRight
                 style: Text.Outline;
@@ -205,113 +183,123 @@ Item {
             Column {
                 spacing: 25
 
-                QQC2.RadioButton {
-                    id: colorFilter
-                    text: "Color"
-                    checked: true
-                    font.pixelSize: 25
+                Column {
+                    spacing: 25
 
-                    background: Rectangle {
-                        implicitWidth: 100
-                        implicitHeight: 60
-                        color: colorFilter.checked ? "red" : "gray"
-                        opacity: 0.5
-                        radius: 5
-                        border.color: "white"
+                    QQC2.RadioButton {
+                        id: colorFilter
+                        text: "Color"
+                        checked: appControl.serialControl.selectedFilter === SerialControl.FilterSelection_ColorFilter
+                        font.pixelSize: 25
+                        visible: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_ContinuousZoom
+                                 || appControl.serialControl.selectedCamera === SerialControl.CameraSelection_Spotter
+
+                        background: Rectangle {
+                            implicitWidth: 100
+                            implicitHeight: 60
+                            color: colorFilter.checked ? "red" : "gray"
+                            opacity: 0.5
+                            radius: 5
+                            border.color: "white"
+                        }
+
+                        onClicked: {
+                            appControl.serialControl.setSelectedFilter(
+                                        SerialControl.FilterSelection_ColorFilter)
+                        }
                     }
 
-                    onClicked: {
-                        appControl.serialControl.setSelectedFilter(
-                                    SerialControl.FilterSelection_ColorFilter)
-                    }
-                }
-                QQC2.RadioButton {
-                    id: nirFilter
-                    text: "NIR"
-                    checked: false
-                    font.pixelSize: 25
+                    QQC2.RadioButton {
+                        id: nirFilter
+                        text: "NIR"
+                        checked: appControl.serialControl.selectedFilter === SerialControl.FilterSelection_NIRFilter
+                        font.pixelSize: 25
+                        visible: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_ContinuousZoom
+                                 || appControl.serialControl.selectedCamera === SerialControl.CameraSelection_Spotter
 
-                    background: Rectangle {
-                        implicitWidth: 100
-                        implicitHeight: 60
-                        color: nirFilter.checked ? "red" : "gray"
-                        opacity: 0.5
-                        radius: 5
-                        border.color: "white"
-                    }
+                        background: Rectangle {
+                            implicitWidth: 100
+                            implicitHeight: 60
+                            color: nirFilter.checked ? "red" : "gray"
+                            opacity: 0.5
+                            radius: 5
+                            border.color: "white"
+                        }
 
-                    onClicked: {
-                        appControl.serialControl.setSelectedFilter(
-                                    SerialControl.FilterSelection_NIRFilter)
-                    }
-                }
-
-                QQC2.RadioButton {
-                    id: laserFilter
-                    text: "Laser"
-                    checked: false
-                    font.pixelSize: 25
-                    visible: false
-
-                    background: Rectangle {
-                        implicitWidth: 100
-                        implicitHeight: 60
-                        visible: control.checked
-                        color: laserFilter.checked ? "red" : "gray"
-                        opacity: 0.5
-                        radius: 5
-                        border.color: "white"
+                        onClicked: {
+                            appControl.serialControl.setSelectedFilter(
+                                        SerialControl.FilterSelection_NIRFilter)
+                        }
                     }
 
-                    onClicked: {
-                        appControl.serialControl.setSelectedFilter(
-                                    SerialControl.FilterSelection_LaserFilter)
-                    }
-                }
+                    QQC2.RadioButton {
+                        id: laserFilter
+                        text: "Laser"
+                        checked: appControl.serialControl.selectedFilter === SerialControl.FilterSelection_LaserFilter
+                        font.pixelSize: 25
+                        visible: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_Spotter
 
-                QQC2.RadioButton {
-                    id: bwFilter
-                    text: "BW"
-                    checked: false
-                    font.pixelSize: 25
-                    visible: false
+                        background: Rectangle {
+                            implicitWidth: 100
+                            implicitHeight: 60
+                            color: laserFilter.checked ? "red" : "gray"
+                            opacity: 0.5
+                            radius: 5
+                            border.color: "white"
+                        }
 
-                    background: Rectangle {
-                        implicitWidth: 100
-                        implicitHeight: 60
-                        visible: control.checked
-                        color: bwFilter.checked ? "red" : "gray"
-                        opacity: 0.5
-                        radius: 5
-                        border.color: "white"
-                    }
-
-                    onClicked: {
-                        appControl.serialControl.setSelectedFilter(
-                                    SerialControl.FilterSelection_ColorFilter)
+                        onClicked: {
+                            appControl.serialControl.setSelectedFilter(
+                                        SerialControl.FilterSelection_LaserFilter)
+                        }
                     }
                 }
 
-                QQC2.RadioButton {
-                    id: gwFilter
-                    text: "GW"
-                    checked: false
-                    font.pixelSize: 25
-                    visible: false
+                Column {
+                    spacing: 25
 
-                    background: Rectangle {
-                        implicitWidth: 100
-                        implicitHeight: 60
-                        visible: control.checked
-                        color: gwFilter.checked ? "red" : "gray"
-                        opacity: 0.5
-                        radius: 5
-                        border.color: "white"
+                    QQC2.RadioButton {
+                        id: bwFilter
+                        text: "BW"
+                        checked: appControl.serialControl.selectedFilter === SerialControl.FilterSelection_ColorFilter
+                        font.pixelSize: 25
+                        visible: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_SWIRSpotter
+
+                        background: Rectangle {
+                            implicitWidth: 100
+                            implicitHeight: 60
+                            color: bwFilter.checked ? "red" : "gray"
+                            opacity: 0.5
+                            radius: 5
+                            border.color: "white"
+                        }
+
+                        onClicked: {
+                            appControl.serialControl.setSelectedFilter(
+                                        SerialControl.FilterSelection_ColorFilter)
+                        }
                     }
 
-                    onClicked: {
-                        appControl.serialControl.setSelectedFilter(
-                                    SerialControl.FilterSelection_NIRFilter)
+                    QQC2.RadioButton {
+                        id: gwFilter
+                        text: "GW"
+                        checked: appControl.serialControl.selectedFilter === SerialControl.FilterSelection_NIRFilter
+                        font.pixelSize: 25
+                        visible: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_SWIRSpotter
+
+                        background: Rectangle {
+                            implicitWidth: 100
+                            implicitHeight: 60
+                            color: gwFilter.checked ? "red" : "gray"
+                            opacity: 0.5
+                            radius: 5
+                            border.color: "white"
+                        }
+
+                        onClicked: {
+                            appControl.serialControl.setSelectedFilter(
+                                        SerialControl.FilterSelection_NIRFilter)
+                        }
                     }
                 }
             }

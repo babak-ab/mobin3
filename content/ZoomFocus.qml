@@ -80,7 +80,7 @@ Item {
     }
 
     Column {
-        spacing: 40
+        spacing: 20
 
         Text {
             text: "  Zoom & Focus: "
@@ -112,10 +112,10 @@ Item {
             }
 
             Column {
-                spacing: 20
+                spacing: 10
 
                 Row {
-                    spacing: 25
+                    spacing: 15
 
                     QQC2.Button {
                         id: zoomInButton
@@ -230,10 +230,10 @@ Item {
             }
 
             Column {
-                spacing: 20
+                spacing: 10
 
                 Row {
-                    spacing: 25
+                    spacing: 15
 
                     QQC2.Button {
                         id: focusFarButton
@@ -325,9 +325,8 @@ Item {
             }
         }
 
-
         QQC2.GroupBox {
-            font.pixelSize: 25
+            font.pixelSize: 15
 
             label: QQC2.Label {
                 text: " Focus Mode: "
@@ -347,7 +346,7 @@ Item {
             }
 
             Column {
-                spacing: 25
+                spacing: 15
 
                 QQC2.RadioButton {
                     id: autoFocusButton
@@ -365,7 +364,9 @@ Item {
                     }
 
                     onClicked: {
-                        appControl.serialControl.focusMode = autoFocusButton.checked
+                        if (autoFocusButton.checked !== appControl.serialControl.focusMode) {
+                            appControl.serialControl.setFocusMode(autoFocusButton.checked)
+                        }
                     }
                 }
 
@@ -385,7 +386,62 @@ Item {
                     }
 
                     onClicked: {
-                        appControl.serialControl.focusMode = autoFocusButton.checked
+                        if (manualFocusButton.checked === appControl.serialControl.focusMode) {
+                            appControl.serialControl.setFocusMode(autoFocusButton.checked)
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+        QQC2.GroupBox {
+            font.pixelSize: 20
+
+            label: QQC2.Label {
+                text: " Angle Ratio of the Illuminator: "
+                color: "white"
+                elide: Text.ElideRight
+                style: Text.Outline;
+                styleColor: "black"
+            }
+
+            background: Rectangle {
+                implicitWidth: 40
+                implicitHeight: 40
+                color: "black"
+                opacity: 0.5
+                radius: 5
+                border.color: "white"
+            }
+
+            Column {
+                spacing: 10
+
+                Text {
+                    text: "Ratio:  " + appControl.serialControl.illuminatorAngleOffset / 10.0
+                    font.family: "Helvetica"
+                    font.pointSize: 15
+                    color: "white"
+                    style: Text.Outline;
+                    styleColor: "black"
+                }
+
+                QQC1.Slider {
+                    id: angleOffsetSlider
+                    anchors.margins: 20
+                    anchors.topMargin: 20
+                    style: sliderTouchStyle
+                    value: appControl.serialControl.illuminatorAngleOffset
+                    updateValueWhileDragging: false
+                    minimumValue: 1
+                    maximumValue: 20
+
+                    onValueChanged: {
+                        if (angleOffsetSlider.value !== appControl.serialControl.illuminatorAngleOffset)
+                            appControl.serialControl.setIlluminatorAngleOffset(
+                                        angleOffsetSlider.value)
                     }
                 }
             }

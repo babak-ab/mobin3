@@ -58,8 +58,8 @@ import QtQuick.Controls 1.4 as QQC1
 import AppControl 1.0
 
 Item {
-    width: parent.width
-    height: parent.height
+//    width: parent.width
+//    height: parent.height
 
     property real progress: 0
 

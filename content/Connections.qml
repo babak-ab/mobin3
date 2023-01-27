@@ -56,8 +56,8 @@ import QtQuick.Controls.Styles 1.1
 import QtQuick.Controls 2.12 as QQC2
 
 Item {
-    width: parent.width
-    height: parent.height
+//    width: parent.width
+//    height: parent.height
 
     property real progress: 0
     SequentialAnimation on progress {

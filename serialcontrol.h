@@ -31,29 +31,36 @@ class SerialControl : public RingQueue
     Q_PROPERTY(quint8 panTiltSpeed READ panTiltSpeed WRITE setPanTiltSpeed NOTIFY sigDataChanged)
     Q_PROPERTY(quint8 zoomSpeed READ zoomSpeed WRITE setZoomSpeed NOTIFY sigDataChanged)
     Q_PROPERTY(quint8 focusSpeed READ focusSpeed WRITE setFocusSpeed NOTIFY sigDataChanged)
-    Q_PROPERTY(quint16 focusPosition READ focusPosition WRITE setFocusPosition NOTIFY sigDataChanged)
-    Q_PROPERTY(quint16 fovPosition READ fovPosition WRITE setFovPosition NOTIFY sigDataChanged)
+    Q_PROPERTY(quint16 focusPosition READ focusPosition /*WRITE setFocusPosition*/ NOTIFY sigDataChanged)
+    Q_PROPERTY(quint16 fovPosition READ fovPosition /*WRITE setFovPosition*/ NOTIFY sigDataChanged)
     Q_PROPERTY(DefogMode defogMode READ defogMode WRITE setDefogMode NOTIFY sigDataChanged)
     Q_PROPERTY(GammaLevel gammaLevel READ gammaLevel WRITE setGammaLevel NOTIFY sigDataChanged)
+    Q_PROPERTY(NoiseReductionMode noiseReductionMode READ noiseReductionMode WRITE setNoiseReductionMode NOTIFY sigDataChanged)
     Q_PROPERTY(bool digitalZoom READ digitalZoom WRITE enableDigitalZoom NOTIFY sigDataChanged)
     Q_PROPERTY(quint8 illuminatorBrightnessLevel READ illuminatorBrightnessLevel WRITE setIlluminatorBrightness NOTIFY sigDataChanged)
     Q_PROPERTY(quint8 illuminatorAngleOffset READ illuminatorAngleOffset WRITE setIlluminatorAngleOffset NOTIFY sigDataChanged)
+    Q_PROPERTY(bool illuminator READ illuminator WRITE enableIlluminator NOTIFY sigDataChanged)
     Q_PROPERTY(bool isConnected READ isConnected NOTIFY sigDataChanged)
     Q_PROPERTY(bool focusMode READ focusMode WRITE setFocusMode NOTIFY sigDataChanged)
+    Q_PROPERTY(CameraSelection selectedCamera READ selectedCamera WRITE setSelectedCamera NOTIFY sigDataChanged)
+    Q_PROPERTY(FilterSelection selectedFilter READ selectedFilter WRITE setSelectedFilter NOTIFY sigDataChanged)
+    Q_PROPERTY(ContrastLevel contrastLevel READ contrastLevel WRITE setContrastMode NOTIFY sigDataChanged)
+    Q_PROPERTY(BrightnessLevel brightnessLevel READ brightnessLevel WRITE setBrightnessLevel NOTIFY sigDataChanged)
+    Q_PROPERTY(quint8 mode READ mode WRITE setMode NOTIFY sigDataChanged)
 
 public:
 
     enum CameraSelection {
-        CameraSelection_ContinuousZoom  = 1,
-        CameraSelection_Spotter         = 2,
-        CameraSelection_SWIRSpotter     = 3
+        CameraSelection_ContinuousZoom  = 0x01,
+        CameraSelection_Spotter         = 0x02,
+        CameraSelection_SWIRSpotter     = 0x03
     };
     Q_ENUM(CameraSelection)
 
     enum FilterSelection {
-        FilterSelection_ColorFilter     = 0,
-        FilterSelection_NIRFilter       = 1,
-        FilterSelection_LaserFilter     = 2
+        FilterSelection_ColorFilter     = 0x01,
+        FilterSelection_NIRFilter       = 0x02,
+        FilterSelection_LaserFilter     = 0x03
     };
     Q_ENUM(FilterSelection)
 
@@ -85,14 +92,14 @@ public:
     };
     Q_ENUM(SendingModes)
 
-    enum VideoModes
-    {
-        VideoMode_Unknown               = -1,
-        VideoMode_WomWoo                = 0x01,
-        VideoMode_Spotter               = 0x02,
-        VideoMode_SWIR_Spotter          = 0x03
-    };
-    Q_ENUM(VideoModes)
+//    enum VideoModes
+//    {
+//        VideoMode_Unknown               = -1,
+//        VideoMode_WomWoo                = 0x01,
+//        VideoMode_Spotter               = 0x02,
+//        VideoMode_SWIR_Spotter          = 0x03
+//    };
+//    Q_ENUM(VideoModes)
 
     enum FilterModes
     {
@@ -162,12 +169,12 @@ public:
     Q_INVOKABLE void setFocusMode(const bool mode);
     Q_INVOKABLE void setZoomSpeed(const quint8 speed);
     Q_INVOKABLE void setFocusSpeed(const quint8 speed);
-    Q_INVOKABLE void setFovPosition(const quint16 position);
+//    Q_INVOKABLE void setFovPosition(const quint16 position);
     Q_INVOKABLE void gotoFov(const quint16 position);
-    Q_INVOKABLE void setFocusPosition(const quint16 position);
+//    Q_INVOKABLE void setFocusPosition(const quint16 position);
     Q_INVOKABLE void gotoFocus(const quint16 position);
-    Q_INVOKABLE void gotoFovFocus(const quint16 fovPosition,
-                                  const quint16 focusPosition);
+//    Q_INVOKABLE void gotoFovFocus(const quint16 fovPosition,
+//                                  const quint16 focusPosition);
     Q_INVOKABLE void setPosition(const quint8 positionNumber);
     Q_INVOKABLE void clearPosition(const quint8 positionNumber);
 
@@ -285,9 +292,22 @@ public:
 
     GammaLevel gammaLevel() const;
 
+    NoiseReductionMode noiseReductionMode() const;
+
     bool digitalZoom() const;
 
+    bool illuminator() const;
+
     bool focusMode() const;
+
+    FilterSelection selectedFilter() const;
+    CameraSelection selectedCamera() const;
+
+    ContrastLevel contrastLevel() const;
+
+    BrightnessLevel brightnessLevel() const;
+
+    quint8 mode() const;
 
 private:
 
@@ -325,14 +345,14 @@ private:
     NoiseReductionMode m_noiseReductionMode;
     DefogMode m_defogMode;
     SendingModes m_sendingMode; // initialize in constructor
-    VideoModes m_videoMode; // initialize
+    //VideoModes m_videoMode; // initialize
     FilterModes m_filterMode; // initialize
     SensorValues m_sensorValue; // initialize
-    quint8 m_contrastLevel;
-    quint8 m_brightnessLevel;
+    ContrastLevel m_contrastLevel;
+    BrightnessLevel m_brightnessLevel;
     quint8 m_mode;
     quint8 m_illuminatorBrightness;
-    quint8 milluminatorAngleOffset;
+    quint8 m_illuminatorAngleOffset;
     quint8 m_crc8_table[256];
     quint8 m_panelVersion; // initialize
 
@@ -344,11 +364,12 @@ private:
     int bytesToInt(QByteArray data, int start, int length, bool reverse = false);
     void sendCommand1(const quint8 &command, const quint8 &param);
     void sendCommand2(const quint8 &command, const quint16 &param);
-    void sendCommand3(const quint8 &command, const quint16 &param1, const quint16 &param2);
+//    void sendCommand3(const quint8 &command, const quint16 &param1, const quint16 &param2);
     void sendCommand4(const quint8 &command);
 
     void autoFocus();
     void manualFocus();
+    void sendInitializingCommands();
 
     void init_crc8();
     quint8 crc8(quint8 buf[], quint8 len) const;
@@ -359,6 +380,8 @@ private Q_SLOTS:
     void sltReadData(QByteArray data);
     void sltReadSeialPortData();
     void sltWriteSerialPortData(QByteArray data);
+    void sltSetCameraMode();
+    void sltSetFilterMode();
 
 
 Q_SIGNALS:
