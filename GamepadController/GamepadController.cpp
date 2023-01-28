@@ -6,7 +6,7 @@ GamepadController::GamepadController()
 
     initialize();
 
-    m_commandsBuffer = QVector<CommandPacket>();
+    m_commandsBuffer = QMap<Commands, quint8>();
 
     m_processCommandsTimer.setInterval(TIMER_INTERVAL);
     connect(&m_processCommandsTimer, &QTimer::timeout,
@@ -14,6 +14,27 @@ GamepadController::GamepadController()
     {
         processNextCommand();
     });
+
+    m_illuminationTimer.setInterval(5000);
+    connect(&m_illuminationTimer, &QTimer::timeout,
+            this, [this](){
+       m_illuminationTimer.stop();
+
+       if (m_isLB_ButtonPressed == true &&
+               m_isRB_ButtonPressed == true)
+       {
+           checkCommandAndAppendToBuffer(Commands::Command_ToggleIllumination,
+                                         1.0);
+
+           if (m_processCommandsTimer.isActive() == false)
+           {
+               m_processCommandsTimer.start();
+           }
+       }
+    });
+
+    m_isRB_ButtonPressed = false;
+    m_isLB_ButtonPressed = false;
 }
 
 GamepadController::~GamepadController()
@@ -69,6 +90,8 @@ void GamepadController::initialConnections()
             this, &GamepadController::sltButtonSelectChanged);
     connect(m_gamepad, &QGamepad::buttonGuideChanged,
             this, &GamepadController::sltButtonGuideChanged);
+    connect(m_gamepad, &QGamepad::buttonCenterChanged,
+            this, &GamepadController::sltButtonCenterChanged);
 
     connect(m_gamepad, &QGamepad::buttonL1Changed,
             this, &GamepadController::sltButtonL1Changed);
@@ -183,11 +206,11 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
     {
         if (value > 0)
         {
-            command = Commands::Command_TiltUp;
+            command = Commands::Command_TiltDown;
         }
         else if (value < 0)
         {
-            command = Commands::Command_TiltDown;
+            command = Commands::Command_TiltUp;
         }
         else if (value == 0)
         {
@@ -220,11 +243,11 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
     {
         if (value > 0)
         {
-            command = Commands::Command_ZoomIn;
+            command = Commands::Command_ZoomOut;
         }
         else if (value < 0)
         {
-            command = Commands::Command_ZoomOut;
+            command = Commands::Command_ZoomIn;
         }
         else if (value == 0)
         {
@@ -234,45 +257,63 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
     }
     case Button_LeftAxisClick:
     {
+        command = Commands::Command_ToggleFocusMode;
         break;
     }
         // ==============================================
     case Button_A:
     {
+        command = Commands::Command_NextNoiseReductionLevel;
         break;
     }
     case Button_B:
     {
+        command = Commands::Command_NextGammaLevel;
         break;
     }
     case Button_X:
     {
+        command = Commands::Command_NextDefogLevel;
         break;
     }
     case Button_Y:
     {
+        command = Commands::Command_NextCamera;
         break;
     }
         // ==============================================
     case Button_Up:
     {
+        command = Commands::Command_MenuItemUp;
         break;
     }
     case Button_Down:
     {
+        command = Commands::Command_MenuItemDown;
         break;
     }
     case Button_Left:
     {
+        command = Commands::Command_MenuItemLeft;
         break;
     }
     case Button_Right:
     {
+        command = Commands::Command_MenuItemRight;
         break;
     }
         // ==============================================
     case Button_RB:
     {
+        if (value > 0)
+        {
+            m_isRB_ButtonPressed = true;
+        }
+        else
+        {
+            m_isRB_ButtonPressed = false;
+        }
+
         break;
     }
     case Button_RT:
@@ -282,6 +323,15 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
         // ==============================================
     case Button_LB:
     {
+        if (value > 0)
+        {
+            m_isLB_ButtonPressed = true;
+        }
+        else
+        {
+            m_isLB_ButtonPressed = false;
+        }
+
         break;
     }
     case Button_LT:
@@ -291,13 +341,20 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
         // ==============================================
     case Button_Menu:
     {
+        command = Commands::Command_OpenCameraMenu;
         break;
     }
     case Button_ChangeView:
     {
+        command = Commands::Command_CloseCameraMenu;
         break;
     }
     case Button_XBoxHome:
+    {
+        command = Commands::Command_ShutdownSystem;
+        break;
+    }
+    case Button_Center:
     {
         break;
     }
@@ -324,19 +381,9 @@ bool GamepadController::deathBandMechanism(const GamepadController::Buttons &but
             button == GamepadController::Buttons::Button_LT ||
             button == GamepadController::Buttons::Button_RT)
     {
-        if (qAbs(value) > DEATH_BAND_VALUE)
+        if (qAbs(value) < DEATH_BAND_VALUE)
         {
-            return true;
-        }
-        else if (qAbs(value) < (DEATH_BAND_VALUE) &&
-                 qAbs(value) >= (DEATH_BAND_VALUE - THRESHOLD_VALUE))
-        {
-            value = 0;
-            return true;
-        }
-        else if (qAbs(value) < (DEATH_BAND_VALUE - THRESHOLD_VALUE))
-        {
-            return false;
+            value = 0.0;
         }
     }
 
@@ -345,42 +392,8 @@ bool GamepadController::deathBandMechanism(const GamepadController::Buttons &but
 
 void GamepadController::checkCommandAndAppendToBuffer(const Commands &command,
                                                       const quint8 &value)
-{
-    // check last command to prevent repetitive commands
-    if (m_commandsBuffer.isEmpty() == false)
-    {
-        bool isFound = false;
-
-        QVector<CommandPacket> tempVector;
-
-        for (auto item : m_commandsBuffer)
-        {
-            if (item.command == command)
-            {
-                if (isFound == false)
-                {
-                    item.value = value;
-
-                    isFound = true;
-                }
-                else
-                {
-                    continue;
-                }
-
-                tempVector.append(item);
-            }
-        }
-
-
-        m_commandsBuffer = tempVector;
-        qDebug() << " temp " << tempVector.count() << " " << m_commandsBuffer.count();
-    }
-    else
-    {
-        m_commandsBuffer.append(CommandPacket(command, value));
-    }
-
+{  
+    m_commandsBuffer.insert(command, value);
 }
 
 quint8 GamepadController::analogValueMapper(const GamepadController::Buttons &button,
@@ -417,9 +430,13 @@ quint8 GamepadController::analogValueMapper(const GamepadController::Buttons &bu
 
 void GamepadController::processNextCommand()
 {
+//    stopCommandChecker();
     if (m_commandsBuffer.isEmpty() == false)
     {
-        CommandPacket packet = m_commandsBuffer.takeFirst();
+        QMap<Commands, quint8>::iterator firstItem = m_commandsBuffer.begin();
+        m_commandsBuffer.erase(firstItem);
+
+        CommandPacket packet(firstItem.key(), firstItem.value());
 
         Q_EMIT sigExecuteCommandRequested(packet);
     }
@@ -503,6 +520,14 @@ void GamepadController::sltButtonGuideChanged(bool value)
     val = value;
 
     keyHandler(GamepadController::Buttons::Button_XBoxHome, val);
+}
+
+void GamepadController::sltButtonCenterChanged(bool value)
+{
+    double val;
+    val = value;
+
+    keyHandler(GamepadController::Buttons::Button_Center, val);
 }
 
 void GamepadController::sltButtonL1Changed(bool value)

@@ -24,7 +24,7 @@
 
 #define DEATH_BAND_VALUE        0.4
 #define THRESHOLD_VALUE         0.1
-#define TIMER_INTERVAL          300
+#define TIMER_INTERVAL          50
 
 ///
 /// \brief third-party module to add gamepad shortcut feature to project
@@ -94,16 +94,21 @@ private:
         Button_LB,
         Button_LT,
 
-        Button_Menu, // Button_Start,
-        Button_ChangeView, // Button_Select,
-        Button_XBoxHome // Button_Guide
+        Button_Menu,        // Button_Start,
+        Button_ChangeView,  // Button_Select,
+        Button_XBoxHome,    // Button_Guide
+        Button_Center
     };
 
     QGamepad *m_gamepad;
 
-    QVector<CommandPacket> m_commandsBuffer;
+    QMap<Commands, quint8> m_commandsBuffer;
 
     QTimer m_processCommandsTimer;
+    QTimer m_illuminationTimer;
+
+    bool m_isRB_ButtonPressed;
+    bool m_isLB_ButtonPressed;
 
     // **********************************************************************
     // PRIVATE METHODS DECLARATION
@@ -147,6 +152,7 @@ private Q_SLOTS:
     void sltButtonStartChanged(bool value);
     void sltButtonSelectChanged(bool value);
     void sltButtonGuideChanged(bool value);
+    void sltButtonCenterChanged(bool value);
 
     void sltButtonL1Changed(bool value);
     void sltButtonL2Changed(double value);

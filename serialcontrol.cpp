@@ -146,7 +146,7 @@ QByteArray SerialControl::interpret(IRQueue<quint8>* queueRead)
     crc[0] = crcValue;
     crc[1] = packet.at(10);
 
-//    std::cerr << "CHECKSUM : " << crc.toHex(' ').toStdString() << std::endl;
+    //    std::cerr << "CHECKSUM : " << crc.toHex(' ').toStdString() << std::endl;
 
 
     // check first, second and crc bytes
@@ -465,6 +465,8 @@ void SerialControl::setFocusMode(const bool mode)
 
     m_focusMode = mode;
 
+    qDebug() << "new focusMode: " << m_focusMode;
+
     Q_EMIT sigDataChanged();
 }
 
@@ -602,6 +604,31 @@ void SerialControl::setPanTiltSpeed(const quint8 speed)
     Q_EMIT sigDataChanged();
 }
 
+void SerialControl::setNextCamera()
+{
+    switch (m_selectedCamera)
+    {
+    case CameraSelection_ContinuousZoom:
+    {
+        m_selectedCamera = CameraSelection_Spotter;
+        break;
+    }
+    case CameraSelection_Spotter:
+    {
+//        m_selectedCamera = CameraSelection_SWIRSpotter;
+        m_selectedCamera = CameraSelection_ContinuousZoom;
+        break;
+    }
+//    case CameraSelection_SWIRSpotter:
+//    {
+//        m_selectedCamera = CameraSelection_ContinuousZoom;
+//        break;
+//    }
+    }
+
+    setSelectedCamera(m_selectedCamera);
+}
+
 void SerialControl::setSelectedCamera(const SerialControl::CameraSelection camera)
 {
     m_selectedCamera = camera;
@@ -620,6 +647,35 @@ void SerialControl::setSelectedFilter(const SerialControl::FilterSelection filte
     Q_EMIT sigDataChanged();
 }
 
+void SerialControl::setNextDefogMode()
+{
+    switch(m_defogMode)
+    {
+    case DefogMode_Off:
+    {
+        m_defogMode = DefogMode_Low;
+        break;
+    }
+    case DefogMode_Low:
+    {
+        m_defogMode = DefogMode_Medium;
+        break;
+    }
+    case DefogMode_Medium:
+    {
+        m_defogMode = DefogMode_High;
+        break;
+    }
+    case DefogMode_High:
+    {
+        m_defogMode = DefogMode_Off;
+        break;
+    }
+    }
+
+    setDefogMode(m_defogMode);
+}
+
 void SerialControl::setDefogMode(const SerialControl::DefogMode mode)
 {
     m_defogMode = mode;
@@ -629,11 +685,54 @@ void SerialControl::setDefogMode(const SerialControl::DefogMode mode)
     Q_EMIT sigDataChanged();
 }
 
+void SerialControl::setNextGammaLevel()
+{
+    switch(m_gammaLevel)
+    {
+    case GammaLevel_Level1:
+    {
+        m_gammaLevel = GammaLevel_Level2;
+        break;
+    }
+    case GammaLevel_Level2:
+    {
+        m_gammaLevel = GammaLevel_Level1;
+        break;
+    }
+    }
+
+
+    sendCommand1(61, m_gammaLevel);
+
+    Q_EMIT sigDataChanged();
+}
+
 void SerialControl::setGammaLevel(const SerialControl::GammaLevel level)
 {
     m_gammaLevel = (GammaLevel)(level + 1);
 
     sendCommand1(61, m_gammaLevel);
+
+    Q_EMIT sigDataChanged();
+}
+
+void SerialControl::setNextNoiseReductionMode()
+{
+    switch(m_noiseReductionMode)
+    {
+    case NoiseReductionMode_Low:
+    {
+        m_noiseReductionMode = NoiseReductionMode_High;
+        break;
+    }
+    case NoiseReductionMode_High:
+    {
+        m_noiseReductionMode = NoiseReductionMode_Low;
+        break;
+    }
+    }
+
+    sendCommand1(62, m_noiseReductionMode);
 
     Q_EMIT sigDataChanged();
 }
@@ -917,8 +1016,8 @@ quint8 SerialControl::crc8(quint8 buf[], quint8 len) const
     {
         crc = m_crc8_table[(crc & 0xFF) ^ buf[i]];
     }
-//    for (quint8 *p = buf; len > 0; ++p, --len)
-//        crc = m_crc8_table[(crc & 0xFF) ^ *p];0
+    //    for (quint8 *p = buf; len > 0; ++p, --len)
+    //        crc = m_crc8_table[(crc & 0xFF) ^ *p];0
 
     return crc ^ 0xFF;
 }

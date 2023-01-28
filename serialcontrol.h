@@ -187,10 +187,18 @@ public:
     Q_INVOKABLE void panStop();
     Q_INVOKABLE void setPanTiltSpeed(const quint8 speed);
 
+    Q_INVOKABLE void setNextCamera();
     Q_INVOKABLE void setSelectedCamera(const CameraSelection camera);
+
     Q_INVOKABLE void setSelectedFilter(const FilterSelection filter);
+
+    Q_INVOKABLE void setNextDefogMode();
     Q_INVOKABLE void setDefogMode(const DefogMode mode);
+
+    Q_INVOKABLE void setNextGammaLevel();
     Q_INVOKABLE void setGammaLevel(const GammaLevel level);
+
+    Q_INVOKABLE void setNextNoiseReductionMode();
     Q_INVOKABLE void setNoiseReductionMode(const NoiseReductionMode mode);
 
     Q_INVOKABLE void enableDigitalZoom(const bool state);

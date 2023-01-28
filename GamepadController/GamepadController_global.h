@@ -14,6 +14,7 @@ enum Commands
     Command_FocusFar,
     Command_FocusNear,
     Command_FocusStop,
+    Command_ToggleFocusMode,
 
     Command_PanLeft,
     Command_PanRight,
@@ -22,6 +23,25 @@ enum Commands
     Command_TiltUp,
     Command_TiltDown,
     Command_TiltStop,
+
+    Command_NextCamera,
+    Command_NextDefogLevel,
+    Command_NextGammaLevel,
+    Command_NextNoiseReductionLevel,
+
+    Command_ToggleDigitalZoom,
+
+    Command_OpenCameraMenu,
+    Command_MenuItemUp,
+    Command_MenuItemDown,
+    Command_MenuItemLeft,
+    Command_MenuItemRight,
+
+    Command_CloseCameraMenu,
+
+    Command_ShutdownSystem,
+
+    Command_ToggleIllumination,
 };
 
 struct CommandPacket

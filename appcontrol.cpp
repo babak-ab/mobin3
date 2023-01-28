@@ -29,6 +29,9 @@ AppControl::AppControl(QObject* parent)
 
 AppControl::~AppControl()
 {
+    m_gamepadManager->deleteLater();
+
+    delete m_gamepadController;
 }
 
 void AppControl::processGamepadCommand(const CommandPacket &packet)
@@ -69,14 +72,25 @@ void AppControl::processGamepadCommand(const CommandPacket &packet)
         _serialControl->focusStop();
         break;
     }
-    case Command_PanLeft:
+    case Command_ToggleFocusMode:
     {
+        if (packet.value == 0)
+        {
+            return;
+        }
+
+        bool previousFocusMode = _serialControl->focusMode();
+        _serialControl->setFocusMode(!previousFocusMode);
+        break;
+    }
+    case Command_PanLeft:
+    {       
         _serialControl->setPanTiltSpeed(packet.value);
         _serialControl->panLeft();
         break;
     }
     case Command_PanRight:
-    {
+    {        
         _serialControl->setPanTiltSpeed(packet.value);
         _serialControl->panRight();
         break;
@@ -103,6 +117,130 @@ void AppControl::processGamepadCommand(const CommandPacket &packet)
         _serialControl->tiltStop();
         break;
     }
+    case Command_NextCamera:
+    {
+        if (packet.value == 0)
+        {
+            return;
+        }
+
+        _serialControl->setNextCamera();
+        break;
+    }
+    case Command_NextDefogLevel:
+    {
+        if (packet.value == 0)
+        {
+            return;
+        }
+
+        _serialControl->setNextDefogMode();
+        break;
+    }
+    case Command_NextGammaLevel:
+    {
+        if (packet.value == 0)
+        {
+            return;
+        }
+
+        _serialControl->setNextGammaLevel();
+        break;
+    }
+    case Command_NextNoiseReductionLevel:
+    {
+        if (packet.value == 0)
+        {
+            return;
+        }
+
+        _serialControl->setNextNoiseReductionMode();
+        break;
+    }
+    case Command_ToggleDigitalZoom:
+    {
+        if (packet.value == 0)
+        {
+            return;
+        }
+
+        bool previousDigitalZoomValue = _serialControl->digitalZoom();
+
+        _serialControl->enableDigitalZoom(!previousDigitalZoomValue);
+        break;
+    }
+    case Command_OpenCameraMenu:
+    {
+        if (packet.value == 0)
+        {
+            return;
+        }
+
+        _serialControl->showMenuPressed();
+        _serialControl->showMenuReleased();
+        break;
+    }
+    case Command_MenuItemUp:
+    {
+        if (packet.value == 0)
+        {
+            return;
+        }
+
+        _serialControl->menuUpPressed();
+        _serialControl->menuUpReleased();
+        break;
+    }
+    case Command_MenuItemDown:
+    {
+        if (packet.value == 0)
+        {
+            return;
+        }
+
+        _serialControl->menuDownPressed();
+        _serialControl->menuDownReleased();
+        break;
+    }
+    case Command_MenuItemLeft:
+    {
+        if (packet.value == 0)
+        {
+            return;
+        }
+
+        _serialControl->menuLeftPressed();
+        _serialControl->menuLeftReleased();
+        break;
+    }
+    case Command_MenuItemRight:
+    {
+        if (packet.value == 0)
+        {
+            return;
+        }
+
+        _serialControl->menuRightPressed();
+        _serialControl->menuRightReleased();
+        break;
+    }
+    case Command_CloseCameraMenu:
+    {
+        if (packet.value == 0)
+        {
+            return;
+        }
+
+        _serialControl->menuESCReleased();
+        break;
+    }
+
+    case Command_ShutdownSystem:
+    {
+        break;
+    }
+
+
     default:
         return;
     }
@@ -142,7 +280,7 @@ bool AppControl::connectToSerialPort()
     bool isConnected = _serialControl->connectToSerialPort(_serialPortName);
 
     if (isConnected) {
-         return true;
+        return true;
     }
 
     _messageTitle = "Serial Port Error";
@@ -157,9 +295,9 @@ void AppControl::disconnectSerialPort()
     bool result = _serialControl->disconnectSerialPort();
 
     if (!result) {
-         _messageTitle = "Serial Port Error";
-         _messageText = "Could not get disconnected from " + _serialPortName + " port!";
-         Q_EMIT sigThrowSerialMessageRequested();
+        _messageTitle = "Serial Port Error";
+        _messageText = "Could not get disconnected from " + _serialPortName + " port!";
+        Q_EMIT sigThrowSerialMessageRequested();
     }
 }
 
@@ -182,8 +320,12 @@ void AppControl::setGamepadController(GamepadController *gamepadController)
             this, &AppControl::sltExecuteCommandRequested);
 }
 
+void AppControl::setGamepadManager(QGamepadManager *manager)
+{
+    m_gamepadManager = manager;
+}
+
 void AppControl::sltExecuteCommandRequested(const CommandPacket &packet)
 {
-    qDebug() << " --------------------------------- gamepad " << packet.command << packet.value;
     processGamepadCommand(packet);
 }

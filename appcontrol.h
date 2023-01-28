@@ -34,13 +34,16 @@ private:
     SerialControl *_serialControl;
     GamepadController *m_gamepadController;
 
-    bool _isSerialPortOpened;
+    QGamepadManager *m_gamepadManager;
+
     QStringList _serialPortList;
 
     QString _serialPortName;
 
     QString _messageTitle;
     QString _messageText;
+
+    bool _isSerialPortOpened;
 
     void processGamepadCommand(const CommandPacket &packet);
 
@@ -59,6 +62,7 @@ public:
     SerialControl* serialControl() const;
 
     void setGamepadController(GamepadController *gamepadController);
+    void setGamepadManager(QGamepadManager *manager);
 
 private Q_SLOTS:
     void sltExecuteCommandRequested(const CommandPacket &packet);
