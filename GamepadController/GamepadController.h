@@ -22,7 +22,7 @@
 // **********************************************************************
 #include "GamepadController_global.h"
 
-#define DEATH_BAND_VALUE        0.4
+#define DEATH_BAND_VALUE        0.2
 #define THRESHOLD_VALUE         0.1
 #define TIMER_INTERVAL          50
 

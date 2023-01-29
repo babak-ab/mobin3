@@ -7,41 +7,41 @@ enum Commands
 {
     Command_Normal = -1,
 
-    Command_ZoomIn,
-    Command_ZoomOut,
-    Command_ZoomStop,
+    Command_ZoomIn                     = 0,
+    Command_ZoomOut                    = 1,
+    Command_ZoomStop                   = 2,
 
-    Command_FocusFar,
-    Command_FocusNear,
-    Command_FocusStop,
-    Command_ToggleFocusMode,
+    Command_FocusFar                   = 3,
+    Command_FocusNear                  = 4,
+    Command_FocusStop                  = 5,
+    Command_ToggleFocusMode            = 6,
 
-    Command_PanLeft,
-    Command_PanRight,
-    Command_PanStop,
+    Command_PanLeft                    = 7,
+    Command_PanRight                   = 8,
+    Command_PanStop                    = 9,
 
-    Command_TiltUp,
-    Command_TiltDown,
-    Command_TiltStop,
+    Command_TiltUp                     = 10,
+    Command_TiltDown                   = 11,
+    Command_TiltStop                   = 12,
 
-    Command_NextCamera,
-    Command_NextDefogLevel,
-    Command_NextGammaLevel,
-    Command_NextNoiseReductionLevel,
+    Command_NextCamera                 = 13,
+    Command_NextDefogLevel             = 14,
+    Command_NextGammaLevel             = 15,
+    Command_NextNoiseReductionLevel    = 16,
 
-    Command_ToggleDigitalZoom,
+    Command_ToggleDigitalZoom          = 17,
 
-    Command_OpenCameraMenu,
-    Command_MenuItemUp,
-    Command_MenuItemDown,
-    Command_MenuItemLeft,
-    Command_MenuItemRight,
+    Command_OpenCameraMenu             = 18,
+    Command_MenuItemUp                 = 19,
+    Command_MenuItemDown               = 20,
+    Command_MenuItemLeft               = 21,
+    Command_MenuItemRight              = 22,
 
-    Command_CloseCameraMenu,
+    Command_CloseCameraMenu            = 23,
 
-    Command_ShutdownSystem,
+    Command_ShutdownSystem             = 24,
 
-    Command_ToggleIllumination,
+    Command_ToggleIllumination         = 25,
 };
 
 struct CommandPacket

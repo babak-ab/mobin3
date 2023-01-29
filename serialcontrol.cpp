@@ -128,6 +128,8 @@ QByteArray SerialControl::interpret(IRQueue<quint8>* queueRead)
         packet[i] = data;
     }
 
+//    qDebug() << "received packet: " << packet.toHex(' ') << m_focusMode;
+
     // calculate crc
     {
         quint8 *crcInput = new quint8;
@@ -179,13 +181,18 @@ QByteArray SerialControl::interpret(IRQueue<quint8>* queueRead)
             FocusModes focusMode            = static_cast<FocusModes>(0x0003 & ((0x0030 & statusValue) >> 4));          // 0000 0000 00XX 0000
             SendingModes sendingMode        = static_cast<SendingModes>(0x0003 & ((0x00C0 & statusValue) >> 6));        // 0000 0000 XX00 0000
 
-            CameraSelection videoMode       = static_cast<CameraSelection>(0x0003 & ((0x0300 & statusValue) >> 8));          // 0000 00XX 0000 0000
+            CameraSelection videoMode       = static_cast<CameraSelection>(0x0003 & ((0x0300 & statusValue) >> 8));     // 0000 00XX 0000 0000
             FilterModes filterMode          = static_cast<FilterModes>(0x0007 & ((0x1C00 & statusValue) >> 10));        // 000X XX00 0000 0000
             DefogMode defogMode             = static_cast<DefogMode>(0x0007 & ((0xE000 & statusValue) >> 13));          // XXX0 0000 0000 0000
 
             m_gammaLevel = gammaLevel;
             m_noiseReductionMode = noiseLevel;
-            m_focusMode = focusMode; // boolean
+
+            if (focusMode == 2)
+                m_focusMode = true; // boolean
+            else if (focusMode == 1)
+                m_focusMode = false;
+
             m_sendingMode = sendingMode;
 
             m_selectedCamera = videoMode;
@@ -220,6 +227,8 @@ QByteArray SerialControl::interpret(IRQueue<quint8>* queueRead)
             }
         }
     }
+
+    Q_EMIT sigDataChanged();
 
     return QByteArray();
 }
@@ -323,7 +332,7 @@ void SerialControl::writeDataOnPlatformsSerialPort(const QByteArray& data)
 {
     if (true /*m_serialPort->isOpen()*/) {
         m_serialPort->write(data);
-        qDebug() << "write data :" << data.toHex(' ');
+        //qDebug() << "write data :" << data.toHex(' ');
     }
 }
 
@@ -465,7 +474,6 @@ void SerialControl::setFocusMode(const bool mode)
 
     m_focusMode = mode;
 
-    qDebug() << "new focusMode: " << m_focusMode;
 
     Q_EMIT sigDataChanged();
 }
@@ -569,11 +577,11 @@ void SerialControl::tiltStop()
 {
     sendCommand1(175, 1);
 
-    //Repeat command to increase reliability of stopping process
-    if (m_repeatCounter++ < 6)
-        QTimer::singleShot(50, this, &SerialControl::tiltStop);
-    else
-        m_repeatCounter = 0;
+//    //Repeat command to increase reliability of stopping process
+//    if (m_repeatCounter++ < 6)
+//        QTimer::singleShot(50, this, &SerialControl::tiltStop);
+//    else
+//        m_repeatCounter = 0;
 }
 
 void SerialControl::panLeft()
@@ -590,11 +598,11 @@ void SerialControl::panStop()
 {
     sendCommand1(172, 1);
 
-    //Repeat command to increase reliability of stopping process
-    if (m_repeatCounter++ < 6)
-        QTimer::singleShot(50, this, &SerialControl::panStop);
-    else
-        m_repeatCounter = 0;
+//    //Repeat command to increase reliability of stopping process
+//    if (m_repeatCounter++ < 6)
+//        QTimer::singleShot(50, this, &SerialControl::panStop);
+//    else
+//        m_repeatCounter = 0;
 }
 
 void SerialControl::setPanTiltSpeed(const quint8 speed)

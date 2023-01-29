@@ -593,6 +593,7 @@ ApplicationWindow {
                 anchors.fill: parent
                 delegate: AndroidDelegate {
                     text: title
+
                     onClicked: {
                         if (title == "Exit") {
                             exitDialog.open()
@@ -609,9 +610,26 @@ ApplicationWindow {
 
     Dialog {
         id: exitDialog
-        title: "Are you sure to exit the application?"
         standardButtons: Dialog.Ok | Dialog.Cancel
         parent: Overlay.overlay
+
+        Text {
+            text: "Are you sure to exit the application?"
+            font.family: "Helvetica"
+            font.pointSize: 15
+            color: "white"
+            style: Text.Outline;
+            styleColor: "black"
+        }
+
+        background: Rectangle {
+            implicitWidth: 100
+            implicitHeight: 60
+            color: "black"
+            opacity: 0.5
+            radius: 5
+            border.color: "white"
+        }
 
         x: parent ? ((parent.width - width) / 2) : 0
         y: parent ? ((parent.height - height) / 2) : 0
