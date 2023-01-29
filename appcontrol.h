@@ -9,6 +9,7 @@
 #include <QElapsedTimer>
 #include <QFont>
 #include <QFontMetrics>
+#include <QGamepadManager>
 #include <QGuiApplication>
 #include <QObject>
 

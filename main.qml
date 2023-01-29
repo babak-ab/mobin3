@@ -108,7 +108,7 @@ ApplicationWindow {
 
     Row {
         spacing: 50
-//        anchors.fill: parent
+        //        anchors.fill: parent
         anchors.top: parent.top
         anchors.right: parent.right
         anchors.margins: 15
@@ -118,7 +118,7 @@ ApplicationWindow {
             font.family: "Helvetica"
             font.pointSize: 15
             color: "white"
-            style: Text.Outline;
+            style: Text.Outline
             styleColor: "black"
         }
 
@@ -140,7 +140,7 @@ ApplicationWindow {
                     font.family: "Helvetica"
                     font.pointSize: 12
                     color: "white"
-                    style: Text.Outline;
+                    style: Text.Outline
                     styleColor: "black"
                 }
 
@@ -153,7 +153,8 @@ ApplicationWindow {
                     to: 20
 
                     onValueChanged: {
-                        if (angleOffsetSlider.value !== appControl.serialControl.illuminatorAngleOffset)
+                        if (angleOffsetSlider.value
+                                !== appControl.serialControl.illuminatorAngleOffset)
                             appControl.serialControl.setIlluminatorAngleOffset(
                                         angleOffsetSlider.value)
                     }
@@ -164,14 +165,13 @@ ApplicationWindow {
         GroupBox {
             font.pixelSize: 20
 
-//            label: Label {
-//                text: "Camera: "
-//                color: "White"
-//                elide: Text.ElideRight
-//                style: Text.Outline;
-//                styleColor: "black"
-//            }
-
+            //            label: Label {
+            //                text: "Camera: "
+            //                color: "White"
+            //                elide: Text.ElideRight
+            //                style: Text.Outline;
+            //                styleColor: "black"
+            //            }
             background: Rectangle {
                 implicitWidth: 60
                 implicitHeight: 40
@@ -184,19 +184,19 @@ ApplicationWindow {
             Row {
                 spacing: 15
 
-//                Text {
-//                    text: "Camera:  "
-//                    font.family: "Helvetica"
-//                    font.pointSize: 15
-//                    color: "white"
-//                    style: Text.Outline;
-//                    styleColor: "black"
-//                }
-
+                //                Text {
+                //                    text: "Camera:  "
+                //                    font.family: "Helvetica"
+                //                    font.pointSize: 15
+                //                    color: "white"
+                //                    style: Text.Outline;
+                //                    styleColor: "black"
+                //                }
                 RadioButton {
                     id: continuousZoom
                     text: "Cont. Zoom"
-                    checked: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_ContinuousZoom
+                    checked: appControl.serialControl.selectedCamera
+                             === SerialControl.CameraSelection_ContinuousZoom
                     font.pixelSize: 15
 
                     background: Rectangle {
@@ -217,7 +217,8 @@ ApplicationWindow {
                 RadioButton {
                     id: spotter
                     text: "Spotter"
-                    checked: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_Spotter
+                    checked: appControl.serialControl.selectedCamera
+                             === SerialControl.CameraSelection_Spotter
                     font.pixelSize: 15
 
                     background: Rectangle {
@@ -236,7 +237,6 @@ ApplicationWindow {
                 }
             }
         }
-
 
         Button {
             id: recordButton
@@ -282,19 +282,17 @@ ApplicationWindow {
         anchors.right: parent.right
         anchors.margins: 15
 
-
         GroupBox {
             font.pixelSize: 20
             anchors.margins: 0
 
-//            label: Label {
-//                text: " Focus: "
-//                color: "White"
-//                elide: Text.ElideRight
-//                style: Text.Outline;
-//                styleColor: "black"
-//            }
-
+            //            label: Label {
+            //                text: " Focus: "
+            //                color: "White"
+            //                elide: Text.ElideRight
+            //                style: Text.Outline;
+            //                styleColor: "black"
+            //            }
             background: Rectangle {
                 implicitWidth: 40
                 implicitHeight: 40
@@ -323,7 +321,8 @@ ApplicationWindow {
                     }
 
                     onClicked: {
-                        appControl.serialControl.setFocusMode(autoFocusButton.checked)
+                        appControl.serialControl.setFocusMode(
+                                    autoFocusButton.checked)
                     }
                 }
 
@@ -343,7 +342,8 @@ ApplicationWindow {
                     }
 
                     onClicked: {
-                        appControl.serialControl.setFocusMode(autoFocusButton.checked)
+                        appControl.serialControl.setFocusMode(
+                                    autoFocusButton.checked)
                     }
                 }
             }
@@ -381,7 +381,6 @@ ApplicationWindow {
                 color: zoomOutButton.down ? "red" : "black"
                 opacity: 0.5
             }
-
 
             onPressed: {
                 appControl.serialControl.zoomOut()
@@ -517,7 +516,6 @@ ApplicationWindow {
                 appControl.serialControl.tiltStop()
             }
         }
-
     }
 
     ListModel {
@@ -562,7 +560,9 @@ ApplicationWindow {
             title: "Connections"
             page: "content/Connections.qml"
         }
-
+        ListElement {
+            title: "Exit"
+        }
     }
 
     StackView {
@@ -585,7 +585,7 @@ ApplicationWindow {
                              event.accepted = true
                          }
 
-        initialItem: Item {
+        initialItem: ColumnLayout {
             width: /*parent.width*/ 400
             height: parent.height
             ListView {
@@ -594,11 +594,30 @@ ApplicationWindow {
                 delegate: AndroidDelegate {
                     text: title
                     onClicked: {
-                        stackView.push(Qt.resolvedUrl(page))
-                        background.color = "transparent"
+                        if (title == "Exit") {
+                            exitDialog.open()
+                        } else {
+
+                            stackView.push(Qt.resolvedUrl(page))
+                            background.color = "transparent"
+                        }
                     }
                 }
             }
+        }
+    }
+
+    Dialog {
+        id: exitDialog
+        title: "Are you sure to exit the application?"
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        parent: Overlay.overlay
+
+        x: parent ? ((parent.width - width) / 2) : 0
+        y: parent ? ((parent.height - height) / 2) : 0
+
+        onAccepted: {
+            Qt.quit()
         }
     }
 }
