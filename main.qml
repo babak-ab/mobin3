@@ -107,11 +107,50 @@ ApplicationWindow {
     }
 
     Row {
-        spacing: 50
+        spacing: 32
         //        anchors.fill: parent
         anchors.top: parent.top
         anchors.right: parent.right
         anchors.margins: 15
+
+        Text {
+            text: "NR: " + appControl.serialControl.noiseReductionType.toString()
+            font.family: "Helvetica"
+            font.pointSize: 15
+            color: "white"
+            style: Text.Outline
+            styleColor: "black"
+        }
+
+        Text {
+            text: "Defog: " + appControl.serialControl.defogType.toString()
+            font.family: "Helvetica"
+            font.pointSize: 15
+            color: "white"
+            style: Text.Outline
+            styleColor: "black"
+        }
+
+        Text {
+            text: "Gamma: " + appControl.serialControl.gammaType.toString()
+            font.family: "Helvetica"
+            font.pointSize: 15
+            color: "white"
+            style: Text.Outline
+            styleColor: "black"
+        }
+
+        Text {
+
+            text: "Filter: " + appControl.serialControl.filterType.toString()
+
+            font.family: "Helvetica"
+            font.pointSize: 15
+            color: "white"
+            style: Text.Outline
+            styleColor: "black"
+        }
+
 
         Text {
             text: "FOV: " + appControl.serialControl.fovPosition / 1000 + " °"
@@ -136,7 +175,7 @@ ApplicationWindow {
                 spacing: 10
 
                 Text {
-                    text: "Ratio:  " + appControl.serialControl.illuminatorAngleOffset / 10.0
+                    text: "Ratio:  " + appControl.serialControl.illuminatorAngleOffset / 100.0
                     font.family: "Helvetica"
                     font.pointSize: 12
                     color: "white"
@@ -149,8 +188,8 @@ ApplicationWindow {
                     anchors.margins: 10
                     //anchors.topMargin: 10
                     value: appControl.serialControl.illuminatorAngleOffset
-                    from: 1
-                    to: 20
+                    from: 50
+                    to: 100
 
                     onValueChanged: {
                         if (angleOffsetSlider.value
@@ -165,13 +204,6 @@ ApplicationWindow {
         GroupBox {
             font.pixelSize: 20
 
-            //            label: Label {
-            //                text: "Camera: "
-            //                color: "White"
-            //                elide: Text.ElideRight
-            //                style: Text.Outline;
-            //                styleColor: "black"
-            //            }
             background: Rectangle {
                 implicitWidth: 60
                 implicitHeight: 40
@@ -184,14 +216,6 @@ ApplicationWindow {
             Row {
                 spacing: 15
 
-                //                Text {
-                //                    text: "Camera:  "
-                //                    font.family: "Helvetica"
-                //                    font.pointSize: 15
-                //                    color: "white"
-                //                    style: Text.Outline;
-                //                    styleColor: "black"
-                //                }
                 RadioButton {
                     id: continuousZoom
                     text: "Cont. Zoom"
@@ -233,6 +257,66 @@ ApplicationWindow {
                     onClicked: {
                         appControl.serialControl.setSelectedCamera(
                                     SerialControl.CameraSelection_Spotter)
+                    }
+                }
+            }
+        }
+
+        GroupBox {
+            font.pixelSize: 20
+            anchors.margins: 0
+
+            background: Rectangle {
+                implicitWidth: 40
+                implicitHeight: 40
+                color: "black"
+                opacity: 0.5
+                radius: 5
+                border.color: "white"
+            }
+
+            Row {
+                spacing: 10
+
+                RadioButton {
+                    id: autoFocusButton
+                    text: "AF"
+                    checked: appControl.serialControl.focusMode
+                    font.pixelSize: 15
+
+                    background: Rectangle {
+                        implicitWidth: 40
+                        implicitHeight: 40
+                        color: autoFocusButton.checked ? "red" : "gray"
+                        opacity: 0.5
+                        radius: 5
+                        border.color: "white"
+                    }
+
+                    onClicked: {
+                        appControl.serialControl.setFocusMode(
+                                    autoFocusButton.checked)
+                    }
+                }
+
+                RadioButton {
+                    id: manualFocusButton
+                    text: "MF"
+                    checked: !appControl.serialControl.focusMode
+                    font.pixelSize: 15
+
+                    background: Rectangle {
+                        implicitWidth: 40
+                        implicitHeight: 40
+                        color: manualFocusButton.checked ? "red" : "gray"
+                        opacity: 0.5
+                        radius: 5
+                        border.color: "white"
+                    }
+
+                    onClicked: {
+                        appControl.serialControl.setFocusMode(
+                                    autoFocusButton.checked)
                     }
                 }
             }
@@ -281,73 +365,6 @@ ApplicationWindow {
         anchors.bottom: parent.bottom
         anchors.right: parent.right
         anchors.margins: 15
-
-        GroupBox {
-            font.pixelSize: 20
-            anchors.margins: 0
-
-            //            label: Label {
-            //                text: " Focus: "
-            //                color: "White"
-            //                elide: Text.ElideRight
-            //                style: Text.Outline;
-            //                styleColor: "black"
-            //            }
-            background: Rectangle {
-                implicitWidth: 40
-                implicitHeight: 40
-                color: "black"
-                opacity: 0.5
-                radius: 5
-                border.color: "white"
-            }
-
-            Column {
-                spacing: 10
-
-                RadioButton {
-                    id: autoFocusButton
-                    text: "AF"
-                    checked: appControl.serialControl.focusMode
-                    font.pixelSize: 15
-
-                    background: Rectangle {
-                        implicitWidth: 40
-                        implicitHeight: 40
-                        color: autoFocusButton.checked ? "red" : "gray"
-                        opacity: 0.5
-                        radius: 5
-                        border.color: "white"
-                    }
-
-                    onClicked: {
-                        appControl.serialControl.setFocusMode(
-                                    autoFocusButton.checked)
-                    }
-                }
-
-                RadioButton {
-                    id: manualFocusButton
-                    text: "MF"
-                    checked: !appControl.serialControl.focusMode
-                    font.pixelSize: 15
-
-                    background: Rectangle {
-                        implicitWidth: 40
-                        implicitHeight: 40
-                        color: manualFocusButton.checked ? "red" : "gray"
-                        opacity: 0.5
-                        radius: 5
-                        border.color: "white"
-                    }
-
-                    onClicked: {
-                        appControl.serialControl.setFocusMode(
-                                    autoFocusButton.checked)
-                    }
-                }
-            }
-        }
 
         Button {
             id: zoomInButton

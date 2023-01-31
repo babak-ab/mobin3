@@ -189,7 +189,7 @@ Item {
                     QQC2.RadioButton {
                         id: colorFilter
                         text: "Color"
-                        checked: appControl.serialControl.selectedFilter === SerialControl.FilterSelection_ColorFilter
+                        checked: appControl.serialControl.selectedFilter === SerialControl.Color
                         font.pixelSize: 25
                         visible: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_ContinuousZoom
                                  || appControl.serialControl.selectedCamera === SerialControl.CameraSelection_Spotter
@@ -205,14 +205,14 @@ Item {
 
                         onClicked: {
                             appControl.serialControl.setSelectedFilter(
-                                        SerialControl.FilterSelection_ColorFilter)
+                                        SerialControl.Color)
                         }
                     }
 
                     QQC2.RadioButton {
                         id: nirFilter
                         text: "NIR"
-                        checked: appControl.serialControl.selectedFilter === SerialControl.FilterSelection_NIRFilter
+                        checked: appControl.serialControl.selectedFilter === SerialControl.NIR
                         font.pixelSize: 25
                         visible: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_ContinuousZoom
                                  || appControl.serialControl.selectedCamera === SerialControl.CameraSelection_Spotter
@@ -228,14 +228,14 @@ Item {
 
                         onClicked: {
                             appControl.serialControl.setSelectedFilter(
-                                        SerialControl.FilterSelection_NIRFilter)
+                                        SerialControl.NIR)
                         }
                     }
 
                     QQC2.RadioButton {
                         id: laserFilter
                         text: "Laser"
-                        checked: appControl.serialControl.selectedFilter === SerialControl.FilterSelection_LaserFilter
+                        checked: appControl.serialControl.selectedFilter === SerialControl.F1064
                         font.pixelSize: 25
                         visible: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_Spotter
 
@@ -250,7 +250,7 @@ Item {
 
                         onClicked: {
                             appControl.serialControl.setSelectedFilter(
-                                        SerialControl.FilterSelection_LaserFilter)
+                                        SerialControl.F1064)
                         }
                     }
                 }
@@ -261,7 +261,7 @@ Item {
                     QQC2.RadioButton {
                         id: bwFilter
                         text: "BW"
-                        checked: appControl.serialControl.selectedFilter === SerialControl.FilterSelection_ColorFilter
+                        checked: appControl.serialControl.selectedFilter === SerialControl.Color
                         font.pixelSize: 25
                         visible: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_SWIRSpotter
 
@@ -276,14 +276,14 @@ Item {
 
                         onClicked: {
                             appControl.serialControl.setSelectedFilter(
-                                        SerialControl.FilterSelection_ColorFilter)
+                                        SerialControl.Color)
                         }
                     }
 
                     QQC2.RadioButton {
                         id: gwFilter
                         text: "GW"
-                        checked: appControl.serialControl.selectedFilter === SerialControl.FilterSelection_NIRFilter
+                        checked: appControl.serialControl.selectedFilter === SerialControl.NIR
                         font.pixelSize: 25
                         visible: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_SWIRSpotter
 
@@ -298,7 +298,7 @@ Item {
 
                         onClicked: {
                             appControl.serialControl.setSelectedFilter(
-                                        SerialControl.FilterSelection_NIRFilter)
+                                        SerialControl.NIR)
                         }
                     }
                 }
