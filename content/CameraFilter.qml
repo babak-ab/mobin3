@@ -142,6 +142,7 @@ Item {
                     text: "SWIR Spotter"
                     checked: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_SWIRSpotter
                     font.pixelSize: 25
+                    visible: false
 
                     background: Rectangle {
                         implicitWidth: 100

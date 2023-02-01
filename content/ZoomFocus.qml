@@ -60,8 +60,6 @@ import AppControl 1.0
 
 Item {
 
-    //width: parent.width
-    //height: parent.height
     property real progress: 0
 
     SequentialAnimation on progress {
@@ -420,7 +418,7 @@ Item {
                 spacing: 10
 
                 Text {
-                    text: "Ratio:  " + appControl.serialControl.illuminatorAngleOffset / 10.0
+                    text: "Ratio:  " + appControl.serialControl.illuminatorAngleOffset / 100.0
                     font.family: "Helvetica"
                     font.pointSize: 15
                     color: "white"
@@ -435,10 +433,14 @@ Item {
                     style: sliderTouchStyle
                     value: appControl.serialControl.illuminatorAngleOffset
                     updateValueWhileDragging: false
-                    minimumValue: 1
-                    maximumValue: 20
+                    minimumValue: 0
+                    maximumValue: 100
 
                     onValueChanged: {
+                        if (angleOffsetSlider.value < 50) {
+                            angleOffsetSlider.value = 50
+                        }
+
                         if (angleOffsetSlider.value !== appControl.serialControl.illuminatorAngleOffset)
                             appControl.serialControl.setIlluminatorAngleOffset(
                                         angleOffsetSlider.value)
@@ -447,8 +449,6 @@ Item {
             }
         }
     }
-
-
 
     Component {
         id: touchStyle

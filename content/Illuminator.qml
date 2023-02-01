@@ -260,7 +260,6 @@ Item {
                     minimumValue: 0
                     maximumValue: 100
 
-
                     onValueChanged: {
                         if (angleOffsetSlider.value < 50) {
                             angleOffsetSlider.value = 50
