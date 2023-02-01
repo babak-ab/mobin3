@@ -107,14 +107,14 @@ ApplicationWindow {
     }
 
     Row {
-        spacing: 32
+        spacing: 28
         //        anchors.fill: parent
         anchors.top: parent.top
         anchors.right: parent.right
         anchors.margins: 15
 
         Text {
-            text: "NR: " + appControl.serialControl.noiseReductionType.toString()
+            text: "NR: " + appControl.serialControl.noiseReductionType.toString() + ","
             font.family: "Helvetica"
             font.pointSize: 15
             color: "white"
@@ -123,7 +123,7 @@ ApplicationWindow {
         }
 
         Text {
-            text: "Defog: " + appControl.serialControl.defogType.toString()
+            text: "Defog: " + appControl.serialControl.defogType.toString() + ","
             font.family: "Helvetica"
             font.pointSize: 15
             color: "white"
@@ -132,7 +132,7 @@ ApplicationWindow {
         }
 
         Text {
-            text: "Gamma: " + appControl.serialControl.gammaType.toString()
+            text: "Gamma: " + appControl.serialControl.gammaType.toString() + ","
             font.family: "Helvetica"
             font.pointSize: 15
             color: "white"
@@ -142,7 +142,7 @@ ApplicationWindow {
 
         Text {
 
-            text: "Filter: " + appControl.serialControl.filterType.toString()
+            text: "Filter: " + appControl.serialControl.filterType.toString() + ","
 
             font.family: "Helvetica"
             font.pointSize: 15
@@ -320,6 +320,15 @@ ApplicationWindow {
                     }
                 }
             }
+        }
+
+        Text {
+            text: "V. 1.0.0"
+            font.family: "Helvetica"
+            font.pointSize: 15
+            color: "white"
+            style: Text.Outline
+            styleColor: "black"
         }
 
         Button {
