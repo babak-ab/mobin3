@@ -35,7 +35,6 @@ GamepadController::GamepadController()
 
     m_isRB_ButtonPressed = false;
     m_isLB_ButtonPressed = false;
-
 }
 
 GamepadController::~GamepadController()
@@ -199,10 +198,7 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
         }
         else if (value == 0)
         {
-
-            if (qAbs(m_gamepad->axisRightX()) <= DEATH_BAND_VALUE) {
-                command = Commands::Command_PanStop;
-            }
+            command = Commands::Command_PanStop;
         }
         break;
     }
@@ -218,10 +214,7 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
         }
         else if (value == 0)
         {
-
-            if (qAbs(m_gamepad->axisRightY()) <= DEATH_BAND_VALUE) {
-                command = Commands::Command_TiltStop;
-            }
+            command = Commands::Command_TiltStop;
         }
         break;
     }
@@ -242,9 +235,7 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
         }
         else if (value == 0)
         {
-            if (qAbs(m_gamepad->axisRightX()) <= DEATH_BAND_VALUE) {
-                command = Commands::Command_FocusStop;
-            }
+            command = Commands::Command_FocusStop;
         }
         break;
     }
@@ -260,9 +251,7 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
         }
         else if (value == 0)
         {
-            if (qAbs(m_gamepad->axisRightY()) <= DEATH_BAND_VALUE) {
-                command = Commands::Command_ZoomStop;
-            }
+            command = Commands::Command_ZoomStop;
         }
         break;
     }
@@ -420,12 +409,12 @@ quint8 GamepadController::analogValueMapper(const GamepadController::Buttons &bu
     {
         if (qAbs(value) > DEATH_BAND_VALUE)
         {
-            // value range is between 0.3 ~ 1.0
+            // value range is between 0.4 ~ 1.0
             // and, this code will change range
             // to between 0 ~ 255
             // using this formula:
-            // m = ([255 / (1.0 - 0.3)] / 10)
-            // newValue = (value - 0.3) * 10 * m -> (value - 0.3) * [(255 * 10) / 6]
+            // m = ([255 / (1.0 - 0.4)] / 10)
+            // newValue = (value - 0.4) * 10 * m -> (value - 0.4) * [(255 * 10) / 6]
             return static_cast<quint8>(qRound((qAbs(value) - DEATH_BAND_VALUE) * ((255 * 10) / 6)));
         }
         else
@@ -441,29 +430,13 @@ quint8 GamepadController::analogValueMapper(const GamepadController::Buttons &bu
 
 void GamepadController::processNextCommand()
 {
+//    stopCommandChecker();
     if (m_commandsBuffer.isEmpty() == false)
     {
         QMap<Commands, quint8>::iterator firstItem = m_commandsBuffer.begin();
         m_commandsBuffer.erase(firstItem);
 
         CommandPacket packet(firstItem.key(), firstItem.value());
-
-        if (firstItem.key() == Command_PanStop
-                && qAbs(m_gamepad->axisRightX()) > DEATH_BAND_VALUE)
-            return;
-
-        if (firstItem.key() == Command_TiltStop
-                && qAbs(m_gamepad->axisRightY()) > DEATH_BAND_VALUE)
-            return;
-
-        if (firstItem.key() == Command_ZoomStop
-                && qAbs(m_gamepad->axisLeftY()) > DEATH_BAND_VALUE)
-            return;
-
-        if (firstItem.key() == Command_FocusStop
-                && qAbs(m_gamepad->axisLeftX()) > DEATH_BAND_VALUE)
-            return;
-
 
         Q_EMIT sigExecuteCommandRequested(packet);
     }
