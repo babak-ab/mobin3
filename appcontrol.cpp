@@ -14,9 +14,9 @@ AppControl::AppControl(QObject* parent)
     : QObject(parent)
 {
 
+    gst_init(NULL,NULL);
     // Fill the serial port names
-    foreach (const QSerialPortInfo &serialPortInfo, QSerialPortInfo::availablePorts())
-    {
+    foreach (const QSerialPortInfo& serialPortInfo, QSerialPortInfo::availablePorts()) {
         _serialPortList.append(serialPortInfo.portName());
     }
 
@@ -25,6 +25,30 @@ AppControl::AppControl(QObject* parent)
 
     _serialControl = new SerialControl;
 
+#ifdef Q_OS_WIN32
+    _captureDevice = "0";
+#endif
+
+#ifdef Q_OS_LINUX
+    _captureDevice = "/dev/video0";
+
+#endif
+
+
+    _recordingLocation = QStandardPaths::MoviesLocation;
+
+    _videoCapture = new VideoCapture(_captureDevice, QSize(640, 480));
+    _videoCapture->initialize();
+    _videoCapture->start();
+
+    _videoRecord = new VideoRecord(QSize(640, 480));
+
+
+    _videoAdapter = new VideoAdapter(QSize(640, 480));
+
+
+    connect(_videoCapture, &VideoCapture::sigFrameReady, _videoAdapter, &VideoAdapter::onFrameReady);
+    connect(_videoCapture, &VideoCapture::sigFrameReady, _videoRecord, &VideoRecord::pushFrame);
 }
 
 AppControl::~AppControl()
@@ -34,48 +58,60 @@ AppControl::~AppControl()
     delete m_gamepadController;
 }
 
-void AppControl::processGamepadCommand(const CommandPacket &packet)
+QString AppControl::recordingLocation() const
 {
-    switch (packet.command)
-    {
-    case Command_ZoomIn:
-    {
+    return _recordingLocation;
+}
+
+void AppControl::setRecordingLocation(const QString &recordingLocation)
+{
+    _recordingLocation = recordingLocation;
+    Q_EMIT recordingLocationChanged();
+}
+
+VideoAdapter* AppControl::videoAdapter() const
+{
+    return _videoAdapter;
+}
+
+void AppControl::setVideoAdapter(VideoAdapter* videoAdapter)
+{
+    _videoAdapter = videoAdapter;
+}
+
+void AppControl::processGamepadCommand(const CommandPacket& packet)
+{
+    switch (packet.command) {
+    case Command_ZoomIn: {
         _serialControl->setZoomSpeed(packet.value);
         _serialControl->zoomIn();
         break;
     }
-    case Command_ZoomOut:
-    {
+    case Command_ZoomOut: {
         _serialControl->setZoomSpeed(packet.value);
         _serialControl->zoomOut();
         break;
     }
-    case Command_ZoomStop:
-    {
+    case Command_ZoomStop: {
         _serialControl->zoomStop();
         break;
     }
-    case Command_FocusFar:
-    {
+    case Command_FocusFar: {
         _serialControl->setFocusSpeed(packet.value);
         _serialControl->focusFar();
         break;
     }
-    case Command_FocusNear:
-    {
+    case Command_FocusNear: {
         _serialControl->setFocusSpeed(packet.value);
         _serialControl->focusNear();
         break;
     }
-    case Command_FocusStop:
-    {
+    case Command_FocusStop: {
         _serialControl->focusStop();
         break;
     }
-    case Command_ToggleFocusMode:
-    {
-        if (packet.value == 0)
-        {
+    case Command_ToggleFocusMode: {
+        if (packet.value == 0) {
             return;
         }
 
@@ -83,84 +119,68 @@ void AppControl::processGamepadCommand(const CommandPacket &packet)
         _serialControl->setFocusMode(!previousFocusMode);
         break;
     }
-    case Command_PanLeft:
-    {       
+    case Command_PanLeft: {
         _serialControl->setPanTiltSpeed(packet.value);
         _serialControl->panLeft();
         break;
     }
-    case Command_PanRight:
-    {        
+    case Command_PanRight: {
         _serialControl->setPanTiltSpeed(packet.value);
         _serialControl->panRight();
         break;
     }
-    case Command_PanStop:
-    {
+    case Command_PanStop: {
         _serialControl->panStop();
         break;
     }
-    case Command_TiltUp:
-    {
+    case Command_TiltUp: {
         _serialControl->setPanTiltSpeed(packet.value);
         _serialControl->tiltUp();
         break;
     }
-    case Command_TiltDown:
-    {
+    case Command_TiltDown: {
         _serialControl->setPanTiltSpeed(packet.value);
         _serialControl->tiltDown();
         break;
     }
-    case Command_TiltStop:
-    {
+    case Command_TiltStop: {
         _serialControl->tiltStop();
         break;
     }
-    case Command_NextCamera:
-    {
-        if (packet.value == 0)
-        {
+    case Command_NextCamera: {
+        if (packet.value == 0) {
             return;
         }
 
         _serialControl->setNextCamera();
         break;
     }
-    case Command_NextDefogLevel:
-    {
-        if (packet.value == 0)
-        {
+    case Command_NextDefogLevel: {
+        if (packet.value == 0) {
             return;
         }
 
         _serialControl->setNextDefogMode();
         break;
     }
-    case Command_NextGammaLevel:
-    {
-        if (packet.value == 0)
-        {
+    case Command_NextGammaLevel: {
+        if (packet.value == 0) {
             return;
         }
 
         _serialControl->setNextGammaLevel();
         break;
     }
-    case Command_NextNoiseReductionLevel:
-    {
-        if (packet.value == 0)
-        {
+    case Command_NextNoiseReductionLevel: {
+        if (packet.value == 0) {
             return;
         }
 
         _serialControl->setNextNoiseReductionMode();
         break;
     }
-    case Command_ToggleDigitalZoom:
-    {
-        if (packet.value == 0)
-        {
+    case Command_ToggleDigitalZoom: {
+        if (packet.value == 0) {
             return;
         }
 
@@ -169,10 +189,8 @@ void AppControl::processGamepadCommand(const CommandPacket &packet)
         _serialControl->enableDigitalZoom(!previousDigitalZoomValue);
         break;
     }
-    case Command_OpenCameraMenu:
-    {
-        if (packet.value == 0)
-        {
+    case Command_OpenCameraMenu: {
+        if (packet.value == 0) {
             return;
         }
 
@@ -180,10 +198,8 @@ void AppControl::processGamepadCommand(const CommandPacket &packet)
         _serialControl->showMenuReleased();
         break;
     }
-    case Command_MenuItemUp:
-    {
-        if (packet.value == 0)
-        {
+    case Command_MenuItemUp: {
+        if (packet.value == 0) {
             return;
         }
 
@@ -191,10 +207,8 @@ void AppControl::processGamepadCommand(const CommandPacket &packet)
         _serialControl->menuUpReleased();
         break;
     }
-    case Command_MenuItemDown:
-    {
-        if (packet.value == 0)
-        {
+    case Command_MenuItemDown: {
+        if (packet.value == 0) {
             return;
         }
 
@@ -202,10 +216,8 @@ void AppControl::processGamepadCommand(const CommandPacket &packet)
         _serialControl->menuDownReleased();
         break;
     }
-    case Command_MenuItemLeft:
-    {
-        if (packet.value == 0)
-        {
+    case Command_MenuItemLeft: {
+        if (packet.value == 0) {
             return;
         }
 
@@ -213,10 +225,8 @@ void AppControl::processGamepadCommand(const CommandPacket &packet)
         _serialControl->menuLeftReleased();
         break;
     }
-    case Command_MenuItemRight:
-    {
-        if (packet.value == 0)
-        {
+    case Command_MenuItemRight: {
+        if (packet.value == 0) {
             return;
         }
 
@@ -224,10 +234,8 @@ void AppControl::processGamepadCommand(const CommandPacket &packet)
         _serialControl->menuRightReleased();
         break;
     }
-    case Command_CloseCameraMenu:
-    {
-        if (packet.value == 0)
-        {
+    case Command_CloseCameraMenu: {
+        if (packet.value == 0) {
             return;
         }
 
@@ -235,11 +243,9 @@ void AppControl::processGamepadCommand(const CommandPacket &packet)
         break;
     }
 
-    case Command_ShutdownSystem:
-    {
+    case Command_ShutdownSystem: {
         break;
     }
-
 
     default:
         return;
@@ -255,14 +261,25 @@ void AppControl::setSerialPortName(QString portName)
 
 int AppControl::findSerialPortName(QString portName)
 {
-    for(int i = 0;i<_serialPortList.size();i++){
+    for (int i = 0; i < _serialPortList.size(); i++) {
         qDebug() << "port name: " << _serialPortList[i] << portName;
-        if(_serialPortList[i].contains(portName)){
+        if (_serialPortList[i].contains(portName)) {
             return i;
         }
     }
 
     return 0;
+}
+
+void AppControl::startRecord()
+{
+    _videoRecord->initialize(_recordingLocation);
+    _videoRecord->start();
+}
+
+void AppControl::stopRecord()
+{
+    _videoRecord->stop();
 }
 
 QString AppControl::messageTitle() const
@@ -307,25 +324,25 @@ QStringList AppControl::serialPortList() const
     return _serialPortList;
 }
 
-SerialControl *AppControl::serialControl() const
+SerialControl* AppControl::serialControl() const
 {
     return _serialControl;
 }
 
-void AppControl::setGamepadController(GamepadController *gamepadController)
+void AppControl::setGamepadController(GamepadController* gamepadController)
 {
     m_gamepadController = gamepadController;
 
     connect(m_gamepadController, &GamepadController::sigExecuteCommandRequested,
-            this, &AppControl::sltExecuteCommandRequested);
+        this, &AppControl::sltExecuteCommandRequested);
 }
 
-void AppControl::setGamepadManager(QGamepadManager *manager)
+void AppControl::setGamepadManager(QGamepadManager* manager)
 {
     m_gamepadManager = manager;
 }
 
-void AppControl::sltExecuteCommandRequested(const CommandPacket &packet)
+void AppControl::sltExecuteCommandRequested(const CommandPacket& packet)
 {
     processGamepadCommand(packet);
 }

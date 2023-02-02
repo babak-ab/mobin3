@@ -88,22 +88,7 @@ ApplicationWindow {
     VideoRender {
         id: videoRender
         anchors.fill: parent
-        source: camera
-        Camera {
-            id: camera
-            captureMode: Camera.CaptureVideo
-            property string fileName: "test.mp4"
-            property string path: "C:/Users/Morteza/Desktop/record/"
-            onFileNameChanged: {
-                camera.videoRecorder.outputLocation = path + fileName
-            }
-
-            videoRecorder {
-                resolution: "640x480"
-                frameRate: 30
-                mediaContainer: "mp4"
-            }
-        }
+        source: appControl.videoAdapter
     }
 
     Row {
@@ -351,12 +336,11 @@ ApplicationWindow {
                     var dt = new Date().toLocaleString(Qt.locale(),
                                                        "yyyy-MM-dd_hh_mm_ss")
 
-                    camera.fileName = camera.path + "video_" + dt + ".mp4"
-
-                    console.log("fileName: ", camera.fileName)
-                    camera.videoRecorder.record()
+                    //camera.fileName = camera.path + "video_" + dt + ".mp4"
+                    //console.log("fileName: ", camera.fileName)
+                    appControl.startRecord()
                 } else {
-                    camera.videoRecorder.stop()
+                    appControl.stopRecord()
                 }
             }
         }
