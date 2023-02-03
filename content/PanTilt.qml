@@ -138,6 +138,11 @@ Item {
             onReleased: {
                 appControl.serialControl.tiltStop()
             }
+
+            onDownChanged: {
+                if (!upTiltButton.pressed)
+                    appControl.serialControl.tiltStop()
+            }
         }
 
         Row {
@@ -166,6 +171,11 @@ Item {
                 onReleased: {
                     appControl.serialControl.panStop()
                 }
+
+                onDownChanged: {
+                    if (!leftPanButton.pressed)
+                        appControl.serialControl.panStop()
+                }
             }
 
             QQC2.Button {
@@ -189,6 +199,11 @@ Item {
 
                 onReleased: {
                     appControl.serialControl.panStop()
+                }
+
+                onDownChanged: {
+                    if (!rightPanButton.pressed)
+                        appControl.serialControl.panStop()
                 }
             }
         }
@@ -215,6 +230,11 @@ Item {
 
             onReleased: {
                 appControl.serialControl.tiltStop()
+            }
+
+            onDownChanged: {
+                if (!downTiltButton.pressed)
+                    appControl.serialControl.tiltStop()
             }
         }
     }

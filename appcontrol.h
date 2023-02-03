@@ -3,7 +3,7 @@
 
 #define FRAME_WIDTH 1920
 #define FRAME_HEIGHT 1080
-#define SOFTWARE_VERSION "0.9.0"
+#define SOFTWARE_VERSION "V. 1.1.0"
 
 #include <QAbstractItemModel>
 #include <QElapsedTimer>
@@ -30,34 +30,36 @@ class AppControl : public QObject {
     Q_PROPERTY(QStringList serialPortList READ serialPortList NOTIFY signalVideoAdapter);
     Q_PROPERTY(QString messageTitle READ messageTitle NOTIFY sigThrowSerialMessageRequested);
     Q_PROPERTY(QString messageText READ messageText NOTIFY sigThrowSerialMessageRequested);
-
+    Q_PROPERTY(bool recordVisible READ recordVisible WRITE setRecordVisible NOTIFY recordVisibleChanged)
     Q_PROPERTY(QString recordingLocation READ recordingLocation WRITE setRecordingLocation NOTIFY recordingLocationChanged)
+    Q_PROPERTY(QString appVersion READ appVersion NOTIFY signalVideoAdapter)
 
 public:
     explicit AppControl(QObject* parent = Q_NULLPTR);
     ~AppControl();
 
 private:
-    QString _recordingLocation;
-    QString _captureDevice;
-    //    ButtonModel* _buttonModel;
-    VideoCapture* _videoCapture;
-    VideoAdapter* _videoAdapter;
-    VideoRecord* _videoRecord;
+    QString m_recordingLocation;
+    QString m_captureDevice;
+    VideoCapture* m_videoCapture;
+    VideoAdapter* m_videoAdapter;
+    VideoRecord* m_videoRecord;
 
-    SerialControl* _serialControl;
+    SerialControl* m_serialControl;
     GamepadController* m_gamepadController;
 
     QGamepadManager* m_gamepadManager;
 
-    QStringList _serialPortList;
+    QStringList m_serialPortList;
 
-    QString _serialPortName;
+    QString m_serialPortName;
 
-    QString _messageTitle;
-    QString _messageText;
+    QString m_messageTitle;
+    QString m_messageText;
 
-    bool _isSerialPortOpened;
+    bool m_isSerialPortOpened;
+
+    bool m_recordVisible;
 
     void processGamepadCommand(const CommandPacket& packet);
 
@@ -89,6 +91,11 @@ public:
     QString recordingLocation() const;
     void setRecordingLocation(const QString& recordingLocation);
 
+    bool recordVisible() const;
+    void setRecordVisible(bool recordVisible);
+
+    QString appVersion() const;
+
 private Q_SLOTS:
     void sltExecuteCommandRequested(const CommandPacket& packet);
 
@@ -96,6 +103,7 @@ Q_SIGNALS:
     void signalVideoAdapter();
     void sigThrowSerialMessageRequested();
     void recordingLocationChanged();
+    void recordVisibleChanged();
 };
 
 #endif // APPCONTROL_H

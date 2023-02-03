@@ -198,7 +198,9 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
         }
         else if (value == 0)
         {
-            command = Commands::Command_PanStop;
+            if (qAbs(m_gamepad->axisRightX()) <= DEATH_BAND_VALUE) {
+                command = Commands::Command_PanStop;
+            }
         }
         break;
     }
@@ -214,7 +216,9 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
         }
         else if (value == 0)
         {
-            command = Commands::Command_TiltStop;
+            if (qAbs(m_gamepad->axisRightY()) <= DEATH_BAND_VALUE) {
+                command = Commands::Command_TiltStop;
+            }
         }
         break;
     }
@@ -235,7 +239,9 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
         }
         else if (value == 0)
         {
-            command = Commands::Command_FocusStop;
+            if (qAbs(m_gamepad->axisRightX()) <= DEATH_BAND_VALUE) {
+                command = Commands::Command_FocusStop;
+            }
         }
         break;
     }
@@ -251,7 +257,9 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
         }
         else if (value == 0)
         {
-            command = Commands::Command_ZoomStop;
+            if (qAbs(m_gamepad->axisRightY()) <= DEATH_BAND_VALUE) {
+                command = Commands::Command_ZoomStop;
+            }
         }
         break;
     }
@@ -430,13 +438,31 @@ quint8 GamepadController::analogValueMapper(const GamepadController::Buttons &bu
 
 void GamepadController::processNextCommand()
 {
-//    stopCommandChecker();
+
     if (m_commandsBuffer.isEmpty() == false)
     {
         QMap<Commands, quint8>::iterator firstItem = m_commandsBuffer.begin();
         m_commandsBuffer.erase(firstItem);
 
         CommandPacket packet(firstItem.key(), firstItem.value());
+
+
+        if (firstItem.key() == Command_PanStop
+                && qAbs(m_gamepad->axisRightX()) > DEATH_BAND_VALUE)
+            return;
+
+        if (firstItem.key() == Command_TiltStop
+                && qAbs(m_gamepad->axisRightY()) > DEATH_BAND_VALUE)
+            return;
+
+        if (firstItem.key() == Command_ZoomStop
+                && qAbs(m_gamepad->axisLeftY()) > DEATH_BAND_VALUE)
+            return;
+
+        if (firstItem.key() == Command_FocusStop
+                && qAbs(m_gamepad->axisLeftX()) > DEATH_BAND_VALUE)
+            return;
+
 
         Q_EMIT sigExecuteCommandRequested(packet);
     }

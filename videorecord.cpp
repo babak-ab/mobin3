@@ -106,8 +106,7 @@ void VideoRecord::initialize(const QString& location)
     QDir dir(location);
     QFileInfo fileInfo(location);
     if (location != ""
-        && dir.exists()
-        /*&& fileInfo.isWritable()*/) {
+        && dir.exists()) {
         _location = location;
     }
 

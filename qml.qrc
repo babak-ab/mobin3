@@ -41,5 +41,6 @@
         <file>Images/focus-far.png</file>
         <file>Images/focus-near.png</file>
         <file>content/Gamepad.qml</file>
+        <file>RecordIndicator.qml</file>
     </qresource>
 </RCC>

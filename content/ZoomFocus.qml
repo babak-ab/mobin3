@@ -144,6 +144,11 @@ Item {
                         onReleased: {
                             appControl.serialControl.zoomStop()
                         }
+
+                        onDownChanged: {
+                            if (!zoomInButton.pressed)
+                                appControl.serialControl.zoomStop()
+                        }
                     }
 
                     QQC2.Button {
@@ -174,6 +179,11 @@ Item {
 
                         onReleased: {
                             appControl.serialControl.zoomStop()
+                        }
+
+                        onDownChanged: {
+                            if (!zoomOutButton.pressed)
+                                appControl.serialControl.zoomStop()
                         }
                     }
                 }
@@ -262,6 +272,11 @@ Item {
                         onReleased: {
                             appControl.serialControl.focusStop()
                         }
+
+                        onDownChanged: {
+                            if (!focusFarButton.pressed)
+                                appControl.serialControl.focusStop()
+                        }
                     }
 
                     QQC2.Button {
@@ -292,6 +307,11 @@ Item {
 
                         onReleased: {
                             appControl.serialControl.focusStop()
+                        }
+
+                        onDownChanged: {
+                            if (!focusNearButton.pressed)
+                                appControl.serialControl.focusStop()
                         }
                     }
                 }

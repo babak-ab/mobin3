@@ -455,12 +455,6 @@ void SerialControl::zoomOut()
 void SerialControl::zoomStop()
 {
     sendCommand1(188, m_zoomSpeed);
-
-    //Repeat command to increase reliability of stopping process
-    if (m_repeatCounter++ < 6)
-        QTimer::singleShot(50, this, &SerialControl::zoomStop);
-    else
-        m_repeatCounter = 0;
 }
 
 void SerialControl::focusFar()
@@ -476,12 +470,6 @@ void SerialControl::focusNear()
 void SerialControl::focusStop()
 {
     sendCommand1(179, m_focusSpeed);
-
-    //Repeat command to increase reliability of stopping process
-    if (m_repeatCounter++ < 6)
-        QTimer::singleShot(50, this, &SerialControl::focusStop);
-    else
-        m_repeatCounter = 0;
 }
 
 void SerialControl::setFocusMode(const bool mode)
@@ -587,12 +575,6 @@ void SerialControl::tiltDown()
 void SerialControl::tiltStop()
 {
     sendCommand1(175, 1);
-
-//    //Repeat command to increase reliability of stopping process
-//    if (m_repeatCounter++ < 6)
-//        QTimer::singleShot(50, this, &SerialControl::tiltStop);
-//    else
-//        m_repeatCounter = 0;
 }
 
 void SerialControl::panLeft()
@@ -608,12 +590,6 @@ void SerialControl::panRight()
 void SerialControl::panStop()
 {
     sendCommand1(172, 1);
-
-//    //Repeat command to increase reliability of stopping process
-//    if (m_repeatCounter++ < 6)
-//        QTimer::singleShot(50, this, &SerialControl::panStop);
-//    else
-//        m_repeatCounter = 0;
 }
 
 void SerialControl::setPanTiltSpeed(const quint8 speed)
