@@ -3,7 +3,7 @@
 
 #define FRAME_WIDTH 1920
 #define FRAME_HEIGHT 1080
-#define SOFTWARE_VERSION "V. 1.1.0"
+#define SOFTWARE_VERSION "V. 1.1.1"
 
 #include <QAbstractItemModel>
 #include <QElapsedTimer>

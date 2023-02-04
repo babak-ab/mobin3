@@ -141,10 +141,6 @@ Item {
                             appControl.serialControl.zoomIn()
                         }
 
-                        onReleased: {
-                            appControl.serialControl.zoomStop()
-                        }
-
                         onDownChanged: {
                             if (!zoomInButton.pressed)
                                 appControl.serialControl.zoomStop()
@@ -175,10 +171,6 @@ Item {
 
                         onPressed: {
                             appControl.serialControl.zoomOut()
-                        }
-
-                        onReleased: {
-                            appControl.serialControl.zoomStop()
                         }
 
                         onDownChanged: {
@@ -269,10 +261,6 @@ Item {
                             appControl.serialControl.focusFar()
                         }
 
-                        onReleased: {
-                            appControl.serialControl.focusStop()
-                        }
-
                         onDownChanged: {
                             if (!focusFarButton.pressed)
                                 appControl.serialControl.focusStop()
@@ -303,10 +291,6 @@ Item {
 
                         onPressed: {
                             appControl.serialControl.focusNear()
-                        }
-
-                        onReleased: {
-                            appControl.serialControl.focusStop()
                         }
 
                         onDownChanged: {

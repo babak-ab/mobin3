@@ -104,10 +104,6 @@ Item {
                 appControl.serialControl.menuUpPressed()
             }
 
-            onReleased: {
-                appControl.serialControl.menuUpReleased()
-            }
-
             onDownChanged: {
                 if (!upButton.pressed)
                     appControl.serialControl.menuUpReleased()
@@ -135,10 +131,6 @@ Item {
 
                 onPressed: {
                     appControl.serialControl.menuLeftPressed()
-                }
-
-                onReleased: {
-                    appControl.serialControl.menuLeftReleased()
                 }
 
                 onDownChanged: {
@@ -169,10 +161,6 @@ Item {
                         appControl.serialControl.showMenuPressed()
                     }
 
-                    onReleased: {
-                        appControl.serialControl.showMenuReleased()
-                    }
-
                     onDownChanged: {
                         if (!menuButton.pressed)
                             appControl.serialControl.showMenuReleased()
@@ -193,10 +181,6 @@ Item {
                         opacity: 0.5
                         radius: 5
                         border.color: "white"
-                    }
-
-                    onReleased: {
-                        appControl.serialControl.menuESCReleased()
                     }
 
                     onDownChanged: {
@@ -225,10 +209,6 @@ Item {
                     appControl.serialControl.menuRightPressed()
                 }
 
-                onReleased: {
-                    appControl.serialControl.menuRightReleased()
-                }
-
                 onDownChanged: {
                     if (!rightButton.pressed)
                         appControl.serialControl.menuRightReleased()
@@ -254,10 +234,6 @@ Item {
 
             onPressed: {
                 appControl.serialControl.menuDownPressed()
-            }
-
-            onReleased: {
-                appControl.serialControl.menuDownReleased()
             }
 
             onDownChanged: {

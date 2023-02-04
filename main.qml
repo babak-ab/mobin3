@@ -430,10 +430,6 @@ ApplicationWindow {
                 appControl.serialControl.zoomIn()
             }
 
-            onReleased: {
-                appControl.serialControl.zoomStop()
-            }
-
             onDownChanged: {
                 if (!zoomInButton.pressed)
                     appControl.serialControl.zoomStop()
@@ -454,10 +450,6 @@ ApplicationWindow {
 
             onPressed: {
                 appControl.serialControl.zoomOut()
-            }
-
-            onReleased: {
-                appControl.serialControl.zoomStop()
             }
 
             onDownChanged: {
@@ -482,10 +474,6 @@ ApplicationWindow {
                 appControl.serialControl.focusFar()
             }
 
-            onReleased: {
-                appControl.serialControl.focusStop()
-            }
-
             onDownChanged: {
                 if (!focusFarButton.pressed)
                     appControl.serialControl.focusStop()
@@ -506,10 +494,6 @@ ApplicationWindow {
 
             onPressed: {
                 appControl.serialControl.focusNear()
-            }
-
-            onReleased: {
-                appControl.serialControl.focusStop()
             }
 
             onDownChanged: {
@@ -534,10 +518,6 @@ ApplicationWindow {
                 appControl.serialControl.panLeft()
             }
 
-            onReleased: {
-                appControl.serialControl.panStop()
-            }
-
             onDownChanged: {
                 if (!leftPanButton.pressed)
                     appControl.serialControl.panStop()
@@ -558,10 +538,6 @@ ApplicationWindow {
 
             onPressed: {
                 appControl.serialControl.panRight()
-            }
-
-            onReleased: {
-                appControl.serialControl.panStop()
             }
 
             onDownChanged: {
@@ -586,10 +562,6 @@ ApplicationWindow {
                 appControl.serialControl.tiltUp()
             }
 
-            onReleased: {
-                appControl.serialControl.tiltStop()
-            }
-
             onDownChanged: {
                 if (!upTiltButton.pressed)
                     appControl.serialControl.tiltStop()
@@ -610,10 +582,6 @@ ApplicationWindow {
 
             onPressed: {
                 appControl.serialControl.tiltDown()
-            }
-
-            onReleased: {
-                appControl.serialControl.tiltStop()
             }
 
             onDownChanged: {
