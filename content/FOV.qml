@@ -268,7 +268,6 @@ Item {
                         appControl.serialControl.gotoPosition(
                                     positionSpinBox.value)
                     }
-
                 }
             }
         }

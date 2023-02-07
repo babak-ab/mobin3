@@ -60,6 +60,8 @@ import AppControl 1.0
 
 Item {
 
+    //width: parent.width
+    //height: parent.height
     property real progress: 0
 
     SequentialAnimation on progress {
@@ -141,9 +143,8 @@ Item {
                             appControl.serialControl.zoomIn()
                         }
 
-                        onDownChanged: {
-                            if (!zoomInButton.pressed)
-                                appControl.serialControl.zoomStop()
+                        onReleased: {
+                            appControl.serialControl.zoomStop()
                         }
                     }
 
@@ -173,9 +174,8 @@ Item {
                             appControl.serialControl.zoomOut()
                         }
 
-                        onDownChanged: {
-                            if (!zoomOutButton.pressed)
-                                appControl.serialControl.zoomStop()
+                        onReleased: {
+                            appControl.serialControl.zoomStop()
                         }
                     }
                 }
@@ -261,9 +261,8 @@ Item {
                             appControl.serialControl.focusFar()
                         }
 
-                        onDownChanged: {
-                            if (!focusFarButton.pressed)
-                                appControl.serialControl.focusStop()
+                        onReleased: {
+                            appControl.serialControl.focusStop()
                         }
                     }
 
@@ -293,9 +292,8 @@ Item {
                             appControl.serialControl.focusNear()
                         }
 
-                        onDownChanged: {
-                            if (!focusNearButton.pressed)
-                                appControl.serialControl.focusStop()
+                        onReleased: {
+                            appControl.serialControl.focusStop()
                         }
                     }
                 }
@@ -422,7 +420,7 @@ Item {
                 spacing: 10
 
                 Text {
-                    text: "Ratio:  " + appControl.serialControl.illuminatorAngleOffset / 100.0
+                    text: "Ratio:  " + appControl.serialControl.illuminatorAngleOffset / 10.0
                     font.family: "Helvetica"
                     font.pointSize: 15
                     color: "white"
@@ -437,14 +435,10 @@ Item {
                     style: sliderTouchStyle
                     value: appControl.serialControl.illuminatorAngleOffset
                     updateValueWhileDragging: false
-                    minimumValue: 0
-                    maximumValue: 100
+                    minimumValue: 1
+                    maximumValue: 20
 
                     onValueChanged: {
-                        if (angleOffsetSlider.value < 50) {
-                            angleOffsetSlider.value = 50
-                        }
-
                         if (angleOffsetSlider.value !== appControl.serialControl.illuminatorAngleOffset)
                             appControl.serialControl.setIlluminatorAngleOffset(
                                         angleOffsetSlider.value)
@@ -453,6 +447,8 @@ Item {
             }
         }
     }
+
+
 
     Component {
         id: touchStyle

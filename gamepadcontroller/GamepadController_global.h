@@ -41,7 +41,9 @@ enum Commands
 
     Command_ShutdownSystem,
 
-    Command_ToggleIllumination,
+    Command_ToggleIlluminator,
+    Command_IncreaseAngleOfIlluminator,
+    Command_IncreaseBrightnessOfIlluminator
 };
 
 struct CommandPacket

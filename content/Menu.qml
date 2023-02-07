@@ -55,6 +55,8 @@ import QtQuick.Controls 2.3 as QQC2
 import QtQuick.Controls 1.4 as QQC1
 
 Item {
+//    width: parent.width
+//    height: parent.height
 
     property real progress: 0
     SequentialAnimation on progress {
@@ -104,9 +106,8 @@ Item {
                 appControl.serialControl.menuUpPressed()
             }
 
-            onDownChanged: {
-                if (!upButton.pressed)
-                    appControl.serialControl.menuUpReleased()
+            onReleased: {
+                appControl.serialControl.menuUpReleased()
             }
         }
 
@@ -133,9 +134,8 @@ Item {
                     appControl.serialControl.menuLeftPressed()
                 }
 
-                onDownChanged: {
-                    if (!leftButton.pressed)
-                        appControl.serialControl.menuLeftReleased()
+                onReleased: {
+                    appControl.serialControl.menuLeftReleased()
                 }
             }
 
@@ -161,9 +161,8 @@ Item {
                         appControl.serialControl.showMenuPressed()
                     }
 
-                    onDownChanged: {
-                        if (!menuButton.pressed)
-                            appControl.serialControl.showMenuReleased()
+                    onReleased: {
+                        appControl.serialControl.showMenuReleased()
                     }
                 }
 
@@ -183,9 +182,8 @@ Item {
                         border.color: "white"
                     }
 
-                    onDownChanged: {
-                        if (!escButton.pressed)
-                            appControl.serialControl.menuESCReleased()
+                    onReleased: {
+                        appControl.serialControl.menuESCReleased()
                     }
                 }
             }
@@ -209,9 +207,8 @@ Item {
                     appControl.serialControl.menuRightPressed()
                 }
 
-                onDownChanged: {
-                    if (!rightButton.pressed)
-                        appControl.serialControl.menuRightReleased()
+                onReleased: {
+                    appControl.serialControl.menuRightReleased()
                 }
             }
         }
@@ -236,9 +233,8 @@ Item {
                 appControl.serialControl.menuDownPressed()
             }
 
-            onDownChanged: {
-                if (!downButton.pressed)
-                    appControl.serialControl.menuDownReleased()
+            onReleased: {
+                appControl.serialControl.menuDownReleased()
             }
         }
     }

@@ -22,7 +22,7 @@
 // **********************************************************************
 #include "GamepadController_global.h"
 
-#define DEATH_BAND_VALUE        0.2
+#define DEATH_BAND_VALUE        0.4
 #define THRESHOLD_VALUE         0.1
 #define TIMER_INTERVAL          50
 
@@ -105,10 +105,11 @@ private:
     QMap<Commands, quint8> m_commandsBuffer;
 
     QTimer m_processCommandsTimer;
-    QTimer m_illuminationTimer;
+//    QTimer m_illuminationTimer;
 
     bool m_isRB_ButtonPressed;
     bool m_isLB_ButtonPressed;
+    bool m_isToggleIlluminatorCommandSent;
 
     // **********************************************************************
     // PRIVATE METHODS DECLARATION

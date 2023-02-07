@@ -22,17 +22,17 @@ SerialControl::SerialControl(QObject* parent)
     m_repeatCounter = 0;
 
     m_selectedCamera = CameraSelection_ContinuousZoom;
-    m_filterMode = Color;
-    m_defogMode = D_High;
-    m_gammaLevel = Level1;
-    m_noiseReductionMode = NR_High;
+    m_selectedFilter = FilterSelection_ColorFilter;
+    m_defogMode = DefogMode_High;
+    m_gammaLevel = GammaLevel_Level1;
+    m_noiseReductionMode = NoiseReductionMode_High;
     m_isDigitalZoomEnabled = false;
     m_isIlluminatorEnabled = false;
     m_contrastLevel = ContrastLevel_Level2;
     m_brightnessLevel = BrightnessLevel_Level2;
     m_mode = 1;
     m_illuminatorBrightness = 0;
-    m_illuminatorAngleOffset = 50;
+    m_illuminatorAngleOffset = 1;
 
     m_focusMode = true;
 
@@ -68,6 +68,8 @@ void SerialControl::sendInitializingCommands()
 
     // Set Auto Focus Mode
     QTimer::singleShot(400, this, &SerialControl::autoFocus);
+
+
 
 }
 
@@ -126,8 +128,6 @@ QByteArray SerialControl::interpret(IRQueue<quint8>* queueRead)
         packet[i] = data;
     }
 
-//    qDebug() << "received packet: " << packet.toHex(' ') << m_focusMode;
-
     // calculate crc
     {
         quint8 *crcInput = new quint8;
@@ -179,24 +179,18 @@ QByteArray SerialControl::interpret(IRQueue<quint8>* queueRead)
             FocusModes focusMode            = static_cast<FocusModes>(0x0003 & ((0x0030 & statusValue) >> 4));          // 0000 0000 00XX 0000
             SendingModes sendingMode        = static_cast<SendingModes>(0x0003 & ((0x00C0 & statusValue) >> 6));        // 0000 0000 XX00 0000
 
-            CameraSelection videoMode       = static_cast<CameraSelection>(0x0003 & ((0x0300 & statusValue) >> 8));     // 0000 00XX 0000 0000
+            CameraSelection videoMode       = static_cast<CameraSelection>(0x0003 & ((0x0300 & statusValue) >> 8));          // 0000 00XX 0000 0000
             FilterModes filterMode          = static_cast<FilterModes>(0x0007 & ((0x1C00 & statusValue) >> 10));        // 000X XX00 0000 0000
             DefogMode defogMode             = static_cast<DefogMode>(0x0007 & ((0xE000 & statusValue) >> 13));          // XXX0 0000 0000 0000
 
             m_gammaLevel = gammaLevel;
             m_noiseReductionMode = noiseLevel;
-
-            if (focusMode == 2)
-                m_focusMode = true; // boolean
-            else if (focusMode == 1)
-                m_focusMode = false;
-
+            m_focusMode = focusMode; // boolean
             m_sendingMode = sendingMode;
 
             m_selectedCamera = videoMode;
             m_filterMode = filterMode;
             m_defogMode = defogMode;
-
         }
         // byte 8               => Sensor
         {
@@ -226,8 +220,6 @@ QByteArray SerialControl::interpret(IRQueue<quint8>* queueRead)
             }
         }
     }
-
-    Q_EMIT sigDataChanged();
 
     return QByteArray();
 }
@@ -302,9 +294,9 @@ bool SerialControl::focusMode() const
     return m_focusMode;
 }
 
-SerialControl::FilterModes SerialControl::selectedFilter() const
+SerialControl::FilterSelection SerialControl::selectedFilter() const
 {
-    return m_filterMode;
+    return m_selectedFilter;
 }
 
 SerialControl::CameraSelection SerialControl::selectedCamera() const
@@ -327,31 +319,12 @@ quint8 SerialControl::mode() const
     return (m_mode - 1);
 }
 
-QVariant SerialControl::getNoiseReductionType()
-{
-    return QVariant::fromValue(m_noiseReductionMode);
-}
-
-QVariant SerialControl::getDefogType()
-{
-    return QVariant::fromValue(m_defogMode);
-}
-
-QVariant SerialControl::getGammaType()
-{
-    return QVariant::fromValue(m_gammaLevel);
-}
-
-QVariant SerialControl::getFilterType()
-{
-    return QVariant::fromValue(m_filterMode);
-}
-
 void SerialControl::writeDataOnPlatformsSerialPort(const QByteArray& data)
 {
-    if (true /*m_serialPort->isOpen()*/) {
+    if (m_serialPort->isOpen())
+    {
         m_serialPort->write(data);
-        //qDebug() << "write data :" << data.toHex(' ');
+//        qDebug() << "write data :" << data.toHex(' ');
     }
 }
 
@@ -439,7 +412,7 @@ void SerialControl::sltSetCameraMode()
 
 void SerialControl::sltSetFilterMode()
 {
-    setSelectedFilter(m_filterMode);
+    setSelectedFilter(m_selectedFilter);
 }
 
 void SerialControl::zoomIn()
@@ -455,6 +428,12 @@ void SerialControl::zoomOut()
 void SerialControl::zoomStop()
 {
     sendCommand1(188, m_zoomSpeed);
+
+    //Repeat command to increase reliability of stopping process
+    if (m_repeatCounter++ < 6)
+        QTimer::singleShot(50, this, &SerialControl::zoomStop);
+    else
+        m_repeatCounter = 0;
 }
 
 void SerialControl::focusFar()
@@ -470,6 +449,12 @@ void SerialControl::focusNear()
 void SerialControl::focusStop()
 {
     sendCommand1(179, m_focusSpeed);
+
+    //Repeat command to increase reliability of stopping process
+    if (m_repeatCounter++ < 6)
+        QTimer::singleShot(50, this, &SerialControl::focusStop);
+    else
+        m_repeatCounter = 0;
 }
 
 void SerialControl::setFocusMode(const bool mode)
@@ -481,6 +466,7 @@ void SerialControl::setFocusMode(const bool mode)
 
     m_focusMode = mode;
 
+    qDebug() << "new focusMode: " << m_focusMode;
 
     Q_EMIT sigDataChanged();
 }
@@ -520,6 +506,14 @@ void SerialControl::setFocusSpeed(const quint8 speed)
 
     Q_EMIT sigDataChanged();
 }
+
+//void SerialControl::setFovPosition(const quint16 position)
+//{
+//    m_fovPosition = position;
+//    qDebug() << " XXXXX: " << m_fovPosition;
+
+//    Q_EMIT sigDataChanged();
+//}
 
 void SerialControl::gotoFov(const quint16 position)
 {
@@ -575,6 +569,12 @@ void SerialControl::tiltDown()
 void SerialControl::tiltStop()
 {
     sendCommand1(175, 1);
+
+    //Repeat command to increase reliability of stopping process
+    if (m_repeatCounter++ < 6)
+        QTimer::singleShot(50, this, &SerialControl::tiltStop);
+    else
+        m_repeatCounter = 0;
 }
 
 void SerialControl::panLeft()
@@ -590,6 +590,12 @@ void SerialControl::panRight()
 void SerialControl::panStop()
 {
     sendCommand1(172, 1);
+
+    //Repeat command to increase reliability of stopping process
+    if (m_repeatCounter++ < 6)
+        QTimer::singleShot(50, this, &SerialControl::panStop);
+    else
+        m_repeatCounter = 0;
 }
 
 void SerialControl::setPanTiltSpeed(const quint8 speed)
@@ -633,9 +639,9 @@ void SerialControl::setSelectedCamera(const SerialControl::CameraSelection camer
     Q_EMIT sigDataChanged();
 }
 
-void SerialControl::setSelectedFilter(const SerialControl::FilterModes filter)
+void SerialControl::setSelectedFilter(const SerialControl::FilterSelection filter)
 {
-    m_filterMode = filter;
+    m_selectedFilter = filter;
 
     sendCommand1(75, filter);
 
@@ -646,24 +652,24 @@ void SerialControl::setNextDefogMode()
 {
     switch(m_defogMode)
     {
-    case D_Off:
+    case DefogMode_Off:
     {
-        m_defogMode = D_Low;
+        m_defogMode = DefogMode_Low;
         break;
     }
-    case D_Low:
+    case DefogMode_Low:
     {
-        m_defogMode = D_Medium;
+        m_defogMode = DefogMode_Medium;
         break;
     }
-    case D_Medium:
+    case DefogMode_Medium:
     {
-        m_defogMode = D_High;
+        m_defogMode = DefogMode_High;
         break;
     }
-    case D_High:
+    case DefogMode_High:
     {
-        m_defogMode = D_Off;
+        m_defogMode = DefogMode_Off;
         break;
     }
     }
@@ -684,14 +690,14 @@ void SerialControl::setNextGammaLevel()
 {
     switch(m_gammaLevel)
     {
-    case Level1:
+    case GammaLevel_Level1:
     {
-        m_gammaLevel = Level2;
+        m_gammaLevel = GammaLevel_Level2;
         break;
     }
-    case Level2:
+    case GammaLevel_Level2:
     {
-        m_gammaLevel = Level1;
+        m_gammaLevel = GammaLevel_Level1;
         break;
     }
     }
@@ -715,14 +721,14 @@ void SerialControl::setNextNoiseReductionMode()
 {
     switch(m_noiseReductionMode)
     {
-    case NR_Low:
+    case NoiseReductionMode_Low:
     {
-        m_noiseReductionMode = NR_High;
+        m_noiseReductionMode = NoiseReductionMode_High;
         break;
     }
-    case NR_High:
+    case NoiseReductionMode_High:
     {
-        m_noiseReductionMode = NR_Low;
+        m_noiseReductionMode = NoiseReductionMode_Low;
         break;
     }
     }
@@ -771,6 +777,11 @@ void SerialControl::enableIlluminator(const bool state)
     sendCommand1(90, param);
 
     Q_EMIT sigDataChanged();
+}
+
+void SerialControl::toggleIlluminator()
+{
+    enableIlluminator(!m_isIlluminatorEnabled);
 }
 
 void SerialControl::setIlluminatorBrightness(const quint8 brightness)
@@ -904,7 +915,7 @@ void SerialControl::menuRightReleased()
 
 void SerialControl::menuESCReleased()
 {
-    sendCommand1(58, 1);
+    sendCommand1(63, 1);
 }
 
 void SerialControl::sendCommand1(const quint8& command,

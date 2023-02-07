@@ -43,16 +43,10 @@ class SerialControl : public RingQueue
     Q_PROPERTY(bool isConnected READ isConnected NOTIFY sigDataChanged)
     Q_PROPERTY(bool focusMode READ focusMode WRITE setFocusMode NOTIFY sigDataChanged)
     Q_PROPERTY(CameraSelection selectedCamera READ selectedCamera WRITE setSelectedCamera NOTIFY sigDataChanged)
-    Q_PROPERTY(FilterModes selectedFilter READ selectedFilter WRITE setSelectedFilter NOTIFY sigDataChanged)
+    Q_PROPERTY(FilterSelection selectedFilter READ selectedFilter WRITE setSelectedFilter NOTIFY sigDataChanged)
     Q_PROPERTY(ContrastLevel contrastLevel READ contrastLevel WRITE setContrastMode NOTIFY sigDataChanged)
     Q_PROPERTY(BrightnessLevel brightnessLevel READ brightnessLevel WRITE setBrightnessLevel NOTIFY sigDataChanged)
     Q_PROPERTY(quint8 mode READ mode WRITE setMode NOTIFY sigDataChanged)
-
-    // For updating labels
-    Q_PROPERTY(QVariant noiseReductionType READ getNoiseReductionType NOTIFY sigDataChanged)
-    Q_PROPERTY(QVariant defogType READ getDefogType NOTIFY sigDataChanged)
-    Q_PROPERTY(QVariant gammaType READ getGammaType NOTIFY sigDataChanged)
-    Q_PROPERTY(QVariant filterType READ getFilterType NOTIFY sigDataChanged)
 
 public:
 
@@ -63,22 +57,22 @@ public:
     };
     Q_ENUM(CameraSelection)
 
-//    enum FilterSelection {
-//        FilterSelection_ColorFilter     = 0x01,
-//        FilterSelection_NIRFilter       = 0x02,
-//        FilterSelection_LaserFilter     = 0x03
-//    };
-//    Q_ENUM(FilterSelection)
+    enum FilterSelection {
+        FilterSelection_ColorFilter     = 0x01,
+        FilterSelection_NIRFilter       = 0x02,
+        FilterSelection_LaserFilter     = 0x03
+    };
+    Q_ENUM(FilterSelection)
 
     enum GammaLevel {
-        Level1                          = 0x01,
-        Level2                          = 0x02,
+        GammaLevel_Level1               = 0x01,
+        GammaLevel_Level2               = 0x02,
     };
     Q_ENUM(GammaLevel)
 
     enum NoiseReductionMode {
-        NR_Low                             = 0x01,
-        NR_High                            = 0x02,
+        NoiseReductionMode_Low          = 0x01,
+        NoiseReductionMode_High         = 0x02,
     };
     Q_ENUM(NoiseReductionMode)
 
@@ -109,19 +103,19 @@ public:
 
     enum FilterModes
     {
-        Unknown                         = -1,
-        Fault                           = 0x00,
-        Color                           = 0x01,
-        NIR                             = 0x02,
-        F1064                           = 0x03
+        FilterMode_Unknown              = -1,
+        FilterMode_Fault                = 0x00,
+        FilterMode_VIS                  = 0x01,
+        FilterMode_NIR                  = 0x02,
+        FilterMode_1064                 = 0x03
     };
     Q_ENUM(FilterModes)
 
     enum DefogMode {
-        D_Off                   = 0x00,
-        D_Low                   = 0x01,
-        D_Medium                = 0x02,
-        D_High                  = 0x03
+        DefogMode_Off                   = 0x00,
+        DefogMode_Low                   = 0x01,
+        DefogMode_Medium                = 0x02,
+        DefogMode_High                  = 0x03
     };
     Q_ENUM(DefogMode)
 
@@ -196,7 +190,7 @@ public:
     Q_INVOKABLE void setNextCamera();
     Q_INVOKABLE void setSelectedCamera(const CameraSelection camera);
 
-    Q_INVOKABLE void setSelectedFilter(const FilterModes filter);
+    Q_INVOKABLE void setSelectedFilter(const FilterSelection filter);
 
     Q_INVOKABLE void setNextDefogMode();
     Q_INVOKABLE void setDefogMode(const DefogMode mode);
@@ -226,6 +220,8 @@ public:
     Q_INVOKABLE void menuESCReleased();
 
     Q_INVOKABLE void enableIlluminator(const bool state);
+    Q_INVOKABLE void toggleIlluminator();
+
     Q_INVOKABLE void setIlluminatorBrightness(const quint8 brightness);
     Q_INVOKABLE void setIlluminatorSmallerAngle();
     Q_INVOKABLE void setIlluminatorLargerAngle();
@@ -314,7 +310,7 @@ public:
 
     bool focusMode() const;
 
-    FilterModes selectedFilter() const;
+    FilterSelection selectedFilter() const;
     CameraSelection selectedCamera() const;
 
     ContrastLevel contrastLevel() const;
@@ -322,11 +318,6 @@ public:
     BrightnessLevel brightnessLevel() const;
 
     quint8 mode() const;
-
-    QVariant getNoiseReductionType();
-    QVariant getDefogType();
-    QVariant getGammaType();
-    QVariant getFilterType();
 
 private:
 
@@ -358,11 +349,13 @@ private:
     bool m_focusMode;
 
     CameraSelection m_selectedCamera;
+    FilterSelection m_selectedFilter;
 
     GammaLevel m_gammaLevel;
     NoiseReductionMode m_noiseReductionMode;
     DefogMode m_defogMode;
     SendingModes m_sendingMode; // initialize in constructor
+    //VideoModes m_videoMode; // initialize
     FilterModes m_filterMode; // initialize
     SensorValues m_sensorValue; // initialize
     ContrastLevel m_contrastLevel;

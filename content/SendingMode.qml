@@ -59,6 +59,8 @@ import AppControl 1.0
 import SerialControl 1.0
 
 ScrollView {
+    width: parent.width
+    height: parent.height
 
     flickableItem.interactive: true
 
@@ -97,102 +99,86 @@ ScrollView {
 
             Column {
                 spacing: 25
-                Row {
-                    spacing: 30
-                    QQC2.RadioButton {
-                        id: requestSendingMode
-                        text: "Request"
-                        checked: true
-                        font.pixelSize: 25
 
-                        background: Rectangle {
-                            implicitWidth: 100
-                            implicitHeight: 60
-                            color: requestSendingMode.checked ? "red" : "gray"
-                            opacity: 0.5
-                            radius: 5
-                            border.color: "white"
-                        }
+                QQC2.RadioButton {
+                    id: requestSendingMode
+                    text: "Request"
+                    checked: true
+                    font.pixelSize: 25
 
-                        onClicked: {
-                            continuousSendingModeSpinBox.visible = false;
-                            msec.visible = false
-
-                            continuousSendingMode.checked = false
-                            statusModeButton.visible = true
-
-                            appControl.serialControl.setRequestSendingMode()
-                        }
+                    background: Rectangle {
+                        implicitWidth: 100
+                        implicitHeight: 60
+                        color: requestSendingMode.checked ? "red" : "gray"
+                        opacity: 0.5
+                        radius: 5
+                        border.color: "white"
                     }
 
+                    onClicked: {
+                        continuousSendingModeSpinBox.visible = false;
+                        msec.visible = false
 
-                    QQC2.Button {
-                        id: statusModeButton
-                        contentItem: Text {
-                            text: "Status"
-                            color: "white"
-                            opacity: 1.0
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
-                            font.pixelSize: 25
-                            font.bold: true
-                            elide: Text.ElideRight
-                        }
+                        appControl.serialControl.setRequestSendingMode()
+                    }
+                }
 
-                        background: Rectangle {
-                            implicitWidth: 180
-                            implicitHeight: 60
-                            color: statusModeButton.down ? "red" : "black"
-                            opacity: 0.5
-                            radius: 5
-                            border.color: "white"
-                        }
+                QQC2.RadioButton {
+                    id: statusSendingMode
+                    text: "Status"
+                    checked: false
+                    font.pixelSize: 25
 
-                        onReleased: {
-                            continuousSendingModeSpinBox.visible = false;
-                            msec.visible = false
+                    background: Rectangle {
+                        implicitWidth: 100
+                        implicitHeight: 60
+                        color: statusSendingMode.checked ? "red" : "gray"
+                        opacity: 0.5
+                        radius: 5
+                        border.color: "white"
+                    }
 
-                            appControl.serialControl.setStatusSendingMode()
-                        }
+                    onClicked: {
+                        continuousSendingModeSpinBox.visible = false;
+                        msec.visible = false
+
+                        appControl.serialControl.setStatusSendingMode()
+                    }
+                }
+
+                QQC2.RadioButton {
+                    id: continuousSendingMode
+                    text: "Continuous"
+                    checked: false
+                    font.pixelSize: 25
+
+                    background: Rectangle {
+                        implicitWidth: 100
+                        implicitHeight: 60
+                        visible: control.checked
+                        color: continuousSendingMode.checked ? "red" : "gray"
+                        opacity: 0.5
+                        radius: 5
+                        border.color: "white"
+                    }
+
+                    onClicked: {
+                        continuousSendingModeSpinBox.visible = true;
+                        msec.visible = true
+
+                        appControl.serialControl.setContinuousSendingMode(
+                                    continuousSendingModeSpinBox.value)
                     }
                 }
 
                 Row {
                     spacing: 10
 
-                    QQC2.RadioButton {
-                        id: continuousSendingMode
-                        text: "Continuous"
-                        checked: false
-                        font.pixelSize: 25
-
-                        background: Rectangle {
-                            implicitWidth: 200
-                            implicitHeight: 60
-                            visible: control.checked
-                            color: continuousSendingMode.checked ? "red" : "gray"
-                            opacity: 0.5
-                            radius: 5
-                            border.color: "white"
-                        }
-
-                        onClicked: {
-                            continuousSendingModeSpinBox.visible = true;
-                            msec.visible = true
-
-                            requestSendingMode.checked = false
-                            statusModeButton.visible = false
-
-                            appControl.serialControl.setContinuousSendingMode(
-                                        continuousSendingModeSpinBox.value)
-                        }
-                    }
-
                     QQC2.SpinBox {
                         id: continuousSendingModeSpinBox
                         from: 1
                         to: 255
-                        value: 50
+                        value: 1
                         visible: false
 
                         background: Rectangle {

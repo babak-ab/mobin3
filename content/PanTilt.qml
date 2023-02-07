@@ -135,9 +135,8 @@ Item {
                 appControl.serialControl.tiltUp()
             }
 
-            onDownChanged: {
-                if (!upTiltButton.pressed)
-                    appControl.serialControl.tiltStop()
+            onReleased: {
+                appControl.serialControl.tiltStop()
             }
         }
 
@@ -164,9 +163,8 @@ Item {
                     appControl.serialControl.panLeft()
                 }
 
-                onDownChanged: {
-                    if (!leftPanButton.pressed)
-                        appControl.serialControl.panStop()
+                onReleased: {
+                    appControl.serialControl.panStop()
                 }
             }
 
@@ -189,9 +187,8 @@ Item {
                     appControl.serialControl.panRight()
                 }
 
-                onDownChanged: {
-                    if (!rightPanButton.pressed)
-                        appControl.serialControl.panStop()
+                onReleased: {
+                    appControl.serialControl.panStop()
                 }
             }
         }
@@ -216,9 +213,8 @@ Item {
                 appControl.serialControl.tiltDown()
             }
 
-            onDownChanged: {
-                if (!downTiltButton.pressed)
-                    appControl.serialControl.tiltStop()
+            onReleased: {
+                appControl.serialControl.tiltStop()
             }
         }
     }

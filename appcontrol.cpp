@@ -14,43 +14,35 @@ AppControl::AppControl(QObject* parent)
     : QObject(parent)
 {
 
-    gst_init(NULL,NULL);
     // Fill the serial port names
-    foreach (const QSerialPortInfo& serialPortInfo, QSerialPortInfo::availablePorts()) {
-        m_serialPortList.append(serialPortInfo.portName());
+    foreach (const QSerialPortInfo &serialPortInfo, QSerialPortInfo::availablePorts())
+    {
+        _serialPortList.append(serialPortInfo.portName());
     }
 
-    if (m_serialPortList.count() > 0)
-        m_serialPortName = m_serialPortList[0];
+    if (_serialPortList.count() > 0)
+        _serialPortName = _serialPortList[0];
 
-    m_serialControl = new SerialControl;
+    _serialControl = new SerialControl;
 
-#ifdef Q_OS_WIN32
-    m_captureDevice = "0";
-#endif
+    m_toggleIlluminatorTimer.setInterval(5000);
+    connect(&m_toggleIlluminatorTimer, &QTimer::timeout,
+            this, [this]()
+    {
+        m_toggleIlluminatorTimer.stop();
 
-#ifdef Q_OS_LINUX
-    _captureDevice = "/dev/video0";
+        _serialControl->toggleIlluminator();
+    });
 
-#endif
+    m_shutDownSystemTimer.setInterval(5000);
+    connect(&m_shutDownSystemTimer, &QTimer::timeout,
+            this, [this]()
+    {
+        m_shutDownSystemTimer.stop();
 
+        qApp->exit();
+    });
 
-    m_recordingLocation = QStandardPaths::MoviesLocation;
-
-    m_videoCapture = new VideoCapture(m_captureDevice, QSize(FRAME_WIDTH, FRAME_HEIGHT));
-    m_videoCapture->initialize();
-    m_videoCapture->start();
-
-    m_recordVisible = false;
-
-    m_videoRecord = new VideoRecord(QSize(FRAME_WIDTH, FRAME_HEIGHT));
-
-
-    m_videoAdapter = new VideoAdapter(QSize(FRAME_WIDTH, FRAME_HEIGHT));
-
-
-    connect(m_videoCapture, &VideoCapture::sigFrameReady, m_videoAdapter, &VideoAdapter::onFrameReady);
-    connect(m_videoCapture, &VideoCapture::sigFrameReady, m_videoRecord, &VideoRecord::pushFrame);
 }
 
 AppControl::~AppControl()
@@ -60,212 +52,254 @@ AppControl::~AppControl()
     delete m_gamepadController;
 }
 
-QString AppControl::recordingLocation() const
+void AppControl::processGamepadCommand(const CommandPacket &packet)
 {
-    return m_recordingLocation;
-}
-
-void AppControl::setRecordingLocation(const QString &recordingLocation)
-{
-    m_recordingLocation = recordingLocation;
-    Q_EMIT recordingLocationChanged();
-}
-
-VideoAdapter* AppControl::videoAdapter() const
-{
-    return m_videoAdapter;
-}
-
-void AppControl::setVideoAdapter(VideoAdapter* videoAdapter)
-{
-    m_videoAdapter = videoAdapter;
-}
-
-bool AppControl::recordVisible() const
-{
-    return m_recordVisible;
-}
-
-void AppControl::setRecordVisible(bool recordVisible)
-{
-    m_recordVisible = recordVisible;
-
-    Q_EMIT recordVisibleChanged();
-}
-
-QString AppControl::appVersion() const
-{
-    return SOFTWARE_VERSION;
-}
-
-void AppControl::processGamepadCommand(const CommandPacket& packet)
-{
-    switch (packet.command) {
-    case Command_ZoomIn: {
-        m_serialControl->setZoomSpeed(packet.value);
-        m_serialControl->zoomIn();
+    switch (packet.command)
+    {
+    case Command_ZoomIn:
+    {
+        _serialControl->setZoomSpeed(packet.value);
+        _serialControl->zoomIn();
         break;
     }
-    case Command_ZoomOut: {
-        m_serialControl->setZoomSpeed(packet.value);
-        m_serialControl->zoomOut();
+    case Command_ZoomOut:
+    {
+        _serialControl->setZoomSpeed(packet.value);
+        _serialControl->zoomOut();
         break;
     }
-    case Command_ZoomStop: {
-        m_serialControl->zoomStop();
+    case Command_ZoomStop:
+    {
+        _serialControl->zoomStop();
         break;
     }
-    case Command_FocusFar: {
-        m_serialControl->setFocusSpeed(packet.value);
-        m_serialControl->focusFar();
+    case Command_FocusFar:
+    {
+        _serialControl->setFocusSpeed(packet.value);
+        _serialControl->focusFar();
         break;
     }
-    case Command_FocusNear: {
-        m_serialControl->setFocusSpeed(packet.value);
-        m_serialControl->focusNear();
+    case Command_FocusNear:
+    {
+        _serialControl->setFocusSpeed(packet.value);
+        _serialControl->focusNear();
         break;
     }
-    case Command_FocusStop: {
-        m_serialControl->focusStop();
+    case Command_FocusStop:
+    {
+        _serialControl->focusStop();
         break;
     }
-    case Command_ToggleFocusMode: {
-        if (packet.value == 0) {
+    case Command_ToggleFocusMode:
+    {
+        if (packet.value == 0)
+        {
             return;
         }
 
-        bool previousFocusMode = m_serialControl->focusMode();
-        m_serialControl->setFocusMode(!previousFocusMode);
+        bool previousFocusMode = _serialControl->focusMode();
+        _serialControl->setFocusMode(!previousFocusMode);
         break;
     }
-    case Command_PanLeft: {
-        m_serialControl->setPanTiltSpeed(packet.value);
-        m_serialControl->panLeft();
+    case Command_PanLeft:
+    {
+        _serialControl->setPanTiltSpeed(packet.value);
+        _serialControl->panLeft();
         break;
     }
-    case Command_PanRight: {
-        m_serialControl->setPanTiltSpeed(packet.value);
-        m_serialControl->panRight();
+    case Command_PanRight:
+    {
+        _serialControl->setPanTiltSpeed(packet.value);
+        _serialControl->panRight();
         break;
     }
-    case Command_PanStop: {
-        m_serialControl->panStop();
+    case Command_PanStop:
+    {
+        _serialControl->panStop();
         break;
     }
-    case Command_TiltUp: {
-        m_serialControl->setPanTiltSpeed(packet.value);
-        m_serialControl->tiltUp();
+    case Command_TiltUp:
+    {
+        _serialControl->setPanTiltSpeed(packet.value);
+        _serialControl->tiltUp();
         break;
     }
-    case Command_TiltDown: {
-        m_serialControl->setPanTiltSpeed(packet.value);
-        m_serialControl->tiltDown();
+    case Command_TiltDown:
+    {
+        _serialControl->setPanTiltSpeed(packet.value);
+        _serialControl->tiltDown();
         break;
     }
-    case Command_TiltStop: {
-        m_serialControl->tiltStop();
+    case Command_TiltStop:
+    {
+        _serialControl->tiltStop();
         break;
     }
-    case Command_NextCamera: {
-        if (packet.value == 0) {
+    case Command_NextCamera:
+    {
+        if (packet.value == 0)
+        {
             return;
         }
 
-        m_serialControl->setNextCamera();
+        _serialControl->setNextCamera();
         break;
     }
-    case Command_NextDefogLevel: {
-        if (packet.value == 0) {
+    case Command_NextDefogLevel:
+    {
+        if (packet.value == 0)
+        {
             return;
         }
 
-        m_serialControl->setNextDefogMode();
+        _serialControl->setNextDefogMode();
         break;
     }
-    case Command_NextGammaLevel: {
-        if (packet.value == 0) {
+    case Command_NextGammaLevel:
+    {
+        if (packet.value == 0)
+        {
             return;
         }
 
-        m_serialControl->setNextGammaLevel();
+        _serialControl->setNextGammaLevel();
         break;
     }
-    case Command_NextNoiseReductionLevel: {
-        if (packet.value == 0) {
+    case Command_NextNoiseReductionLevel:
+    {
+        if (packet.value == 0)
+        {
             return;
         }
 
-        m_serialControl->setNextNoiseReductionMode();
+        _serialControl->setNextNoiseReductionMode();
         break;
     }
-    case Command_ToggleDigitalZoom: {
-        if (packet.value == 0) {
+    case Command_ToggleDigitalZoom:
+    {
+        if (packet.value == 0)
+        {
             return;
         }
 
-        bool previousDigitalZoomValue = m_serialControl->digitalZoom();
+        bool previousDigitalZoomValue = _serialControl->digitalZoom();
 
-        m_serialControl->enableDigitalZoom(!previousDigitalZoomValue);
+        _serialControl->enableDigitalZoom(!previousDigitalZoomValue);
         break;
     }
-    case Command_OpenCameraMenu: {
-        if (packet.value == 0) {
+    case Command_OpenCameraMenu:
+    {
+        if (packet.value == 0)
+        {
             return;
         }
 
-        m_serialControl->showMenuPressed();
-        m_serialControl->showMenuReleased();
+        _serialControl->showMenuPressed();
+        _serialControl->showMenuReleased();
         break;
     }
-    case Command_MenuItemUp: {
-        if (packet.value == 0) {
+    case Command_MenuItemUp:
+    {
+        if (packet.value == 0)
+        {
             return;
         }
 
-        m_serialControl->menuUpPressed();
-        m_serialControl->menuUpReleased();
+        _serialControl->menuUpPressed();
+        _serialControl->menuUpReleased();
         break;
     }
-    case Command_MenuItemDown: {
-        if (packet.value == 0) {
+    case Command_MenuItemDown:
+    {
+        if (packet.value == 0)
+        {
             return;
         }
 
-        m_serialControl->menuDownPressed();
-        m_serialControl->menuDownReleased();
+        _serialControl->menuDownPressed();
+        _serialControl->menuDownReleased();
         break;
     }
-    case Command_MenuItemLeft: {
-        if (packet.value == 0) {
+    case Command_MenuItemLeft:
+    {
+        if (packet.value == 0)
+        {
             return;
         }
 
-        m_serialControl->menuLeftPressed();
-        m_serialControl->menuLeftReleased();
+        _serialControl->menuLeftPressed();
+        _serialControl->menuLeftReleased();
         break;
     }
-    case Command_MenuItemRight: {
-        if (packet.value == 0) {
+    case Command_MenuItemRight:
+    {
+        if (packet.value == 0)
+        {
             return;
         }
 
-        m_serialControl->menuRightPressed();
-        m_serialControl->menuRightReleased();
+        _serialControl->menuRightPressed();
+        _serialControl->menuRightReleased();
         break;
     }
-    case Command_CloseCameraMenu: {
-        if (packet.value == 0) {
+    case Command_CloseCameraMenu:
+    {
+        if (packet.value == 0)
+        {
             return;
         }
 
-        m_serialControl->menuESCReleased();
+        _serialControl->menuESCReleased();
         break;
     }
+    case Command_ShutdownSystem:
+    {
+        if (packet.value == 1.0)
+        {
+            if (m_shutDownSystemTimer.isActive() == false)
+            {
+                m_shutDownSystemTimer.start();
+            }
+        }
+        else
+        {
+            if (m_shutDownSystemTimer.isActive() == true)
+            {
+                m_shutDownSystemTimer.stop();
+            }
+        }
 
-    case Command_ShutdownSystem: {
         break;
     }
+    case Command_ToggleIlluminator:
+    {
+        if (packet.value == static_cast<quint8>(true))
+        {
+            if (m_toggleIlluminatorTimer.isActive() == false)
+            {
+                m_toggleIlluminatorTimer.start();
+            }
+        }
+        else
+        {
+            if (m_toggleIlluminatorTimer.isActive() == true)
+            {
+                m_toggleIlluminatorTimer.stop();
+            }
+        }
 
+        break;
+    }
+    case Command_IncreaseAngleOfIlluminator:
+    {
+        _serialControl->setIlluminatorAngleOffset(packet.value);
+        break;
+    }
+    case Command_IncreaseBrightnessOfIlluminator:
+    {
+        _serialControl->setIlluminatorBrightness(packet.value);
+        break;
+    }
     default:
         return;
     }
@@ -273,13 +307,16 @@ void AppControl::processGamepadCommand(const CommandPacket& packet)
 
 void AppControl::setSerialPortName(QString portName)
 {
-    m_serialPortName = portName;
+    _serialPortName = portName;
+
+    qDebug() << "_serialPortName: " << _serialPortName;
 }
 
 int AppControl::findSerialPortName(QString portName)
 {
-    for (int i = 0; i < m_serialPortList.size(); i++) {
-        if (m_serialPortList[i].contains(portName)) {
+    for(int i = 0;i<_serialPortList.size();i++){
+        qDebug() << "port name: " << _serialPortList[i] << portName;
+        if(_serialPortList[i].contains(portName)){
             return i;
         }
     }
@@ -287,41 +324,26 @@ int AppControl::findSerialPortName(QString portName)
     return 0;
 }
 
-void AppControl::startRecord()
-{
-    m_videoRecord->initialize(m_recordingLocation);
-    m_videoRecord->start();
-
-    setRecordVisible(true);
-}
-
-void AppControl::stopRecord()
-{
-    m_videoRecord->stop();
-
-    setRecordVisible(false);
-}
-
 QString AppControl::messageTitle() const
 {
-    return m_messageTitle;
+    return _messageTitle;
 }
 
 QString AppControl::messageText() const
 {
-    return m_messageText;
+    return _messageText;
 }
 
 bool AppControl::connectToSerialPort()
 {
-    bool isConnected = m_serialControl->connectToSerialPort(m_serialPortName);
+    bool isConnected = _serialControl->connectToSerialPort(_serialPortName);
 
     if (isConnected) {
         return true;
     }
 
-    m_messageTitle = "Serial Port Error";
-    m_messageText = "Could not connect to " + m_serialPortName + " port!";
+    _messageTitle = "Serial Port Error";
+    _messageText = "Could not connect to " + _serialPortName + " port!";
     Q_EMIT sigThrowSerialMessageRequested();
 
     return false;
@@ -329,40 +351,40 @@ bool AppControl::connectToSerialPort()
 
 void AppControl::disconnectSerialPort()
 {
-    bool result = m_serialControl->disconnectSerialPort();
+    bool result = _serialControl->disconnectSerialPort();
 
     if (!result) {
-        m_messageTitle = "Serial Port Error";
-        m_messageText = "Could not get disconnected from " + m_serialPortName + " port!";
+        _messageTitle = "Serial Port Error";
+        _messageText = "Could not get disconnected from " + _serialPortName + " port!";
         Q_EMIT sigThrowSerialMessageRequested();
     }
 }
 
 QStringList AppControl::serialPortList() const
 {
-    qDebug() << "_serialPortList: " << m_serialPortList;
-    return m_serialPortList;
+    qDebug() << "_serialPortList: " << _serialPortList;
+    return _serialPortList;
 }
 
-SerialControl* AppControl::serialControl() const
+SerialControl *AppControl::serialControl() const
 {
-    return m_serialControl;
+    return _serialControl;
 }
 
-void AppControl::setGamepadController(GamepadController* gamepadController)
+void AppControl::setGamepadController(GamepadController *gamepadController)
 {
     m_gamepadController = gamepadController;
 
     connect(m_gamepadController, &GamepadController::sigExecuteCommandRequested,
-        this, &AppControl::sltExecuteCommandRequested);
+            this, &AppControl::sltExecuteCommandRequested);
 }
 
-void AppControl::setGamepadManager(QGamepadManager* manager)
+void AppControl::setGamepadManager(QGamepadManager *manager)
 {
     m_gamepadManager = manager;
 }
 
-void AppControl::sltExecuteCommandRequested(const CommandPacket& packet)
+void AppControl::sltExecuteCommandRequested(const CommandPacket &packet)
 {
     processGamepadCommand(packet);
 }
