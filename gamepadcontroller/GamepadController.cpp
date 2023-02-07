@@ -15,26 +15,27 @@ GamepadController::GamepadController()
         processNextCommand();
     });
 
-    m_illuminationTimer.setInterval(5000);
-    connect(&m_illuminationTimer, &QTimer::timeout,
-            this, [this](){
-       m_illuminationTimer.stop();
+    //    m_illuminationTimer.setInterval(5000);
+    //    connect(&m_illuminationTimer, &QTimer::timeout,
+    //            this, [this](){
+    //        m_illuminationTimer.stop();
 
-       if (m_isLB_ButtonPressed == true &&
-               m_isRB_ButtonPressed == true)
-       {
-           checkCommandAndAppendToBuffer(Commands::Command_ToggleIllumination,
-                                         1.0);
+    //        if (m_isLB_ButtonPressed == true &&
+    //                m_isRB_ButtonPressed == true)
+    //        {
+    //            checkCommandAndAppendToBuffer(Commands::Command_ToggleIllumination,
+    //                                          1.0);
 
-           if (m_processCommandsTimer.isActive() == false)
-           {
-               m_processCommandsTimer.start();
-           }
-       }
-    });
+    //            if (m_processCommandsTimer.isActive() == false)
+    //            {
+    //                m_processCommandsTimer.start();
+    //            }
+    //        }
+    //    });
 
     m_isRB_ButtonPressed = false;
     m_isLB_ButtonPressed = false;
+    m_isToggleIlluminatorCommandSent = false;
 }
 
 GamepadController::~GamepadController()
@@ -171,6 +172,7 @@ void GamepadController::removeConnections()
 
 void GamepadController::keyHandler(const GamepadController::Buttons &button, double &value)
 {
+    qDebug() << "XXXX" << button << value;
     bool shouldHandleCommand = deathBandMechanism(button, value);
 
     if (shouldHandleCommand == true)
@@ -198,9 +200,7 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
         }
         else if (value == 0)
         {
-            if (qAbs(m_gamepad->axisRightX()) <= DEATH_BAND_VALUE) {
-                command = Commands::Command_PanStop;
-            }
+            command = Commands::Command_PanStop;
         }
         break;
     }
@@ -216,9 +216,7 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
         }
         else if (value == 0)
         {
-            if (qAbs(m_gamepad->axisRightY()) <= DEATH_BAND_VALUE) {
-                command = Commands::Command_TiltStop;
-            }
+            command = Commands::Command_TiltStop;
         }
         break;
     }
@@ -239,9 +237,7 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
         }
         else if (value == 0)
         {
-            if (qAbs(m_gamepad->axisRightX()) <= DEATH_BAND_VALUE) {
-                command = Commands::Command_FocusStop;
-            }
+            command = Commands::Command_FocusStop;
         }
         break;
     }
@@ -257,9 +253,7 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
         }
         else if (value == 0)
         {
-            if (qAbs(m_gamepad->axisRightY()) <= DEATH_BAND_VALUE) {
-                command = Commands::Command_ZoomStop;
-            }
+            command = Commands::Command_ZoomStop;
         }
         break;
     }
@@ -322,10 +316,39 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
             m_isRB_ButtonPressed = false;
         }
 
+        if (m_isRB_ButtonPressed == true && m_isLB_ButtonPressed == true)
+        {
+            if (m_isToggleIlluminatorCommandSent == false)
+            {
+                command = Commands::Command_ToggleIlluminator;
+            }
+            else
+            {
+                return;
+            }
+        }
+        else if (m_isRB_ButtonPressed == false || m_isLB_ButtonPressed == false)
+        {
+            if (m_isToggleIlluminatorCommandSent == true)
+            {
+                command = Commands::Command_ToggleIlluminator;
+            }
+            else
+            {
+                return;
+            }
+        }
+
         break;
     }
     case Button_RT:
     {
+        if (m_isLB_ButtonPressed == true &&
+                m_isRB_ButtonPressed == false)
+        {
+            command = Commands::Command_IncreaseAngleOfIlluminator;
+        }
+
         break;
     }
         // ==============================================
@@ -340,10 +363,40 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
             m_isLB_ButtonPressed = false;
         }
 
+        if (m_isRB_ButtonPressed == true && m_isLB_ButtonPressed == true)
+        {
+            if (m_isToggleIlluminatorCommandSent == false)
+            {
+                command = Commands::Command_ToggleIlluminator;
+            }
+            else
+            {
+                return;
+            }
+        }
+        else if (m_isRB_ButtonPressed == false || m_isLB_ButtonPressed == false)
+        {
+            if (m_isToggleIlluminatorCommandSent == true)
+            {
+                command = Commands::Command_ToggleIlluminator;
+            }
+            else
+            {
+                return;
+            }
+        }
+
+
         break;
     }
     case Button_LT:
     {
+        if (m_isLB_ButtonPressed == false &&
+                m_isRB_ButtonPressed == true)
+        {
+            command = Commands::Command_IncreaseBrightnessOfIlluminator;
+        }
+
         break;
     }
         // ==============================================
@@ -359,6 +412,7 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
     }
     case Button_XBoxHome:
     {
+        qDebug() << "shutdown system req";
         command = Commands::Command_ShutdownSystem;
         break;
     }
@@ -368,7 +422,17 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
     }
     }
 
+    if (command == Commands::Command_Normal)
+    {
+        return;
+    }
+
     quint8 mappedValue = analogValueMapper(button, value);
+
+    if (command == Commands::Command_ShutdownSystem)
+    {
+        qDebug() << button << value << mappedValue;
+    }
 
     checkCommandAndAppendToBuffer(command, mappedValue);
 
@@ -385,9 +449,9 @@ bool GamepadController::deathBandMechanism(const GamepadController::Buttons &but
     if (button == GamepadController::Buttons::Button_LeftAxisX ||
             button == GamepadController::Buttons::Button_LeftAxisY ||
             button == GamepadController::Buttons::Button_RightAxisX ||
-            button == GamepadController::Buttons::Button_RightAxisY ||
-            button == GamepadController::Buttons::Button_LT ||
-            button == GamepadController::Buttons::Button_RT)
+            button == GamepadController::Buttons::Button_RightAxisY /*||
+                    button == GamepadController::Buttons::Button_LT ||
+                    button == GamepadController::Buttons::Button_RT*/)
     {
         if (qAbs(value) < DEATH_BAND_VALUE)
         {
@@ -411,9 +475,9 @@ quint8 GamepadController::analogValueMapper(const GamepadController::Buttons &bu
     if (button == GamepadController::Buttons::Button_LeftAxisX ||
             button == GamepadController::Buttons::Button_LeftAxisY ||
             button == GamepadController::Buttons::Button_RightAxisX ||
-            button == GamepadController::Buttons::Button_RightAxisY ||
-            button == GamepadController::Buttons::Button_LT ||
-            button == GamepadController::Buttons::Button_RT)
+            button == GamepadController::Buttons::Button_RightAxisY /*||
+                    button == GamepadController::Buttons::Button_LT ||
+                    button == GamepadController::Buttons::Button_RT*/)
     {
         if (qAbs(value) > DEATH_BAND_VALUE)
         {
@@ -430,39 +494,62 @@ quint8 GamepadController::analogValueMapper(const GamepadController::Buttons &bu
             return static_cast<quint8>(0);
         }
     }
-    else
+    else if (button == GamepadController::Buttons::Button_LB ||
+             button == GamepadController::Buttons::Button_RB)
     {
-        return static_cast<quint8>(value);
+        if (m_isRB_ButtonPressed == true &&
+                m_isLB_ButtonPressed == true)
+        {
+            if (m_isToggleIlluminatorCommandSent == false)
+            {
+                m_isToggleIlluminatorCommandSent = true;
+                return static_cast<quint8>(true);
+            }
+        }
+
+        if (m_isRB_ButtonPressed == false ||
+                m_isLB_ButtonPressed == false)
+        {
+            if (m_isToggleIlluminatorCommandSent == true)
+            {
+                m_isToggleIlluminatorCommandSent = false;
+                return static_cast<quint8>(false);
+            }
+        }
     }
+    else if (button == GamepadController::Buttons::Button_LT)
+    {
+        /*
+         * step = value / 0.01
+         * mappedValue = step * (255 / 100) =>
+         * mappedValue = value * 255
+        */
+        return static_cast<quint8>(value * 255);
+    }
+    else if (button == GamepadController::Buttons::Button_RT)
+    {
+        /*
+         * step = value / 0.1
+         * mappedValue = step * (20 / 10) =>
+         * mappedValue = value * 20
+         */
+        return static_cast<quint8>(value * 20);
+    }
+
+
+    return static_cast<quint8>(value);
 }
 
 void GamepadController::processNextCommand()
 {
-
+    //    stopCommandChecker();
     if (m_commandsBuffer.isEmpty() == false)
     {
         QMap<Commands, quint8>::iterator firstItem = m_commandsBuffer.begin();
-        m_commandsBuffer.erase(firstItem);
 
         CommandPacket packet(firstItem.key(), firstItem.value());
 
-
-        if (firstItem.key() == Command_PanStop
-                && qAbs(m_gamepad->axisRightX()) > DEATH_BAND_VALUE)
-            return;
-
-        if (firstItem.key() == Command_TiltStop
-                && qAbs(m_gamepad->axisRightY()) > DEATH_BAND_VALUE)
-            return;
-
-        if (firstItem.key() == Command_ZoomStop
-                && qAbs(m_gamepad->axisLeftY()) > DEATH_BAND_VALUE)
-            return;
-
-        if (firstItem.key() == Command_FocusStop
-                && qAbs(m_gamepad->axisLeftX()) > DEATH_BAND_VALUE)
-            return;
-
+        m_commandsBuffer.erase(firstItem);
 
         Q_EMIT sigExecuteCommandRequested(packet);
     }
