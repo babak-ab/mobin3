@@ -37,16 +37,16 @@ AppControl::AppControl(QObject* parent)
 
     m_recordingLocation = QStandardPaths::MoviesLocation;
 
-    m_videoCapture = new VideoCapture(m_captureDevice, QSize(640, 480));
+    m_videoCapture = new VideoCapture(m_captureDevice, QSize(FRAME_WIDTH, FRAME_HEIGHT));
     m_videoCapture->initialize();
     m_videoCapture->start();
 
     m_recordVisible = false;
 
-    m_videoRecord = new VideoRecord(QSize(640, 480));
+    m_videoRecord = new VideoRecord(QSize(FRAME_WIDTH, FRAME_HEIGHT));
 
 
-    m_videoAdapter = new VideoAdapter(QSize(640, 480));
+    m_videoAdapter = new VideoAdapter(QSize(FRAME_WIDTH, FRAME_HEIGHT));
 
 
     connect(m_videoCapture, &VideoCapture::sigFrameReady, m_videoAdapter, &VideoAdapter::onFrameReady);

@@ -102,7 +102,10 @@ void VideoCapture::initialize()
                        .arg(QString::number(_resolution.height()))
                        .arg(QString::number(30));
 
-    QString pipestr = QString("ksvideosrc device-index=%1  do-stats=TRUE ! image/jpeg,width=%2,height=%3 ! jpegdec ! videoconvert ! video/x-raw,format=BGRA,width=%4,height=%5,framerate=%6/1 ! queue ! appsink name=sink caps=%7")
+
+    QString pipestr = QString("ksvideosrc device-index=%1  do-stats=TRUE "
+                              "! video/x-raw, format=(string)YUY2, width=%2, height=%3, framerate=(fraction)30/1, pixel-aspect-ratio=(fraction)1/1"
+                              "! videoconvert ! video/x-raw, format=BGRA, width=%4, height=%5, framerate=%6/1 ! queue ! appsink name=sink caps=%7")
                           .arg(_device)
                           .arg(QString::number(_resolution.width()))
                           .arg(QString::number(_resolution.height()))
@@ -126,7 +129,6 @@ void VideoCapture::initialize()
                           .arg(QString::number(30))
                           .arg(caps);
 
-    qDebug() << "pipestr" << pipestr;
     //    QString pipestr = QString("v4l2src device=%1 is-live=true ! image/jpeg,width=%2,height=%3 ! jpegdec !"
     //                              " videoconvert ! video/x-raw,format=BGRA,width=%4,height=%5,framerate=%6/1 ! queue !"
     //                              " appsink name=sink caps=%7")
@@ -139,6 +141,8 @@ void VideoCapture::initialize()
     //                          .arg(caps);
 
 #endif
+
+    qDebug() << "pipestr" << pipestr;
 
     _data.pipeline = gst_parse_launch(pipestr.toLatin1().data(), NULL);
 
