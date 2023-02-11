@@ -46,7 +46,6 @@ ApplicationWindow {
 
                 onClicked: {
 
-                    //drawer.open()
                     stackView.visible = !stackView.visible
 
                     if (stackView.visible) {
@@ -64,61 +63,65 @@ ApplicationWindow {
                 }
             }
         }
-
-        //        Button {
-        //            text: "Record"
-        //            checkable: true
-        //            highlighted: checked
-        //            onClicked: {
-        //                if (checked) {
-        //                    var dt = new Date().toLocaleString(Qt.locale(),
-        //                                                       "yyyy-MM-dd_hh_mm_ss")
-
-        //                    camera.fileName = camera.path + "video_" + dt + ".mp4"
-
-        //                    console.log("fileName: ", camera.fileName)
-        //                    camera.videoRecorder.record()
-        //                } else {
-        //                    camera.videoRecorder.stop()
-        //                }
-        //            }
-        //        }
     }
 
     VideoRender {
         id: videoRender
         anchors.fill: parent
-        source: camera
-        Camera {
-            id: camera
-            captureMode: Camera.CaptureVideo
-            property string fileName: "test.mp4"
-            property string path: "C:/Users/Morteza/Desktop/record/"
-            onFileNameChanged: {
-                camera.videoRecorder.outputLocation = path + fileName
-            }
-
-            videoRecorder {
-                resolution: "640x480"
-                frameRate: 30
-                mediaContainer: "mp4"
-            }
-        }
+        source: appControl.videoAdapter
     }
 
     Row {
-        spacing: 50
-//        anchors.fill: parent
+        spacing: 20
         anchors.top: parent.top
         anchors.right: parent.right
         anchors.margins: 15
+
+        Text {
+            text: "NR: " + appControl.serialControl.noiseReductionType.toString() + ","
+            font.family: "Helvetica"
+            font.pointSize: 15
+            color: "white"
+            style: Text.Outline
+            styleColor: "black"
+        }
+
+        Text {
+            text: "Defog: " + appControl.serialControl.defogType.toString() + ","
+            font.family: "Helvetica"
+            font.pointSize: 15
+            color: "white"
+            style: Text.Outline
+            styleColor: "black"
+        }
+
+        Text {
+            text: "Gamma: " + appControl.serialControl.gammaType.toString() + ","
+            font.family: "Helvetica"
+            font.pointSize: 15
+            color: "white"
+            style: Text.Outline
+            styleColor: "black"
+        }
+
+        Text {
+
+            text: "Filter: " + appControl.serialControl.filterType.toString() + ","
+
+            font.family: "Helvetica"
+            font.pointSize: 15
+            color: "white"
+            style: Text.Outline
+            styleColor: "black"
+        }
+
 
         Text {
             text: "FOV: " + appControl.serialControl.fovPosition / 1000 + " °"
             font.family: "Helvetica"
             font.pointSize: 15
             color: "white"
-            style: Text.Outline;
+            style: Text.Outline
             styleColor: "black"
         }
 
@@ -136,24 +139,25 @@ ApplicationWindow {
                 spacing: 10
 
                 Text {
-                    text: "Ratio:  " + appControl.serialControl.illuminatorAngleOffset / 10.0
+                    text: "Ratio:  " + appControl.serialControl.illuminatorAngleOffset / 100.0
                     font.family: "Helvetica"
                     font.pointSize: 12
                     color: "white"
-                    style: Text.Outline;
+                    style: Text.Outline
                     styleColor: "black"
                 }
 
                 Slider {
                     id: angleOffsetSlider
-                    anchors.margins: 10
-                    //anchors.topMargin: 10
                     value: appControl.serialControl.illuminatorAngleOffset
-                    from: 1
-                    to: 20
+                    from: 50
+                    to: 100
+
+                    implicitWidth: 80
 
                     onValueChanged: {
-                        if (angleOffsetSlider.value !== appControl.serialControl.illuminatorAngleOffset)
+                        if (angleOffsetSlider.value
+                                !== appControl.serialControl.illuminatorAngleOffset)
                             appControl.serialControl.setIlluminatorAngleOffset(
                                         angleOffsetSlider.value)
                     }
@@ -163,14 +167,6 @@ ApplicationWindow {
 
         GroupBox {
             font.pixelSize: 20
-
-//            label: Label {
-//                text: "Camera: "
-//                color: "White"
-//                elide: Text.ElideRight
-//                style: Text.Outline;
-//                styleColor: "black"
-//            }
 
             background: Rectangle {
                 implicitWidth: 60
@@ -184,19 +180,11 @@ ApplicationWindow {
             Row {
                 spacing: 15
 
-//                Text {
-//                    text: "Camera:  "
-//                    font.family: "Helvetica"
-//                    font.pointSize: 15
-//                    color: "white"
-//                    style: Text.Outline;
-//                    styleColor: "black"
-//                }
-
                 RadioButton {
                     id: continuousZoom
                     text: "Cont. Zoom"
-                    checked: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_ContinuousZoom
+                    checked: appControl.serialControl.selectedCamera
+                             === SerialControl.CameraSelection_ContinuousZoom
                     font.pixelSize: 15
 
                     background: Rectangle {
@@ -217,7 +205,8 @@ ApplicationWindow {
                 RadioButton {
                     id: spotter
                     text: "Spotter"
-                    checked: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_Spotter
+                    checked: appControl.serialControl.selectedCamera
+                             === SerialControl.CameraSelection_Spotter
                     font.pixelSize: 15
 
                     background: Rectangle {
@@ -237,63 +226,94 @@ ApplicationWindow {
             }
         }
 
-
-        Button {
-            id: recordButton
-            icon.source: "qrc:/Images/record-icon.png"
-            icon.color: "white"
-            icon.height: 60
-            icon.width: 60
-
-            checkable: true
-            highlighted: checked
+        GroupBox {
+            font.pixelSize: 20
 
             background: Rectangle {
+                implicitWidth: 60
+                implicitHeight: 40
                 color: "black"
                 opacity: 0.5
+                radius: 5
+                border.color: "white"
             }
 
-            onClicked: {
-                if (checked) {
-                    var dt = new Date().toLocaleString(Qt.locale(),
-                                                       "yyyy-MM-dd_hh_mm_ss")
+            Row {
+                spacing: 15
 
-                    camera.fileName = camera.path + "video_" + dt + ".mp4"
+                RadioButton {
+                    id: colorFilter
+                    text: "Color"
+                    checked: appControl.serialControl.selectedFilter === SerialControl.Color
+                    font.pixelSize: 15
+                    visible: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_ContinuousZoom
+                             || appControl.serialControl.selectedCamera === SerialControl.CameraSelection_Spotter
 
-                    console.log("fileName: ", camera.fileName)
-                    camera.videoRecorder.record()
-                } else {
-                    camera.videoRecorder.stop()
+                    background: Rectangle {
+                        implicitWidth: 60
+                        implicitHeight: 40
+                        color: colorFilter.checked ? "red" : "gray"
+                        opacity: 0.5
+                        radius: 5
+                        border.color: "white"
+                    }
+
+                    onClicked: {
+                        appControl.serialControl.setSelectedFilter(
+                                    SerialControl.Color)
+                    }
+                }
+
+                RadioButton {
+                    id: nirFilter
+                    text: "NIR"
+                    checked: appControl.serialControl.selectedFilter === SerialControl.NIR
+                    font.pixelSize: 15
+                    visible: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_ContinuousZoom
+                             || appControl.serialControl.selectedCamera === SerialControl.CameraSelection_Spotter
+
+                    background: Rectangle {
+                        implicitWidth: 60
+                        implicitHeight: 40
+                        color: nirFilter.checked ? "red" : "gray"
+                        opacity: 0.5
+                        radius: 5
+                        border.color: "white"
+                    }
+
+                    onClicked: {
+                        appControl.serialControl.setSelectedFilter(
+                                    SerialControl.NIR)
+                    }
+                }
+
+                RadioButton {
+                    id: laserFilter
+                    text: "Laser"
+                    checked: appControl.serialControl.selectedFilter === SerialControl.F1064
+                    font.pixelSize: 15
+                    visible: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_Spotter
+
+                    background: Rectangle {
+                        implicitWidth: 60
+                        implicitHeight: 40
+                        color: laserFilter.checked ? "red" : "gray"
+                        opacity: 0.5
+                        radius: 5
+                        border.color: "white"
+                    }
+
+                    onClicked: {
+                        appControl.serialControl.setSelectedFilter(
+                                    SerialControl.F1064)
+                    }
                 }
             }
         }
-    }
-
-    ButtonGroup {
-
-        buttons: column.children
-        onClicked: console.log("clicked:", button.text)
-    }
-
-    Column {
-
-        id: column
-        anchors.bottom: parent.bottom
-        anchors.right: parent.right
-        anchors.margins: 15
-
 
         GroupBox {
             font.pixelSize: 20
             anchors.margins: 0
-
-//            label: Label {
-//                text: " Focus: "
-//                color: "White"
-//                elide: Text.ElideRight
-//                style: Text.Outline;
-//                styleColor: "black"
-//            }
 
             background: Rectangle {
                 implicitWidth: 40
@@ -304,7 +324,7 @@ ApplicationWindow {
                 border.color: "white"
             }
 
-            Column {
+            Row {
                 spacing: 10
 
                 RadioButton {
@@ -323,7 +343,8 @@ ApplicationWindow {
                     }
 
                     onClicked: {
-                        appControl.serialControl.setFocusMode(autoFocusButton.checked)
+                        appControl.serialControl.setFocusMode(
+                                    autoFocusButton.checked)
                     }
                 }
 
@@ -343,11 +364,55 @@ ApplicationWindow {
                     }
 
                     onClicked: {
-                        appControl.serialControl.setFocusMode(autoFocusButton.checked)
+                        appControl.serialControl.setFocusMode(
+                                    autoFocusButton.checked)
                     }
                 }
             }
         }
+
+        Button {
+            id: recordButton
+            icon.source: "qrc:/Images/record-icon.png"
+            icon.color: "white"
+            icon.height: 60
+            icon.width: 60
+
+            checkable: true
+            highlighted: checked
+
+            background: Rectangle {
+                implicitWidth: 60
+                implicitHeight: 60
+                color: recordButton.checked ? "red" : "black"
+                opacity: 0.5
+                radius: 5
+            }
+
+            onClicked: {
+                if (checked) {
+                    appControl.startRecord()
+
+                } else {
+                    appControl.stopRecord()
+                }
+            }
+        }
+    }
+
+    ButtonGroup {
+
+        buttons: column.children
+        onClicked: console.log("clicked:", button.text)
+    }
+
+    Column {
+
+        id: column
+        spacing: 15
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+        anchors.margins: 15
 
         Button {
             id: zoomInButton
@@ -365,8 +430,9 @@ ApplicationWindow {
                 appControl.serialControl.zoomIn()
             }
 
-            onReleased: {
-                appControl.serialControl.zoomStop()
+            onDownChanged: {
+                if (!zoomInButton.pressed)
+                    appControl.serialControl.zoomStop()
             }
         }
 
@@ -382,13 +448,13 @@ ApplicationWindow {
                 opacity: 0.5
             }
 
-
             onPressed: {
                 appControl.serialControl.zoomOut()
             }
 
-            onReleased: {
-                appControl.serialControl.zoomStop()
+            onDownChanged: {
+                if (!zoomOutButton.pressed)
+                    appControl.serialControl.zoomStop()
             }
         }
 
@@ -408,8 +474,9 @@ ApplicationWindow {
                 appControl.serialControl.focusFar()
             }
 
-            onReleased: {
-                appControl.serialControl.focusStop()
+            onDownChanged: {
+                if (!focusFarButton.pressed)
+                    appControl.serialControl.focusStop()
             }
         }
 
@@ -429,8 +496,9 @@ ApplicationWindow {
                 appControl.serialControl.focusNear()
             }
 
-            onReleased: {
-                appControl.serialControl.focusStop()
+            onDownChanged: {
+                if (!focusNearButton.pressed)
+                    appControl.serialControl.focusStop()
             }
         }
 
@@ -450,8 +518,9 @@ ApplicationWindow {
                 appControl.serialControl.panLeft()
             }
 
-            onReleased: {
-                appControl.serialControl.panStop()
+            onDownChanged: {
+                if (!leftPanButton.pressed)
+                    appControl.serialControl.panStop()
             }
         }
 
@@ -471,8 +540,9 @@ ApplicationWindow {
                 appControl.serialControl.panRight()
             }
 
-            onReleased: {
-                appControl.serialControl.panStop()
+            onDownChanged: {
+                if (!rightPanButton.pressed)
+                    appControl.serialControl.panStop()
             }
         }
 
@@ -492,8 +562,9 @@ ApplicationWindow {
                 appControl.serialControl.tiltUp()
             }
 
-            onReleased: {
-                appControl.serialControl.tiltStop()
+            onDownChanged: {
+                if (!upTiltButton.pressed)
+                    appControl.serialControl.tiltStop()
             }
         }
 
@@ -513,11 +584,20 @@ ApplicationWindow {
                 appControl.serialControl.tiltDown()
             }
 
-            onReleased: {
-                appControl.serialControl.tiltStop()
+            onDownChanged: {
+                if (!downTiltButton.pressed)
+                    appControl.serialControl.tiltStop()
             }
         }
 
+        Text {
+            text: appControl.appVersion
+            font.family: "Helvetica"
+            font.pointSize: 15
+            color: "white"
+            style: Text.Outline
+            styleColor: "black"
+        }
     }
 
     ListModel {
@@ -562,7 +642,9 @@ ApplicationWindow {
             title: "Connections"
             page: "content/Connections.qml"
         }
-
+        ListElement {
+            title: "Exit"
+        }
     }
 
     StackView {
@@ -585,7 +667,7 @@ ApplicationWindow {
                              event.accepted = true
                          }
 
-        initialItem: Item {
+        initialItem: ColumnLayout {
             width: /*parent.width*/ 400
             height: parent.height
             ListView {
@@ -594,11 +676,51 @@ ApplicationWindow {
                 delegate: AndroidDelegate {
                     text: title
                     onClicked: {
-                        stackView.push(Qt.resolvedUrl(page))
-                        background.color = "transparent"
+                        if (title == "Exit") {
+                            exitDialog.open()
+                        } else {
+
+                            stackView.push(Qt.resolvedUrl(page))
+                            background.color = "transparent"
+                        }
                     }
                 }
             }
         }
     }
+
+    Dialog {
+        id: exitDialog
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        parent: Overlay.overlay
+
+        Text {
+            text: "Are you sure to exit the application?"
+            font.family: "Helvetica"
+            font.pointSize: 15
+            color: "white"
+            style: Text.Outline;
+            styleColor: "black"
+        }
+
+        background: Rectangle {
+            implicitWidth: 100
+            implicitHeight: 60
+            color: "black"
+            opacity: 0.5
+            radius: 5
+            border.color: "white"
+        }
+
+        x: parent ? ((parent.width - width) / 2) : 0
+        y: parent ? ((parent.height - height) / 2) : 0
+
+        onAccepted: {
+            Qt.quit()
+        }
+    }
+
+    RecordIndicator {}
+
 }
+

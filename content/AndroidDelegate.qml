@@ -1,3 +1,5 @@
+
+
 /****************************************************************************
 **
 ** Copyright (C) 2016 The Qt Company Ltd.
@@ -47,7 +49,6 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-
 import QtQuick 2.2
 
 Item {
@@ -86,6 +87,7 @@ Item {
         anchors.right: parent.right
         anchors.rightMargin: 20
         anchors.verticalCenter: parent.verticalCenter
+        visible: text != "Exit"
         source: "../Images/navigation_next_item.png"
     }
 
@@ -93,6 +95,5 @@ Item {
         id: mouse
         anchors.fill: parent
         onClicked: root.clicked()
-
     }
 }
