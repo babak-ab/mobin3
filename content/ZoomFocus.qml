@@ -189,6 +189,7 @@ Item {
                         color: "white"
                         style: Text.Outline;
                         styleColor: "black"
+                        anchors.verticalCenter: parent.verticalCenter
                     }
 
                     QQC1.Slider {
@@ -309,6 +310,7 @@ Item {
                         color: "white"
                         style: Text.Outline;
                         styleColor: "black"
+                        anchors.verticalCenter: parent.verticalCenter
                     }
 
                     QQC1.Slider {
@@ -422,6 +424,7 @@ Item {
                 spacing: 10
 
                 Text {
+                    id: ratioValueText
                     text: "Ratio:  " + appControl.serialControl.illuminatorAngleOffset / 100.0
                     font.family: "Helvetica"
                     font.pointSize: 15
@@ -440,14 +443,26 @@ Item {
                     minimumValue: 0
                     maximumValue: 100
 
-                    onValueChanged: {
-                        if (angleOffsetSlider.value < 50) {
-                            angleOffsetSlider.value = 50
-                        }
+                    onPressedChanged: {
 
-                        if (angleOffsetSlider.value !== appControl.serialControl.illuminatorAngleOffset)
-                            appControl.serialControl.setIlluminatorAngleOffset(
-                                        angleOffsetSlider.value)
+                        if (!pressed) {
+
+                            if (angleOffsetSlider.value < 50) {
+                                angleOffsetSlider.value = 50
+                            }
+
+                            if (angleOffsetSlider.value !== appControl.serialControl.illuminatorAngleOffset)
+                                appControl.serialControl.setIlluminatorAngleOffset(
+                                            angleOffsetSlider.value)
+                        }
+                    }
+
+                    onValueChanged: {
+
+                        if (pressed) {
+
+                            ratioValueText.text = "Ratio:  " + (value / 100.0).toFixed(2)
+                        }
                     }
                 }
             }

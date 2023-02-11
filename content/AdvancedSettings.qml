@@ -111,10 +111,10 @@ Item {
                 to: items.length - 1
                 value: appControl.serialControl.contrastLevel
 
-                property var items: ["contrast 1", "contrast 2", "contrast 3"]
+                property var items: ["Contrast 1", "Contrast 2", "Contrast 3"]
 
                 validator: RegExpValidator {
-                    regExp: new RegExp("(contrast 1|contrast 2|contrast 3)", "i")
+                    regExp: new RegExp("(Contrast 1|Contrast 2|Contrast 3)", "i")
                 }
 
                 textFromValue: function(value) {

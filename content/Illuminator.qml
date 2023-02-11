@@ -93,6 +93,7 @@ Item {
                 color: "white"
                 style: Text.Outline;
                 styleColor: "black"
+                            anchors.verticalCenter: parent.verticalCenter
             }
 
             QQC1.Switch {
@@ -133,6 +134,7 @@ Item {
                 spacing: 20
 
                 Text {
+                    id: brightnessValueText
                     text: "Brightness:  " + appControl.serialControl.illuminatorBrightnessLevel
                     font.family: "Helvetica"
                     font.pointSize: 15
@@ -147,15 +149,23 @@ Item {
                     anchors.topMargin: 50
                     style: sliderTouchStyle
                     value: appControl.serialControl.illuminatorBrightnessLevel
-                    updateValueWhileDragging: false
                     minimumValue: 0
                     maximumValue: 255
 
-                    onValueChanged: {
-                        if (brightnessSlider.value !== appControl.serialControl.illuminatorBrightnessLevel) {
-                            appControl.serialControl.setIlluminatorBrightness(
-                                        brightnessSlider.value)
+                    onPressedChanged: {
+
+                        if (!pressed) {
+
+                            if (brightnessSlider.value !== appControl.serialControl.illuminatorBrightnessLevel) {
+                                appControl.serialControl.setIlluminatorBrightness(
+                                            brightnessSlider.value)
+                            }
                         }
+                    }
+
+                    onValueChanged: {
+
+                        brightnessValueText.text = "Brightness:  " + value.toFixed(0)
                     }
                 }
             }
@@ -242,7 +252,8 @@ Item {
                 spacing: 20
 
                 Text {
-                    text: "Ratio:  " + appControl.serialControl.illuminatorAngleOffset / 100.0
+                    id: ratioValueText
+                    text: "Ratio:  " + (appControl.serialControl.illuminatorAngleOffset / 100.0).toFixed(2)
                     font.family: "Helvetica"
                     font.pointSize: 15
                     color: "white"
@@ -260,15 +271,26 @@ Item {
                     minimumValue: 0
                     maximumValue: 100
 
+                    onPressedChanged: {
+
+                        if (!pressed) {
+
+                            if (angleOffsetSlider.value < 50) {
+                                angleOffsetSlider.value = 50
+                            }
+
+                            if (angleOffsetSlider.value !== appControl.serialControl.illuminatorAngleOffset)
+                                appControl.serialControl.setIlluminatorAngleOffset(
+                                            angleOffsetSlider.value)
+                        }
+                    }
+
                     onValueChanged: {
 
-                        if (angleOffsetSlider.value < 50) {
-                            angleOffsetSlider.value = 50
-                        }
+                        if (pressed) {
 
-                        if (angleOffsetSlider.value !== appControl.serialControl.illuminatorAngleOffset)
-                            appControl.serialControl.setIlluminatorAngleOffset(
-                                        angleOffsetSlider.value)
+                            ratioValueText.text = "Ratio:  " + (value / 100.0).toFixed(2)
+                        }
                     }
                 }
             }

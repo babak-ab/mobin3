@@ -98,6 +98,7 @@ Item {
                 color: "white"
                 style: Text.Outline
                 styleColor: "black"
+                anchors.verticalCenter: parent.verticalCenter
             }
 
             QQC2.ComboBox {
@@ -114,6 +115,7 @@ Item {
                         verticalAlignment: Text.AlignVCenter
                         horizontalAlignment: Text.AlignHCenter
                     }
+
                     highlighted: control.highlightedIndex === index
                 }
 

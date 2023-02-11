@@ -69,6 +69,11 @@ AppControl::AppControl(QObject* parent)
         qApp->exit();
     });
 
+
+    m_lastJoystickPanSpeed    = 0;
+    m_lastJoystickTiltSpeed   = 0;
+    m_lastJoystickPanDirection = 0;
+    m_lastJoystickTiltDirection = 0;
 }
 
 AppControl::~AppControl()
@@ -118,6 +123,8 @@ QString AppControl::appVersion() const
 
 void AppControl::processGamepadCommand(const CommandPacket& packet)
 {
+    std::cerr << "---- processGamepadCommand: " << (Commands)packet.command << "  " << (double)packet.value << std::endl;
+
     switch (packet.command) {
     case Command_ZoomIn: {
         m_serialControl->setZoomSpeed(packet.value);
@@ -165,36 +172,53 @@ void AppControl::processGamepadCommand(const CommandPacket& packet)
     }
     case Command_PanLeft:
     {
-        m_serialControl->setPanTiltSpeed(packet.value);
-        m_serialControl->panLeft();
+        m_lastJoystickPanSpeed = packet.value;
+        m_lastJoystickPanDirection = 0;
+        m_serialControl->joyStickPanTilt(m_lastJoystickPanDirection, m_lastJoystickPanSpeed,
+                                         m_lastJoystickTiltDirection, m_lastJoystickTiltSpeed);
         break;
     }
     case Command_PanRight:
     {
-       m_serialControl->setPanTiltSpeed(packet.value);
-       m_serialControl->panRight();
+        m_lastJoystickPanSpeed = packet.value;
+        m_lastJoystickPanDirection = 1;
+        m_serialControl->joyStickPanTilt(m_lastJoystickPanDirection, m_lastJoystickPanSpeed,
+                                         m_lastJoystickTiltDirection, m_lastJoystickTiltSpeed);
+
         break;
     }
     case Command_PanStop:
     {
-        m_serialControl->panStop();
+        m_lastJoystickPanSpeed = 0;
+        m_lastJoystickPanDirection = 1;
+        m_serialControl->joyStickPanTilt(m_lastJoystickPanDirection, m_lastJoystickPanSpeed,
+                                         m_lastJoystickTiltDirection, m_lastJoystickTiltSpeed);
+
         break;
     }
     case Command_TiltUp:
     {
-        m_serialControl->setPanTiltSpeed(packet.value);
-        m_serialControl->tiltUp();
+        m_lastJoystickTiltSpeed = packet.value;
+        m_lastJoystickTiltDirection = 1;
+        m_serialControl->joyStickPanTilt(m_lastJoystickPanDirection, m_lastJoystickPanSpeed,
+                                         m_lastJoystickTiltDirection, m_lastJoystickTiltSpeed);
         break;
     }
     case Command_TiltDown:
     {
-        m_serialControl->setPanTiltSpeed(packet.value);
-        m_serialControl->tiltDown();
+        m_lastJoystickTiltSpeed = packet.value;
+        m_lastJoystickTiltDirection = 0;
+        m_serialControl->joyStickPanTilt(m_lastJoystickPanDirection, m_lastJoystickPanSpeed,
+                                         m_lastJoystickTiltDirection, m_lastJoystickTiltSpeed);
         break;
     }
     case Command_TiltStop:
     {
-        m_serialControl->tiltStop();
+        m_lastJoystickTiltSpeed = 0;
+        m_lastJoystickTiltDirection = 1;
+        m_serialControl->joyStickPanTilt(m_lastJoystickPanDirection, m_lastJoystickPanSpeed,
+                                         m_lastJoystickTiltDirection, m_lastJoystickTiltSpeed);
+
         break;
     }
     case Command_NextCamera:

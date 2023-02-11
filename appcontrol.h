@@ -3,7 +3,7 @@
 
 #define FRAME_WIDTH 1920
 #define FRAME_HEIGHT 1080
-#define SOFTWARE_VERSION "V. 1.1.3"
+#define SOFTWARE_VERSION "V. 1.2.0"
 
 #include <QAbstractItemModel>
 #include <QElapsedTimer>
@@ -63,6 +63,10 @@ private:
 
     bool m_recordVisible;
 
+    quint8 m_lastJoystickPanSpeed;
+    quint8 m_lastJoystickPanDirection;
+    quint8 m_lastJoystickTiltSpeed;
+    quint8 m_lastJoystickTiltDirection;
     void processGamepadCommand(const CommandPacket& packet);
 
 public:

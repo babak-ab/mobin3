@@ -170,20 +170,13 @@ public:
     Q_INVOKABLE void focusFar();
     Q_INVOKABLE void focusNear();
     Q_INVOKABLE void focusStop();
-//    Q_INVOKABLE void autoFocus();
-//    Q_INVOKABLE void manualFocus();
     Q_INVOKABLE void setFocusMode(const bool mode);
     Q_INVOKABLE void setZoomSpeed(const quint8 speed);
     Q_INVOKABLE void setFocusSpeed(const quint8 speed);
-//    Q_INVOKABLE void setFovPosition(const quint16 position);
     Q_INVOKABLE void gotoFov(const quint16 position);
-//    Q_INVOKABLE void setFocusPosition(const quint16 position);
     Q_INVOKABLE void gotoFocus(const quint16 position);
-//    Q_INVOKABLE void gotoFovFocus(const quint16 fovPosition,
-//                                  const quint16 focusPosition);
     Q_INVOKABLE void setPosition(const quint8 positionNumber);
     Q_INVOKABLE void clearPosition(const quint8 positionNumber);
-
 
     Q_INVOKABLE void tiltUp();
     Q_INVOKABLE void tiltDown();
@@ -330,6 +323,9 @@ public:
     QVariant getGammaType();
     QVariant getFilterType();
 
+    void joyStickPanTilt(const quint8& panDirection, const quint8& panSpeed,
+                         const quint8& tiltDirection, const quint8& tiltSpeed);
+
 private:
 
     ///
@@ -383,7 +379,9 @@ private:
     int bytesToInt(QByteArray data, int start, int length, bool reverse = false);
     void sendCommand1(const quint8 &command, const quint8 &param);
     void sendCommand2(const quint8 &command, const quint16 &param);
-//    void sendCommand3(const quint8 &command, const quint16 &param1, const quint16 &param2);
+    void sendCommand3(const quint8& command,
+                      const quint8& param1, const quint8& param2,
+                      const quint8& param3, const quint8& param4);
     void sendCommand4(const quint8 &command);
 
     void autoFocus();

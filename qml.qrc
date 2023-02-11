@@ -42,5 +42,7 @@
         <file>Images/focus-near.png</file>
         <file>content/Gamepad.qml</file>
         <file>RecordIndicator.qml</file>
+        <file>Images/caution-icon.png</file>
+        <file>IlluminatorIndicator.qml</file>
     </qresource>
 </RCC>

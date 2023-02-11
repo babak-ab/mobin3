@@ -23,8 +23,9 @@
 #include "GamepadController_global.h"
 
 #define DEATH_BAND_VALUE        0.2
+#define MIN_DIFF_VALUE          0.05
 #define THRESHOLD_VALUE         0.1
-#define TIMER_INTERVAL          50
+#define TIMER_INTERVAL          30
 
 ///
 /// \brief third-party module to add gamepad shortcut feature to project
@@ -105,12 +106,15 @@ private:
     QMap<Commands, quint8> m_commandsBuffer;
 
     QTimer m_processCommandsTimer;
-//    QTimer m_illuminationTimer;
 
     bool m_isRB_ButtonPressed;
     bool m_isLB_ButtonPressed;
     bool m_isToggleIlluminatorCommandSent;
 
+    double previousRightAxisX;
+    double previousRightAxisY;
+    double previousLeftAxisX;
+    double previousLeftAxisY;
     // **********************************************************************
     // PRIVATE METHODS DECLARATION
     // **********************************************************************

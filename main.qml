@@ -72,9 +72,9 @@ ApplicationWindow {
     }
 
     Row {
-        spacing: 20
-        anchors.top: parent.top
-        anchors.right: parent.right
+        spacing: 25
+        anchors.bottom: parent.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
         anchors.margins: 15
 
         Text {
@@ -105,25 +105,21 @@ ApplicationWindow {
         }
 
         Text {
-
-            text: "Filter: " + appControl.serialControl.filterType.toString() + ","
-
+            text: "FOV: " + (appControl.serialControl.fovPosition / 1000).toFixed(2) + " °"
             font.family: "Helvetica"
             font.pointSize: 15
             color: "white"
             style: Text.Outline
             styleColor: "black"
         }
+    }
 
 
-        Text {
-            text: "FOV: " + appControl.serialControl.fovPosition / 1000 + " °"
-            font.family: "Helvetica"
-            font.pointSize: 15
-            color: "white"
-            style: Text.Outline
-            styleColor: "black"
-        }
+    Row {
+        spacing: 20
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.margins: 15
 
         GroupBox {
             background: Rectangle {
@@ -136,15 +132,46 @@ ApplicationWindow {
             }
 
             Row {
-                spacing: 10
+                spacing: 5
+                Text {
+                    text: "Illuminator:"
+                    font.family: "Helvetica"
+                    font.pointSize: 14
+                    font.bold: true
+                    color: "white"
+                    style: Text.Outline;
+                    styleColor: "black"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Switch {
+                    id: illuminatorOnOffSwitch
+                    checked: appControl.serialControl.illuminator
+
+                    onCheckedChanged: {
+                        if (!checked) {
+
+                            if (illuminatorOnOffSwitch.checked !== appControl.serialControl.illuminator) {
+                                appControl.serialControl.enableIlluminator(
+                                            illuminatorOnOffSwitch.checked)
+                            }
+                        } else {
+                            illuminatorDialog.open()
+                        }
+
+                    }
+                }
+
 
                 Text {
-                    text: "Ratio:  " + appControl.serialControl.illuminatorAngleOffset / 100.0
+                    text: ", Ratio: " + (appControl.serialControl.illuminatorAngleOffset / 100.0).toFixed(2)
                     font.family: "Helvetica"
-                    font.pointSize: 12
+                    font.pointSize: 14
+                    font.bold: true
                     color: "white"
                     style: Text.Outline
                     styleColor: "black"
+                    anchors.verticalCenter: parent.verticalCenter
                 }
 
                 Slider {
@@ -153,7 +180,7 @@ ApplicationWindow {
                     from: 50
                     to: 100
 
-                    implicitWidth: 80
+                    implicitWidth: 100
 
                     onValueChanged: {
                         if (angleOffsetSlider.value
@@ -162,6 +189,45 @@ ApplicationWindow {
                                         angleOffsetSlider.value)
                     }
                 }
+
+                Text {
+                    id: brightnessValueText
+                    text: ", Brightness: " + appControl.serialControl.illuminatorBrightnessLevel
+                    font.family: "Helvetica"
+                    font.pointSize: 14
+                    font.bold: true
+                    color: "white"
+                    style: Text.Outline;
+                    styleColor: "black"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Slider {
+                    id: brightnessSlider
+                    anchors.margins: 20
+                    anchors.topMargin: 50
+                    value: appControl.serialControl.illuminatorBrightnessLevel
+                    from: 0
+                    to: 255
+                    implicitWidth: 100
+
+                    onPressedChanged: {
+
+                        if (!pressed) {
+
+                            if (brightnessSlider.value !== appControl.serialControl.illuminatorBrightnessLevel) {
+                                appControl.serialControl.setIlluminatorBrightness(
+                                            brightnessSlider.value)
+                            }
+                        }
+                    }
+
+                    onValueChanged: {
+
+                        brightnessValueText.text = "Brightness:  " + value.toFixed(0)
+                    }
+                }
+
             }
         }
 
@@ -284,28 +350,6 @@ ApplicationWindow {
                     onClicked: {
                         appControl.serialControl.setSelectedFilter(
                                     SerialControl.NIR)
-                    }
-                }
-
-                RadioButton {
-                    id: laserFilter
-                    text: "Laser"
-                    checked: appControl.serialControl.selectedFilter === SerialControl.F1064
-                    font.pixelSize: 15
-                    visible: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_Spotter
-
-                    background: Rectangle {
-                        implicitWidth: 60
-                        implicitHeight: 40
-                        color: laserFilter.checked ? "red" : "gray"
-                        opacity: 0.5
-                        radius: 5
-                        border.color: "white"
-                    }
-
-                    onClicked: {
-                        appControl.serialControl.setSelectedFilter(
-                                    SerialControl.F1064)
                     }
                 }
             }
@@ -503,28 +547,6 @@ ApplicationWindow {
         }
 
         Button {
-            id: leftPanButton
-            icon.source: "qrc:/Images/left-arrow.png"
-            icon.color: "white"
-            icon.height: 60
-            icon.width: 60
-
-            background: Rectangle {
-                color: leftPanButton.down ? "red" : "black"
-                opacity: 0.5
-            }
-
-            onPressed: {
-                appControl.serialControl.panLeft()
-            }
-
-            onDownChanged: {
-                if (!leftPanButton.pressed)
-                    appControl.serialControl.panStop()
-            }
-        }
-
-        Button {
             id: rightPanButton
             icon.source: "qrc:/Images/right-arrow.png"
             icon.color: "white"
@@ -542,6 +564,28 @@ ApplicationWindow {
 
             onDownChanged: {
                 if (!rightPanButton.pressed)
+                    appControl.serialControl.panStop()
+            }
+        }
+
+        Button {
+            id: leftPanButton
+            icon.source: "qrc:/Images/left-arrow.png"
+            icon.color: "white"
+            icon.height: 60
+            icon.width: 60
+
+            background: Rectangle {
+                color: leftPanButton.down ? "red" : "black"
+                opacity: 0.5
+            }
+
+            onPressed: {
+                appControl.serialControl.panLeft()
+            }
+
+            onDownChanged: {
+                if (!leftPanButton.pressed)
                     appControl.serialControl.panStop()
             }
         }
@@ -668,7 +712,7 @@ ApplicationWindow {
                          }
 
         initialItem: ColumnLayout {
-            width: /*parent.width*/ 400
+            width: 400
             height: parent.height
             ListView {
                 model: pageModel
@@ -716,11 +760,54 @@ ApplicationWindow {
         y: parent ? ((parent.height - height) / 2) : 0
 
         onAccepted: {
+            appControl.stopRecord();
+
             Qt.quit()
+        }
+    }
+
+    Dialog {
+        id: illuminatorDialog
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        parent: Overlay.overlay
+
+
+        Text {
+            text: "Are you sure to power on the illuminator?"
+            font.family: "Helvetica"
+            font.pointSize: 15
+            color: "white"
+            style: Text.Outline;
+            styleColor: "black"
+        }
+
+        background: Rectangle {
+            implicitWidth: 100
+            implicitHeight: 60
+            color: "black"
+            opacity: 0.5
+            radius: 5
+            border.color: "white"
+
+        }
+
+        x: parent ? ((parent.width - width) / 2) : 0
+        y: parent ? ((parent.height - height) / 2) : 0
+
+        onAccepted: {
+            if (illuminatorOnOffSwitch.checked !== appControl.serialControl.illuminator) {
+                appControl.serialControl.enableIlluminator(
+                            illuminatorOnOffSwitch.checked)
+            }
+        }
+
+        onRejected: {
+            illuminatorOnOffSwitch.checked = false
         }
     }
 
     RecordIndicator {}
 
+    IlluminatorIndicator {}
 }
 

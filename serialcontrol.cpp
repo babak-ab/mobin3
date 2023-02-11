@@ -344,11 +344,18 @@ QVariant SerialControl::getFilterType()
     return QVariant::fromValue(m_filterMode);
 }
 
+void SerialControl::joyStickPanTilt(const quint8 &panDirection, const quint8 &panSpeed,
+                                    const quint8 &tiltDirection, const quint8 &tiltSpeed)
+{
+    sendCommand3(61, panDirection, panSpeed, tiltDirection, tiltSpeed);
+}
+
 void SerialControl::writeDataOnPlatformsSerialPort(const QByteArray& data)
 {
-    if (true /*m_serialPort->isOpen()*/) {
+    qDebug() << "write data :" << data.toHex(' ');
+
+    if (m_serialPort->isOpen()) {
         m_serialPort->write(data);
-        //qDebug() << "write data :" << data.toHex(' ');
     }
 }
 
@@ -952,26 +959,28 @@ void SerialControl::sendCommand2(const quint8& command,
     Q_EMIT sigWriteData(data);
 }
 
-//void SerialControl::sendCommand3(const quint8& command,
-//                                 const quint16& param1,
-//                                 const quint16& param2)
-//{
+void SerialControl::sendCommand3(const quint8& command,
+                                 const quint8& param1,
+                                 const quint8& param2,
+                                 const quint8& param3,
+                                 const quint8& param4)
+{
 
-//    quint8 checkSum = command + (param1 / 256) + (param1 % 256) + (param2 / 256) + (param2 % 256) + 1;
+    quint8 checkSum = command + param1 + param2 + param3 + param4 + 1;
 
-//    QByteArray data;
-//    data.append(static_cast<quint8>(104));
-//    data.append(static_cast<quint8>(6));
-//    data.append(static_cast<quint8>(1));
-//    data.append(static_cast<quint8>(command));
-//    data.append(static_cast<quint8>(param1 / 256));
-//    data.append(static_cast<quint8>(param1 % 256));
-//    data.append(static_cast<quint8>(param2 / 256));
-//    data.append(static_cast<quint8>(param2 % 256));
-//    data.append(static_cast<quint8>(checkSum));
+    QByteArray data;
+    data.append(static_cast<quint8>(104));
+    data.append(static_cast<quint8>(6));
+    data.append(static_cast<quint8>(1));
+    data.append(static_cast<quint8>(command));
+    data.append(static_cast<quint8>(param1));
+    data.append(static_cast<quint8>(param2));
+    data.append(static_cast<quint8>(param3));
+    data.append(static_cast<quint8>(param4));
+    data.append(static_cast<quint8>(checkSum));
 
-//    Q_EMIT sigWriteData(data);
-//}
+    Q_EMIT sigWriteData(data);
+}
 
 void SerialControl::sendCommand4(const quint8& command)
 {

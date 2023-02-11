@@ -99,6 +99,7 @@ Item {
                 color: "white"
                 style: Text.Outline;
                 styleColor: "black"
+                anchors.verticalCenter: parent.verticalCenter
             }
 
         QQC1.Slider {

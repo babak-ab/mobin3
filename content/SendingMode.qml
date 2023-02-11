@@ -104,6 +104,7 @@ ScrollView {
                         text: "Request"
                         checked: true
                         font.pixelSize: 25
+                        anchors.verticalCenter: parent.verticalCenter
 
                         background: Rectangle {
                             implicitWidth: 100
@@ -137,6 +138,7 @@ ScrollView {
                             font.pixelSize: 25
                             font.bold: true
                             elide: Text.ElideRight
+                            anchors.verticalCenter: parent.verticalCenter
                         }
 
                         background: Rectangle {
@@ -194,9 +196,10 @@ ScrollView {
                         to: 255
                         value: 50
                         visible: false
+                        spacing: 20
 
                         background: Rectangle {
-                            implicitWidth: 100
+                            implicitWidth: 120
                             implicitHeight: 60
                             color: "black"
                             opacity: 0.5
@@ -211,6 +214,7 @@ ScrollView {
                         visible: false
                         text: "msec"
                         font.family: "Helvetica"
+                        anchors.verticalCenter: parent.verticalCenter
 
                         font.pointSize: 15
                         color: "white"

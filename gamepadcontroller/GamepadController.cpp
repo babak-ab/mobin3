@@ -15,27 +15,14 @@ GamepadController::GamepadController()
         processNextCommand();
     });
 
-    //    m_illuminationTimer.setInterval(5000);
-    //    connect(&m_illuminationTimer, &QTimer::timeout,
-    //            this, [this](){
-    //        m_illuminationTimer.stop();
-
-    //        if (m_isLB_ButtonPressed == true &&
-    //                m_isRB_ButtonPressed == true)
-    //        {
-    //            checkCommandAndAppendToBuffer(Commands::Command_ToggleIllumination,
-    //                                          1.0);
-
-    //            if (m_processCommandsTimer.isActive() == false)
-    //            {
-    //                m_processCommandsTimer.start();
-    //            }
-    //        }
-    //    });
-
     m_isRB_ButtonPressed = false;
     m_isLB_ButtonPressed = false;
     m_isToggleIlluminatorCommandSent = false;
+
+    previousRightAxisX = 0.0;
+    previousRightAxisY = 0.0;
+    previousLeftAxisX = 0.0;
+    previousLeftAxisY = 0.0;
 }
 
 GamepadController::~GamepadController()
@@ -172,7 +159,6 @@ void GamepadController::removeConnections()
 
 void GamepadController::keyHandler(const GamepadController::Buttons &button, double &value)
 {
-    qDebug() << "XXXX" << button << value;
     bool shouldHandleCommand = deathBandMechanism(button, value);
 
     if (shouldHandleCommand == true)
@@ -186,17 +172,25 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
 {
     Commands command = Commands::Command_Normal;
 
+    quint8 mappedValue = 0;
+
     switch (button)
     {
     case Button_RightAxisX:
     {
-        if (value > 0)
+        if (value > 0
+                && qAbs(value - previousRightAxisX) > MIN_DIFF_VALUE)
         {
             command = Commands::Command_PanRight;
+
+            previousRightAxisX = value;
         }
-        else if (value < 0)
+        else if (value < 0
+                 && qAbs(value - previousRightAxisX) > MIN_DIFF_VALUE)
         {
             command = Commands::Command_PanLeft;
+
+            previousRightAxisX = value;
         }
         else if (value == 0)
         {
@@ -204,17 +198,26 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
                 command = Commands::Command_PanStop;
             }
         }
+
+        mappedValue = analogValueMapper(button, value);
+
         break;
     }
     case Button_RightAxisY:
     {
-        if (value > 0)
+        if (value > 0
+                && qAbs(value - previousRightAxisY) > MIN_DIFF_VALUE)
         {
             command = Commands::Command_TiltDown;
+
+            previousRightAxisY = value;
         }
-        else if (value < 0)
+        else if (value < 0
+                 && qAbs(value - previousRightAxisY) > MIN_DIFF_VALUE)
         {
             command = Commands::Command_TiltUp;
+
+            previousRightAxisY = value;
         }
         else if (value == 0)
         {
@@ -222,6 +225,9 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
                 command = Commands::Command_TiltStop;
             }
         }
+
+        mappedValue = analogValueMapper(button, value);
+
         break;
     }
     case Button_RightAxisClick:
@@ -231,38 +237,76 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
         // ==============================================
     case Button_LeftAxisX:
     {
-        if (value > 0)
+
+        if (value > 0
+                && qAbs(value - previousLeftAxisX) > MIN_DIFF_VALUE)
         {
-            command = Commands::Command_FocusNear;
+            // Make sure that the major axis move will be applied
+            if (qAbs(m_gamepad->axisLeftX()) > qAbs(m_gamepad->axisLeftY()))
+            {
+                command = Commands::Command_FocusNear;
+
+                previousLeftAxisX = value;
+            }
         }
-        else if (value < 0)
+        else if (value < 0
+                 && qAbs(value - previousLeftAxisX) > MIN_DIFF_VALUE)
         {
-            command = Commands::Command_FocusFar;
+            // Make sure that the major axis move will be applied
+            if (qAbs(m_gamepad->axisLeftX()) > qAbs(m_gamepad->axisLeftY()))
+            {
+                command = Commands::Command_FocusFar;
+
+                previousLeftAxisX = value;
+            }
         }
         else if (value == 0)
         {
-            if (qAbs(m_gamepad->axisRightX()) <= DEATH_BAND_VALUE) {
+            if (qAbs(m_gamepad->axisLeftX()) <= DEATH_BAND_VALUE
+                    && qAbs(m_gamepad->axisLeftY()) <= DEATH_BAND_VALUE) {
                 command = Commands::Command_FocusStop;
             }
         }
+
+        mappedValue = analogValueMapper(button, value);
+
         break;
     }
     case Button_LeftAxisY:
     {
-        if (value > 0)
+
+        if (value > 0
+                && qAbs(value - previousLeftAxisY) > MIN_DIFF_VALUE)
         {
-            command = Commands::Command_ZoomOut;
+            // Make sure that the major axis move will be applied
+            if (qAbs(m_gamepad->axisLeftY()) > qAbs(m_gamepad->axisLeftX()))
+            {
+                command = Commands::Command_ZoomOut;
+
+                previousLeftAxisY = value;
+            }
         }
-        else if (value < 0)
+        else if (value < 0
+                 && qAbs(value - previousLeftAxisY) > MIN_DIFF_VALUE)
         {
-            command = Commands::Command_ZoomIn;
+            // Make sure that the major axis move will be applied
+            if (qAbs(m_gamepad->axisLeftY()) > qAbs(m_gamepad->axisLeftX()))
+            {
+                command = Commands::Command_ZoomIn;
+
+                previousLeftAxisY = value;
+            }
         }
         else if (value == 0)
         {
-            if (qAbs(m_gamepad->axisRightY()) <= DEATH_BAND_VALUE) {
+            if (qAbs(m_gamepad->axisLeftY()) <= DEATH_BAND_VALUE
+                    && qAbs(m_gamepad->axisLeftX()) <= DEATH_BAND_VALUE) {
                 command = Commands::Command_ZoomStop;
             }
         }
+
+        mappedValue = analogValueMapper(button, value);
+
         break;
     }
     case Button_LeftAxisClick:
@@ -357,6 +401,8 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
             command = Commands::Command_IncreaseAngleOfIlluminator;
         }
 
+        mappedValue = analogValueMapper(button, value);
+
         break;
     }
         // ==============================================
@@ -405,6 +451,8 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
             command = Commands::Command_IncreaseBrightnessOfIlluminator;
         }
 
+        mappedValue = analogValueMapper(button, value);
+
         break;
     }
         // ==============================================
@@ -435,8 +483,6 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
         return;
     }
 
-    quint8 mappedValue = analogValueMapper(button, value);
-
     if (command == Commands::Command_ShutdownSystem)
     {
         qDebug() << button << value << mappedValue;
@@ -458,8 +504,8 @@ bool GamepadController::deathBandMechanism(const GamepadController::Buttons &but
             button == GamepadController::Buttons::Button_LeftAxisY ||
             button == GamepadController::Buttons::Button_RightAxisX ||
             button == GamepadController::Buttons::Button_RightAxisY /*||
-                    button == GamepadController::Buttons::Button_LT ||
-                    button == GamepadController::Buttons::Button_RT*/)
+                                    button == GamepadController::Buttons::Button_LT ||
+                                    button == GamepadController::Buttons::Button_RT*/)
     {
         if (qAbs(value) < DEATH_BAND_VALUE)
         {
@@ -483,19 +529,11 @@ quint8 GamepadController::analogValueMapper(const GamepadController::Buttons &bu
     if (button == GamepadController::Buttons::Button_LeftAxisX ||
             button == GamepadController::Buttons::Button_LeftAxisY ||
             button == GamepadController::Buttons::Button_RightAxisX ||
-            button == GamepadController::Buttons::Button_RightAxisY /*||
-                    button == GamepadController::Buttons::Button_LT ||
-                    button == GamepadController::Buttons::Button_RT*/)
+            button == GamepadController::Buttons::Button_RightAxisY)
     {
         if (qAbs(value) > DEATH_BAND_VALUE)
         {
-            // value range is between 0.4 ~ 1.0
-            // and, this code will change range
-            // to between 0 ~ 255
-            // using this formula:
-            // m = ([255 / (1.0 - 0.4)] / 10)
-            // newValue = (value - 0.4) * 10 * m -> (value - 0.4) * [(255 * 10) / 6]
-            return static_cast<quint8>(qRound((qAbs(value) - DEATH_BAND_VALUE) * ((255 * 10) / 6)));
+            return static_cast<quint8>(qAbs(value * 255));
         }
         else
         {
@@ -556,7 +594,6 @@ void GamepadController::processNextCommand()
         m_commandsBuffer.erase(firstItem);
 
         CommandPacket packet(firstItem.key(), firstItem.value());
-
 
         if (firstItem.key() == Command_PanStop
                 && qAbs(m_gamepad->axisRightX()) > DEATH_BAND_VALUE)

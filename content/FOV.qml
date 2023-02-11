@@ -89,12 +89,14 @@ Item {
             spacing: 25
 
             Text {
+                id: fovValueText
                 text: "FOV:  " + appControl.serialControl.fovPosition / 1000 + " °"
                 font.family: "Helvetica"
                 font.pointSize: 15
                 color: "white"
                 style: Text.Outline;
                 styleColor: "black"
+                anchors.verticalCenter: parent.verticalCenter
             }
 
             QQC1.Slider {
@@ -103,14 +105,28 @@ Item {
                 anchors.topMargin: 50
                 style: sliderTouchStyle
                 value: appControl.serialControl.fovPosition
-                updateValueWhileDragging: false
+                //updateValueWhileDragging: false
                 minimumValue: 0
                 maximumValue: 65535
 
+
+                onPressedChanged: {
+
+                    if (!pressed) {
+
+                        if (gotoFovSlider.value !== appControl.serialControl.fovPosition) {
+                            appControl.serialControl.gotoFov(
+                                        gotoFovSlider.value)
+                        }
+                    }
+                }
+
                 onValueChanged: {
-                    if (gotoFovSlider.value !== appControl.serialControl.fovPosition) {
-                        appControl.serialControl.gotoFov(
-                                    gotoFovSlider.value)
+
+                    if (pressed) {
+
+                        fovValueText.text = "FOV:  " + (value / 1000).toFixed(
+                                    2) + " °"
                     }
                 }
             }
@@ -120,12 +136,14 @@ Item {
             spacing: 25
 
             Text {
+                id: focusValueText
                 text: "Focus:  " + appControl.serialControl.focusPosition
                 font.family: "Helvetica"
                 font.pointSize: 15
                 color: "white"
                 style: Text.Outline;
                 styleColor: "black"
+                anchors.verticalCenter: parent.verticalCenter
             }
 
             QQC1.Slider {
@@ -134,14 +152,26 @@ Item {
                 anchors.topMargin: 50
                 style: sliderTouchStyle
                 value: appControl.serialControl.focusPosition
-                updateValueWhileDragging: false
+                //updateValueWhileDragging: false
                 minimumValue: 0
                 maximumValue: 65535
 
+                onPressedChanged: {
+
+                    if (!pressed) {
+
+                        if (gotoFocusSlider.value !== appControl.serialControl.focusPosition) {
+                            appControl.serialControl.gotoFocus(
+                                        gotoFocusSlider.value)
+                        }
+                    }
+                }
+
                 onValueChanged: {
-                    if (gotoFocusSlider.value !== appControl.serialControl.focusPosition) {
-                        appControl.serialControl.gotoFocus(
-                                    gotoFocusSlider.value)
+
+                    if (pressed) {
+
+                        focusValueText.text = "Focus:  " + value.toFixed(0)
                     }
                 }
             }
