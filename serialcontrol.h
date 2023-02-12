@@ -47,6 +47,7 @@ class SerialControl : public RingQueue
     Q_PROPERTY(ContrastLevel contrastLevel READ contrastLevel WRITE setContrastMode NOTIFY sigDataChanged)
     Q_PROPERTY(BrightnessLevel brightnessLevel READ brightnessLevel WRITE setBrightnessLevel NOTIFY sigDataChanged)
     Q_PROPERTY(quint8 mode READ mode WRITE setMode NOTIFY sigDataChanged)
+    Q_PROPERTY(quint16 continuousModeInterval READ continuousModeInterval WRITE setContinuousSendingMode NOTIFY sigDataChanged)
 
     // For updating labels
     Q_PROPERTY(QVariant noiseReductionType READ getNoiseReductionType NOTIFY sigDataChanged)
@@ -202,6 +203,9 @@ public:
 
     Q_INVOKABLE void enableDigitalZoom(const bool state);
 
+    Q_INVOKABLE void enableFovUpdate(const bool state);
+    Q_INVOKABLE void enableFocusUpdate(const bool state);
+
     Q_INVOKABLE void setContrastMode(const quint8 level);
     Q_INVOKABLE void setBrightnessLevel(const quint8 level);
     Q_INVOKABLE void setMode(const quint8 mode);
@@ -318,6 +322,8 @@ public:
 
     quint8 mode() const;
 
+    quint8 continuousModeInterval() const;
+
     QVariant getNoiseReductionType();
     QVariant getDefogType();
     QVariant getGammaType();
@@ -370,9 +376,12 @@ private:
     quint8 m_illuminatorAngleOffset;
     quint8 m_crc8_table[256];
     quint8 m_panelVersion; // initialize
+    quint16 m_continuousModeInterval;
 
     bool m_isDigitalZoomEnabled;
     bool m_isIlluminatorEnabled;
+    bool m_isUpdatingFovEnabled;
+    bool m_isUpdatingFocusEnabled;
 
     // Private Functions
     void writeDataOnPlatformsSerialPort(const QByteArray &data);
@@ -390,8 +399,6 @@ private:
 
     void init_crc8();
     quint8 crc8(quint8 buf[], quint8 len) const;
-
-
 
 private Q_SLOTS:
     void sltReadData(QByteArray data);

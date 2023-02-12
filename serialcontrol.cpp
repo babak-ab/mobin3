@@ -28,11 +28,14 @@ SerialControl::SerialControl(QObject* parent)
     m_noiseReductionMode = NR_High;
     m_isDigitalZoomEnabled = false;
     m_isIlluminatorEnabled = false;
+    m_isUpdatingFovEnabled = false;
+    m_isUpdatingFocusEnabled = false;
     m_contrastLevel = ContrastLevel_Level2;
     m_brightnessLevel = BrightnessLevel_Level2;
     m_mode = 1;
     m_illuminatorBrightness = 0;
     m_illuminatorAngleOffset = 50;
+    m_continuousModeInterval = 50;
 
     m_focusMode = true;
 
@@ -68,8 +71,6 @@ void SerialControl::sendInitializingCommands()
 
     // Set Auto Focus Mode
     QTimer::singleShot(400, this, &SerialControl::autoFocus);
-
-
 
 }
 
@@ -158,7 +159,10 @@ QByteArray SerialControl::interpret(IRQueue<quint8>* queueRead)
             fovValue |= (0xFF00) & (static_cast<quint16>(packet.at(2)) << 8);
             fovValue |= (0x00FF) & (static_cast<quint16>(packet.at(3)));
 
-            m_fovPosition = fovValue;
+            if (m_isUpdatingFovEnabled)
+            {
+                m_fovPosition = fovValue;
+            }
         }
         // byte 4 and byte 5    => Focus
         {
@@ -166,7 +170,10 @@ QByteArray SerialControl::interpret(IRQueue<quint8>* queueRead)
             focusValue |= (0xFF00) & (static_cast<quint16>(packet.at(4)) << 8);
             focusValue |= (0x00FF) & (static_cast<quint16>(packet.at(5)));
 
-            m_focusPosition = focusValue;
+            if (m_isUpdatingFocusEnabled)
+            {
+                m_focusPosition = focusValue;
+            }
         }
         // byte 6 and byte 7    => Status
         {
@@ -322,6 +329,11 @@ SerialControl::BrightnessLevel SerialControl::brightnessLevel() const
 quint8 SerialControl::mode() const
 {
     return (m_mode - 1);
+}
+
+quint8 SerialControl::continuousModeInterval() const
+{
+    return m_continuousModeInterval;
 }
 
 QVariant SerialControl::getNoiseReductionType()
@@ -771,6 +783,16 @@ void SerialControl::enableDigitalZoom(const bool state)
     Q_EMIT sigDataChanged();
 }
 
+void SerialControl::enableFovUpdate(const bool state)
+{
+    m_isUpdatingFovEnabled = state;
+}
+
+void SerialControl::enableFocusUpdate(const bool state)
+{
+    m_isUpdatingFocusEnabled = state;
+}
+
 void SerialControl::enableIlluminator(const bool state)
 {
     m_isIlluminatorEnabled = state;
@@ -836,7 +858,11 @@ void SerialControl::setStatusSendingMode()
 
 void SerialControl::setContinuousSendingMode(const quint8 interval)
 {
+    m_continuousModeInterval = interval;
+
     sendCommand1(12, interval);
+
+    Q_EMIT sigDataChanged();
 }
 
 QString SerialControl::serialportName() const

@@ -112,7 +112,7 @@ void VideoRecord::initialize(const QString& location)
 
     QString pipestr;
     pipestr = QString("appsrc caps=%1 is-live=true name=src block=TRUE format=3 do-timestamp=true ! videoconvert ! video/x-raw,format=I420 ! queue "
-                      "! x264enc bitrate=2048 speed-preset=ultrafast "
+                      "! x264enc bitrate=2048 speed-preset=3 "
                       "! h264parse ! splitmuxsink muxer=qtmux max-size-time=600000000000 location=%2")
                   .arg(caps)
                   .arg(_location + "/" + filename);

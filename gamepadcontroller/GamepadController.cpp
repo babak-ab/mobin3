@@ -18,6 +18,7 @@ GamepadController::GamepadController()
     m_isRB_ButtonPressed = false;
     m_isLB_ButtonPressed = false;
     m_isToggleIlluminatorCommandSent = false;
+    m_isIlluminatorOn = false;
 
     previousRightAxisX = 0.0;
     previousRightAxisY = 0.0;
@@ -159,6 +160,7 @@ void GamepadController::removeConnections()
 
 void GamepadController::keyHandler(const GamepadController::Buttons &button, double &value)
 {
+
     bool shouldHandleCommand = deathBandMechanism(button, value);
 
     if (shouldHandleCommand == true)
@@ -232,6 +234,8 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
     }
     case Button_RightAxisClick:
     {
+        mappedValue = analogValueMapper(button, value);
+
         break;
     }
         // ==============================================
@@ -312,48 +316,75 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
     case Button_LeftAxisClick:
     {
         command = Commands::Command_ToggleFocusMode;
+
+        mappedValue = analogValueMapper(button, value);
+
         break;
     }
         // ==============================================
     case Button_A:
     {
         command = Commands::Command_NextNoiseReductionLevel;
+
+        mappedValue = analogValueMapper(button, value);
+
         break;
     }
     case Button_B:
     {
         command = Commands::Command_NextGammaLevel;
+
+        mappedValue = analogValueMapper(button, value);
+
         break;
     }
     case Button_X:
     {
         command = Commands::Command_NextDefogLevel;
+
+        mappedValue = analogValueMapper(button, value);
+
         break;
     }
     case Button_Y:
     {
         command = Commands::Command_NextCamera;
+
+        mappedValue = analogValueMapper(button, value);
+
         break;
     }
         // ==============================================
     case Button_Up:
     {
         command = Commands::Command_MenuItemUp;
+
+        mappedValue = analogValueMapper(button, value);
+
         break;
     }
     case Button_Down:
     {
         command = Commands::Command_MenuItemDown;
+
+        mappedValue = analogValueMapper(button, value);
+
         break;
     }
     case Button_Left:
     {
         command = Commands::Command_MenuItemLeft;
+
+        mappedValue = analogValueMapper(button, value);
+
         break;
     }
     case Button_Right:
     {
         command = Commands::Command_MenuItemRight;
+
+        mappedValue = analogValueMapper(button, value);
+
         break;
     }
         // ==============================================
@@ -390,6 +421,8 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
                 return;
             }
         }
+
+        mappedValue = analogValueMapper(button, value);
 
         break;
     }
@@ -440,6 +473,7 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
             }
         }
 
+        mappedValue = analogValueMapper(button, value);
 
         break;
     }
@@ -459,21 +493,32 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
     case Button_Menu:
     {
         command = Commands::Command_OpenCameraMenu;
+
+        mappedValue = analogValueMapper(button, value);
+
         break;
     }
     case Button_ChangeView:
     {
         command = Commands::Command_CloseCameraMenu;
+
+        mappedValue = analogValueMapper(button, value);
+
         break;
     }
     case Button_XBoxHome:
     {
         qDebug() << "shutdown system req";
         command = Commands::Command_ShutdownSystem;
+
+        mappedValue = analogValueMapper(button, value);
+
         break;
     }
     case Button_Center:
     {
+        mappedValue = analogValueMapper(button, value);
+
         break;
     }
     }
@@ -565,21 +610,12 @@ quint8 GamepadController::analogValueMapper(const GamepadController::Buttons &bu
     }
     else if (button == GamepadController::Buttons::Button_LT)
     {
-        /*
-         * step = value / 0.01
-         * mappedValue = step * (255 / 100) =>
-         * mappedValue = value * 255
-        */
         return static_cast<quint8>(value * 255);
     }
     else if (button == GamepadController::Buttons::Button_RT)
     {
-        /*
-         * step = value / 0.1
-         * mappedValue = step * (20 / 10) =>
-         * mappedValue = value * 20
-         */
-        return static_cast<quint8>(value * 20);
+        // We would like to have values between 50~100
+        return static_cast<quint8>((value * 50) + 50);
     }
 
 
@@ -776,4 +812,5 @@ void GamepadController::sltButtonLeftChanged(bool value)
 
     keyHandler(GamepadController::Buttons::Button_Left, val);
 }
+
 

@@ -80,7 +80,8 @@ ApplicationWindow {
         Text {
             text: "NR: " + appControl.serialControl.noiseReductionType.toString() + ","
             font.family: "Helvetica"
-            font.pointSize: 15
+            font.pointSize: 20
+            font.bold: true
             color: "white"
             style: Text.Outline
             styleColor: "black"
@@ -89,7 +90,8 @@ ApplicationWindow {
         Text {
             text: "Defog: " + appControl.serialControl.defogType.toString() + ","
             font.family: "Helvetica"
-            font.pointSize: 15
+            font.pointSize: 20
+            font.bold: true
             color: "white"
             style: Text.Outline
             styleColor: "black"
@@ -98,7 +100,8 @@ ApplicationWindow {
         Text {
             text: "Gamma: " + appControl.serialControl.gammaType.toString() + ","
             font.family: "Helvetica"
-            font.pointSize: 15
+            font.pointSize: 20
+            font.bold: true
             color: "white"
             style: Text.Outline
             styleColor: "black"
@@ -107,7 +110,8 @@ ApplicationWindow {
         Text {
             text: "FOV: " + (appControl.serialControl.fovPosition / 1000).toFixed(2) + " °"
             font.family: "Helvetica"
-            font.pointSize: 15
+            font.pointSize: 20
+            font.bold: true
             color: "white"
             style: Text.Outline
             styleColor: "black"
@@ -164,6 +168,7 @@ ApplicationWindow {
 
 
                 Text {
+                    id: ratioAngleOffsetText
                     text: ", Ratio: " + (appControl.serialControl.illuminatorAngleOffset / 100.0).toFixed(2)
                     font.family: "Helvetica"
                     font.pointSize: 14
@@ -182,11 +187,19 @@ ApplicationWindow {
 
                     implicitWidth: 100
 
+                    onPressedChanged: {
+
+                        if (!pressed) {
+                            if (angleOffsetSlider.value
+                                    !== appControl.serialControl.illuminatorAngleOffset)
+                                appControl.serialControl.setIlluminatorAngleOffset(
+                                            angleOffsetSlider.value)
+                        }
+                    }
+
                     onValueChanged: {
-                        if (angleOffsetSlider.value
-                                !== appControl.serialControl.illuminatorAngleOffset)
-                            appControl.serialControl.setIlluminatorAngleOffset(
-                                        angleOffsetSlider.value)
+
+                        ratioAngleOffsetText.text = ", Ratio: " + (angleOffsetSlider.value / 100.0).toFixed(2)
                     }
                 }
 
@@ -199,6 +212,7 @@ ApplicationWindow {
                     color: "white"
                     style: Text.Outline;
                     styleColor: "black"
+                    width: 180
                     anchors.verticalCenter: parent.verticalCenter
                 }
 
@@ -224,7 +238,7 @@ ApplicationWindow {
 
                     onValueChanged: {
 
-                        brightnessValueText.text = "Brightness:  " + value.toFixed(0)
+                        brightnessValueText.text = ", Brightness:  " + value.toFixed(0)
                     }
                 }
 

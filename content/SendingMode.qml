@@ -65,7 +65,6 @@ ScrollView {
     Column {
         spacing: 40
 
-
         Text {
             text: "  Sending Mode: "
             font.family: "Helvetica"
@@ -194,7 +193,7 @@ ScrollView {
                         id: continuousSendingModeSpinBox
                         from: 1
                         to: 255
-                        value: 50
+                        value: appControl.serialControl.continuousModeInterval
                         visible: false
                         spacing: 20
 
@@ -205,6 +204,13 @@ ScrollView {
                             opacity: 0.5
                             radius: 5
                             border.color: "white"
+                        }
+
+                        onValueChanged: {
+                            if (continuousSendingModeSpinBox.value !== appControl.serialControl.continuousModeInterval) {
+                                appControl.serialControl.setContinuousSendingMode(
+                                            continuousSendingModeSpinBox.value)
+                            }
                         }
                     }
 

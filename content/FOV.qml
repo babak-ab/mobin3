@@ -105,19 +105,21 @@ Item {
                 anchors.topMargin: 50
                 style: sliderTouchStyle
                 value: appControl.serialControl.fovPosition
-                //updateValueWhileDragging: false
                 minimumValue: 0
                 maximumValue: 65535
-
 
                 onPressedChanged: {
 
                     if (!pressed) {
 
+                        appControl.serialControl.enableFovUpdate(true)
+
                         if (gotoFovSlider.value !== appControl.serialControl.fovPosition) {
                             appControl.serialControl.gotoFov(
                                         gotoFovSlider.value)
                         }
+                    } else {
+                        appControl.serialControl.enableFovUpdate(false)
                     }
                 }
 
@@ -152,7 +154,6 @@ Item {
                 anchors.topMargin: 50
                 style: sliderTouchStyle
                 value: appControl.serialControl.focusPosition
-                //updateValueWhileDragging: false
                 minimumValue: 0
                 maximumValue: 65535
 
@@ -160,10 +161,14 @@ Item {
 
                     if (!pressed) {
 
+                        appControl.serialControl.enableFocusUpdate(true)
+
                         if (gotoFocusSlider.value !== appControl.serialControl.focusPosition) {
                             appControl.serialControl.gotoFocus(
                                         gotoFocusSlider.value)
                         }
+                    } else {
+                        appControl.serialControl.enableFocusUpdate(false)
                     }
                 }
 
