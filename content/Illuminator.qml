@@ -47,12 +47,16 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-
-import QtQuick 2.2
+import QtQuick 2.12
 import QtQuick.Controls.Styles 1.1
+
+import QtQuick.Layouts 1.14
 
 import QtQuick.Controls 2.3 as QQC2
 import QtQuick.Controls 1.2 as QQC1
+
+import AppControl 1.0
+import SerialControl 1.0
 
 Item {
 
@@ -101,10 +105,18 @@ Item {
                 style: switchStyle
                 checked: appControl.serialControl.illuminator
 
-                onCheckedChanged: {
-                    if (illuminatorOnOffSwitch.checked !== appControl.serialControl.illuminator) {
-                        appControl.serialControl.enableIlluminator(
-                                    illuminatorOnOffSwitch.checked)
+                onClicked: {
+
+                    if (!checked) {
+
+                        illuminatorOnOffSwitch.checked = false
+                        if (illuminatorOnOffSwitch.checked !== appControl.serialControl.illuminator) {
+                            appControl.serialControl.enableIlluminator(
+                                        illuminatorOnOffSwitch.checked)
+                        }
+                    } else {
+                        if (illuminatorOnOffSwitch.checked !== appControl.serialControl.illuminator)
+                            illuminatorDialog.open()
                     }
                 }
             }
@@ -294,6 +306,45 @@ Item {
                     }
                 }
             }
+        }
+    }
+
+    QQC2.Dialog {
+        id: illuminatorDialog
+        standardButtons: QQC2.Dialog.Ok | QQC2.Dialog.Cancel
+        parent: QQC2.Overlay.overlay
+
+        Text {
+            text: "Are you sure to power on the illuminator?"
+            font.family: "Helvetica"
+            font.pointSize: 15
+            color: "white"
+            style: Text.Outline;
+            styleColor: "black"
+        }
+
+        background: Rectangle {
+            implicitWidth: 100
+            implicitHeight: 60
+            color: "black"
+            opacity: 0.5
+            radius: 5
+            border.color: "white"
+
+        }
+
+        x: parent ? ((parent.width - width) / 2) : 0
+        y: parent ? ((parent.height - height) / 2) : 0
+
+        onAccepted: {
+            if (illuminatorOnOffSwitch.checked !== appControl.serialControl.illuminator) {
+                appControl.serialControl.enableIlluminator(
+                            illuminatorOnOffSwitch.checked)
+            }
+        }
+
+        onRejected: {
+            illuminatorOnOffSwitch.checked = false
         }
     }
 

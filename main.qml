@@ -152,7 +152,8 @@ ApplicationWindow {
                     id: illuminatorOnOffSwitch
                     checked: appControl.serialControl.illuminator
 
-                    onCheckedChanged: {
+                    onReleased: {
+
                         if (!checked) {
 
                             if (illuminatorOnOffSwitch.checked !== appControl.serialControl.illuminator) {
@@ -162,7 +163,6 @@ ApplicationWindow {
                         } else {
                             illuminatorDialog.open()
                         }
-
                     }
                 }
 
@@ -432,7 +432,7 @@ ApplicationWindow {
         Button {
             id: recordButton
             icon.source: "qrc:/Images/record-icon.png"
-            icon.color: "white"
+            icon.color: "transparent"
             icon.height: 60
             icon.width: 60
 
@@ -447,11 +447,15 @@ ApplicationWindow {
                 radius: 5
             }
 
-            onClicked: {
+            onReleased: {
                 if (checked) {
+                    recordButton.icon.source = ""
+                    recordButton.icon.source = "qrc:/Images/stop-record-icon.png"
                     appControl.startRecord()
 
                 } else {
+                    recordButton.icon.source = ""
+                    recordButton.icon.source = "qrc:/Images/record-icon.png"
                     appControl.stopRecord()
                 }
             }
@@ -784,7 +788,6 @@ ApplicationWindow {
         id: illuminatorDialog
         standardButtons: Dialog.Ok | Dialog.Cancel
         parent: Overlay.overlay
-
 
         Text {
             text: "Are you sure to power on the illuminator?"

@@ -18,7 +18,6 @@ GamepadController::GamepadController()
     m_isRB_ButtonPressed = false;
     m_isLB_ButtonPressed = false;
     m_isToggleIlluminatorCommandSent = false;
-    m_isIlluminatorOn = false;
 
     previousRightAxisX = 0.0;
     previousRightAxisY = 0.0;

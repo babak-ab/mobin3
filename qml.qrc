@@ -44,5 +44,6 @@
         <file>RecordIndicator.qml</file>
         <file>Images/caution-icon.png</file>
         <file>IlluminatorIndicator.qml</file>
+        <file>Images/stop-record-icon.png</file>
     </qresource>
 </RCC>
