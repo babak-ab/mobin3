@@ -47,6 +47,7 @@ class SerialControl : public RingQueue
     Q_PROPERTY(ContrastLevel contrastLevel READ contrastLevel WRITE setContrastMode NOTIFY sigDataChanged)
     Q_PROPERTY(BrightnessLevel brightnessLevel READ brightnessLevel WRITE setBrightnessLevel NOTIFY sigDataChanged)
     Q_PROPERTY(quint8 mode READ mode WRITE setMode NOTIFY sigDataChanged)
+    Q_PROPERTY(quint8 sendingMode READ sendingMode NOTIFY sigDataChanged)
     Q_PROPERTY(quint16 continuousModeInterval READ continuousModeInterval WRITE setContinuousSendingMode NOTIFY sigDataChanged)
 
     // For updating labels
@@ -98,15 +99,6 @@ public:
         SendingMode_Request             = 0x02
     };
     Q_ENUM(SendingModes)
-
-//    enum VideoModes
-//    {
-//        VideoMode_Unknown               = -1,
-//        VideoMode_WomWoo                = 0x01,
-//        VideoMode_Spotter               = 0x02,
-//        VideoMode_SWIR_Spotter          = 0x03
-//    };
-//    Q_ENUM(VideoModes)
 
     enum FilterModes
     {
@@ -321,6 +313,7 @@ public:
     BrightnessLevel brightnessLevel() const;
 
     quint8 mode() const;
+    quint8 sendingMode() const;
 
     quint8 continuousModeInterval() const;
 

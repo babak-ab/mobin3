@@ -28,8 +28,8 @@ SerialControl::SerialControl(QObject* parent)
     m_noiseReductionMode = NR_High;
     m_isDigitalZoomEnabled = false;
     m_isIlluminatorEnabled = false;
-    m_isUpdatingFovEnabled = false;
-    m_isUpdatingFocusEnabled = false;
+    m_isUpdatingFovEnabled = true;
+    m_isUpdatingFocusEnabled = true;
     m_contrastLevel = ContrastLevel_Level2;
     m_brightnessLevel = BrightnessLevel_Level2;
     m_mode = 1;
@@ -38,6 +38,7 @@ SerialControl::SerialControl(QObject* parent)
     m_continuousModeInterval = 50;
 
     m_focusMode = true;
+    m_sendingMode = SendingMode_Request;
 
     init_crc8();
 }
@@ -192,10 +193,12 @@ QByteArray SerialControl::interpret(IRQueue<quint8>* queueRead)
 
             m_gammaLevel = gammaLevel;
             m_noiseReductionMode = noiseLevel;
+
             if (focusMode == 2)
                 m_focusMode = true; // boolean
             else if (focusMode == 1)
                 m_focusMode = false;
+
             m_sendingMode = sendingMode;
 
             m_selectedCamera = videoMode;
@@ -329,6 +332,11 @@ SerialControl::BrightnessLevel SerialControl::brightnessLevel() const
 quint8 SerialControl::mode() const
 {
     return (m_mode - 1);
+}
+
+quint8 SerialControl::sendingMode() const
+{
+    return (quint8)(m_sendingMode);
 }
 
 quint8 SerialControl::continuousModeInterval() const
@@ -839,9 +847,10 @@ void SerialControl::setIlluminatorLargerAngle()
 
 void SerialControl::setIlluminatorAngleOffset(const quint8 offset)
 {
-    m_illuminatorAngleOffset = offset;
 
     sendCommand1(92, offset);
+
+    m_illuminatorAngleOffset = offset;
 
     Q_EMIT sigDataChanged();
 }
@@ -849,6 +858,10 @@ void SerialControl::setIlluminatorAngleOffset(const quint8 offset)
 void SerialControl::setRequestSendingMode()
 {
     sendCommand1(12, 0);
+
+    m_sendingMode = SendingMode_Request;
+
+    Q_EMIT sigDataChanged();
 }
 
 void SerialControl::setStatusSendingMode()
@@ -858,9 +871,10 @@ void SerialControl::setStatusSendingMode()
 
 void SerialControl::setContinuousSendingMode(const quint8 interval)
 {
-    m_continuousModeInterval = interval;
 
     sendCommand1(12, interval);
+
+    m_continuousModeInterval = interval;
 
     Q_EMIT sigDataChanged();
 }

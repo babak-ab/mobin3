@@ -101,7 +101,7 @@ ScrollView {
                     QQC2.RadioButton {
                         id: requestSendingMode
                         text: "Request"
-                        checked: true
+                        checked: appControl.serialControl.sendingMode === 2
                         font.pixelSize: 25
                         anchors.verticalCenter: parent.verticalCenter
 
@@ -164,7 +164,7 @@ ScrollView {
                     QQC2.RadioButton {
                         id: continuousSendingMode
                         text: "Continuous"
-                        checked: false
+                        checked: appControl.serialControl.sendingMode === 1
                         font.pixelSize: 25
 
                         background: Rectangle {

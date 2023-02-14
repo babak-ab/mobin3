@@ -140,7 +140,7 @@ ApplicationWindow {
                 Text {
                     text: "Illuminator:"
                     font.family: "Helvetica"
-                    font.pointSize: 14
+                    font.pointSize: 18
                     font.bold: true
                     color: "white"
                     style: Text.Outline;
@@ -171,7 +171,7 @@ ApplicationWindow {
                     id: ratioAngleOffsetText
                     text: ", Ratio: " + (appControl.serialControl.illuminatorAngleOffset / 100.0).toFixed(2)
                     font.family: "Helvetica"
-                    font.pointSize: 14
+                    font.pointSize: 18
                     font.bold: true
                     color: "white"
                     style: Text.Outline
@@ -207,12 +207,12 @@ ApplicationWindow {
                     id: brightnessValueText
                     text: ", Brightness: " + appControl.serialControl.illuminatorBrightnessLevel
                     font.family: "Helvetica"
-                    font.pointSize: 14
+                    font.pointSize: 18
                     font.bold: true
                     color: "white"
                     style: Text.Outline;
                     styleColor: "black"
-                    width: 180
+                    width: 200
                     anchors.verticalCenter: parent.verticalCenter
                 }
 
@@ -265,7 +265,8 @@ ApplicationWindow {
                     text: "Cont. Zoom"
                     checked: appControl.serialControl.selectedCamera
                              === SerialControl.CameraSelection_ContinuousZoom
-                    font.pixelSize: 15
+                    font.pixelSize: 18
+                    font.bold: true
 
                     background: Rectangle {
                         implicitWidth: 60
@@ -287,7 +288,8 @@ ApplicationWindow {
                     text: "Spotter"
                     checked: appControl.serialControl.selectedCamera
                              === SerialControl.CameraSelection_Spotter
-                    font.pixelSize: 15
+                    font.pixelSize: 18
+                    font.bold: true
 
                     background: Rectangle {
                         implicitWidth: 60
@@ -325,7 +327,8 @@ ApplicationWindow {
                     id: colorFilter
                     text: "Color"
                     checked: appControl.serialControl.selectedFilter === SerialControl.Color
-                    font.pixelSize: 15
+                    font.pixelSize: 18
+                    font.bold: true
                     visible: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_ContinuousZoom
                              || appControl.serialControl.selectedCamera === SerialControl.CameraSelection_Spotter
 
@@ -348,7 +351,8 @@ ApplicationWindow {
                     id: nirFilter
                     text: "NIR"
                     checked: appControl.serialControl.selectedFilter === SerialControl.NIR
-                    font.pixelSize: 15
+                    font.pixelSize: 18
+                    font.bold: true
                     visible: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_ContinuousZoom
                              || appControl.serialControl.selectedCamera === SerialControl.CameraSelection_Spotter
 
@@ -389,7 +393,8 @@ ApplicationWindow {
                     id: autoFocusButton
                     text: "AF"
                     checked: appControl.serialControl.focusMode
-                    font.pixelSize: 15
+                    font.pixelSize: 18
+                    font.bold: true
 
                     background: Rectangle {
                         implicitWidth: 40
@@ -410,7 +415,8 @@ ApplicationWindow {
                     id: manualFocusButton
                     text: "MF"
                     checked: !appControl.serialControl.focusMode
-                    font.pixelSize: 15
+                    font.pixelSize: 18
+                    font.bold: true
 
                     background: Rectangle {
                         implicitWidth: 40
@@ -442,7 +448,7 @@ ApplicationWindow {
             background: Rectangle {
                 implicitWidth: 60
                 implicitHeight: 60
-                color: recordButton.checked ? "red" : "black"
+                color: recordButton.checked ? "red" : "transparent"
                 opacity: 0.5
                 radius: 5
             }
