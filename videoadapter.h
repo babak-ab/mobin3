@@ -7,6 +7,10 @@
 #include <QQmlEngine>
 #include <QTimer>
 #include <QVideoSurfaceFormat>
+
+///
+/// \brief The VideoAdapter class
+/// This calss handles the rendering affirs in the applications.
 class  VideoAdapter : public QObject {
     Q_OBJECT
 
@@ -14,10 +18,28 @@ class  VideoAdapter : public QObject {
     Q_PROPERTY(QSize frameSize READ frameSize NOTIFY sizeChanged)
 
 public:
+    ///
+    /// \brief VideoAdapter
+    /// The constructor.
+    /// \param frameSize
+    /// The size of the adapter in pixel.
+    /// \param parent
+    /// The parent.
     explicit VideoAdapter(QSize frameSize = QSize(640, 480), QObject* parent = Q_NULLPTR);
-
     virtual ~VideoAdapter();
+
+    ///
+    /// \brief getVideoSurface
+    /// Returns the video surface.
+    /// \return
+    /// The video surface.
     QAbstractVideoSurface* getVideoSurface() const;
+
+    ///
+    /// \brief setVideoSurface
+    /// Sets the video surface.
+    /// \param surface
+    /// The surface.
     void setVideoSurface(QAbstractVideoSurface* surface);
 
 private:

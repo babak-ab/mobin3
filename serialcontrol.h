@@ -28,11 +28,12 @@ class SerialControl : public RingQueue
 {
     Q_OBJECT
 
+    // The properties used in the UI (QML) layer.
     Q_PROPERTY(quint8 panTiltSpeed READ panTiltSpeed WRITE setPanTiltSpeed NOTIFY sigDataChanged)
     Q_PROPERTY(quint8 zoomSpeed READ zoomSpeed WRITE setZoomSpeed NOTIFY sigDataChanged)
     Q_PROPERTY(quint8 focusSpeed READ focusSpeed WRITE setFocusSpeed NOTIFY sigDataChanged)
-    Q_PROPERTY(quint16 focusPosition READ focusPosition /*WRITE setFocusPosition*/ NOTIFY sigDataChanged)
-    Q_PROPERTY(quint16 fovPosition READ fovPosition /*WRITE setFovPosition*/ NOTIFY sigDataChanged)
+    Q_PROPERTY(quint16 focusPosition READ focusPosition NOTIFY sigDataChanged)
+    Q_PROPERTY(quint16 fovPosition READ fovPosition NOTIFY sigDataChanged)
     Q_PROPERTY(DefogMode defogMode READ defogMode WRITE setDefogMode NOTIFY sigDataChanged)
     Q_PROPERTY(GammaLevel gammaLevel READ gammaLevel WRITE setGammaLevel NOTIFY sigDataChanged)
     Q_PROPERTY(NoiseReductionMode noiseReductionMode READ noiseReductionMode WRITE setNoiseReductionMode NOTIFY sigDataChanged)
@@ -60,6 +61,9 @@ class SerialControl : public RingQueue
 
 public:
 
+    ///
+    /// \brief The CameraSelection enum
+    /// An enum for selecting between the camera types.
     enum CameraSelection {
         CameraSelection_ContinuousZoom  = 0x01,
         CameraSelection_Spotter         = 0x02,
@@ -67,25 +71,27 @@ public:
     };
     Q_ENUM(CameraSelection)
 
-//    enum FilterSelection {
-//        FilterSelection_ColorFilter     = 0x01,
-//        FilterSelection_NIRFilter       = 0x02,
-//        FilterSelection_LaserFilter     = 0x03
-//    };
-//    Q_ENUM(FilterSelection)
-
+    ///
+    /// \brief The GammaLevel enum
+    /// An enum for selecting between gamma levels
     enum GammaLevel {
         Level1                          = 0x01,
         Level2                          = 0x02,
     };
     Q_ENUM(GammaLevel)
 
+    ///
+    /// \brief The NoiseReductionMode enum
+    /// An enum for selecting between noise reduction levels
     enum NoiseReductionMode {
         NR_Low                             = 0x01,
         NR_High                            = 0x02,
     };
     Q_ENUM(NoiseReductionMode)
 
+    ///
+    /// \brief The FocusModes enum
+    /// An enum for switching between focus mode
     enum FocusModes
     {
         FocusMode_Unknown               = -1,
@@ -94,6 +100,9 @@ public:
     };
     Q_ENUM(FocusModes)
 
+    ///
+    /// \brief The SendingModes enum
+    /// An enum for switching between sending modes
     enum SendingModes
     {
         SendingMode_Unknown             = -1,
@@ -102,6 +111,9 @@ public:
     };
     Q_ENUM(SendingModes)
 
+    ///
+    /// \brief The FilterModes enum
+    /// An enum for switching between filters
     enum FilterModes
     {
         Unknown                         = -1,
@@ -112,6 +124,9 @@ public:
     };
     Q_ENUM(FilterModes)
 
+    ///
+    /// \brief The DefogMode enum
+    /// An enum for switching between defogging modes
     enum DefogMode {
         D_Off                   = 0x00,
         D_Low                   = 0x01,
@@ -120,6 +135,9 @@ public:
     };
     Q_ENUM(DefogMode)
 
+    ///
+    /// \brief The SensorValues enum
+    /// An enum for labeling of returned sensor types
     enum SensorValues
     {
         SensorValue_Unknown             = -1,
@@ -133,6 +151,9 @@ public:
     };
     Q_ENUM(SensorValues)
 
+    ///
+    /// \brief The ContrastLevel enum
+    /// An enum for switching between sending modes
     enum ContrastLevel {
         ContrastLevel_Level1            = 0x01,
         ContrastLevel_Level2            = 0x02,
@@ -140,6 +161,9 @@ public:
     };
     Q_ENUM(ContrastLevel)
 
+    ///
+    /// \brief The BrightnessLevel enum
+    /// An enum for switching between brightness levels
     enum BrightnessLevel {
         BrightnessLevel_Level1          = 0x00,
         BrightnessLevel_Level2          = 0x01,
@@ -148,6 +172,9 @@ public:
     };
     Q_ENUM(BrightnessLevel)
 
+    ///
+    /// \brief The ModeLevels enum
+    /// An enum for switching between mode levels
     enum ModeLevels
     {
         ModeLevel_Unknown               = -1,
@@ -172,7 +199,6 @@ public:
     Q_INVOKABLE void gotoFocus(const quint16 position);
     Q_INVOKABLE void setPosition(const quint8 positionNumber);
     Q_INVOKABLE void clearPosition(const quint8 positionNumber);
-
     Q_INVOKABLE void tiltUp();
     Q_INVOKABLE void tiltDown();
     Q_INVOKABLE void tiltStop();
@@ -180,31 +206,22 @@ public:
     Q_INVOKABLE void panRight();
     Q_INVOKABLE void panStop();
     Q_INVOKABLE void setPanTiltSpeed(const quint8 speed);
-
     Q_INVOKABLE void setNextCamera();
     Q_INVOKABLE void setSelectedCamera(const CameraSelection camera);
-
     Q_INVOKABLE void setNextFilter();
     Q_INVOKABLE void setSelectedFilter(const FilterModes filter);
-
     Q_INVOKABLE void setNextDefogMode();
     Q_INVOKABLE void setDefogMode(const DefogMode mode);
-
     Q_INVOKABLE void setNextGammaLevel();
     Q_INVOKABLE void setGammaLevel(const GammaLevel level);
-
     Q_INVOKABLE void setNextNoiseReductionMode();
     Q_INVOKABLE void setNoiseReductionMode(const NoiseReductionMode mode);
-
     Q_INVOKABLE void enableDigitalZoom(const bool state);
-
     Q_INVOKABLE void enableFovUpdate(const bool state);
     Q_INVOKABLE void enableFocusUpdate(const bool state);
-
     Q_INVOKABLE void setContrastMode(const quint8 level);
     Q_INVOKABLE void setBrightnessLevel(const quint8 level);
     Q_INVOKABLE void setMode(const quint8 mode);
-
     Q_INVOKABLE void showMenuPressedRequested();
     Q_INVOKABLE void showMenuPressed();
     Q_INVOKABLE void showMenuReleased();
@@ -217,20 +234,15 @@ public:
     Q_INVOKABLE void menuRightPressed();
     Q_INVOKABLE void menuRightReleased();
     Q_INVOKABLE void menuESCReleased();
-
     Q_INVOKABLE void enableIlluminator(const bool state);
     Q_INVOKABLE void toggleIlluminator();
-
     Q_INVOKABLE void setIlluminatorBrightness(const quint8 brightness);
     Q_INVOKABLE void setIlluminatorSmallerAngle();
     Q_INVOKABLE void setIlluminatorLargerAngle();
     Q_INVOKABLE void setIlluminatorAngleOffset(const quint8 offset);
-
     Q_INVOKABLE void setRequestSendingMode();
     Q_INVOKABLE void setStatusSendingMode();
-
     Q_INVOKABLE void setContinuousSendingMode(const quint8 interval);
-
     Q_INVOKABLE QString serialportName() const;
 
     ///
@@ -240,6 +252,7 @@ public:
     /// pointer to class object which creates an instance of SerialControl.
     ///
     explicit SerialControl(QObject* parent = Q_NULLPTR);
+
     virtual ~SerialControl();
 
     ///
@@ -283,53 +296,203 @@ public:
     /// The result
     bool isConnected() const;
 
+    ///
+    /// \brief zoomSpeed
+    /// Resturns the current zoom speed.
+    /// \return
+    /// The current zoom speed
     quint8 zoomSpeed() const;
 
+    ///
+    /// \brief panTiltSpeed
+    /// Returns the current pan/tilt speed.
+    /// \return
+    /// The speed.
     quint8 panTiltSpeed() const;
 
+    ///
+    /// \brief focusSpeed
+    /// Returns the focus speed.
+    /// \return
+    /// The speed.
     quint8 focusSpeed() const;
 
+    ///
+    /// \brief focusPosition
+    /// Returns the focus position.
+    /// \return
+    /// The position.
     quint16 focusPosition() const;
 
+    ///
+    /// \brief fovPosition
+    /// Returns the FOV position.
+    /// \return
+    ///
     quint16 fovPosition() const;
 
+    ///
+    /// \brief illuminatorBrightnessLevel
+    /// Returns the brightness of the illumiantor.
+    /// \return
+    /// The brightness value.
     quint8 illuminatorBrightnessLevel() const;
 
+    ///
+    /// \brief illuminatorAngleOffset
+    /// Returns the ratio of the angle offset of the illuminator.
+    /// \return
+    /// The value for the offset angle of the illumiantor.
     quint8 illuminatorAngleOffset() const;
 
+    ///
+    /// \brief defogMode
+    /// Returns the current defog mode.
+    /// \return
+    /// The mode.
     DefogMode defogMode() const;
 
+    ///
+    /// \brief gammaLevel
+    /// Returns the gamma level.
+    /// \return
+    /// The value of the gamma level.
     GammaLevel gammaLevel() const;
 
+    ///
+    /// \brief noiseReductionMode
+    /// Returns the current noise reduction mode.
+    /// \return
+    /// The current noise reduction mode.
     NoiseReductionMode noiseReductionMode() const;
 
+    ///
+    /// \brief digitalZoom
+    /// Returns that the digital zoom is on or not.
+    /// \return
+    /// The result.
     bool digitalZoom() const;
 
+    ///
+    /// \brief illuminator
+    /// Returns that the illumiantor is on or not.
+    /// \return
+    /// The result.
     bool illuminator() const;
 
+    ///
+    /// \brief focusMode
+    /// Returns the focus mode. TRUE means the focus mode is AUTO,
+    /// and FALSE means MANUAL focus mode.
+    /// \return
+    /// The result.
     bool focusMode() const;
 
+    ///
+    /// \brief selectedFilter
+    /// Returns the current filter type.
+    /// \return
+    /// The value for the filter type.
     FilterModes selectedFilter() const;
+
+    ///
+    /// \brief selectedCamera
+    /// Returns the current camera type.
+    /// \return
+    /// The camera type.
     CameraSelection selectedCamera() const;
 
+    ///
+    /// \brief contrastLevel
+    /// Returns the current contrast level.
+    /// \return
+    /// The level.
     ContrastLevel contrastLevel() const;
 
+    ///
+    /// \brief brightnessLevel
+    /// Returns the current brightness level.
+    /// \return
+    /// The level.
     BrightnessLevel brightnessLevel() const;
 
+    ///
+    /// \brief mode
+    /// Returns the current mode.
+    /// \return
+    /// The mode.
     quint8 mode() const;
+
+    ///
+    /// \brief sendingMode
+    /// Returns the current sending mode.
+    /// \return
+    /// The mode.
     quint8 sendingMode() const;
 
+    ///
+    /// \brief continuousModeInterval
+    /// Returns the current interval of the continuous mode.
+    /// \return
+    /// The interval.
     quint8 continuousModeInterval() const;
 
+    ///
+    /// \brief messageBox
+    /// Returns the current text of the messageBox.
+    /// \return
+    /// The text.
     QString messageBox() const;
 
+    ///
+    /// \brief showLoginWindow
+    /// Returns the permision for showing the login window
+    /// for camera menu. This permision will be verified only for the first time.
+    /// \return
+    /// The permision result.
     bool showLoginWindow() const;
 
+    ///
+    /// \brief getNoiseReductionType
+    /// Returns the text for current noise reduction type.
+    /// \return
+    /// The text.
     QVariant getNoiseReductionType();
+
+    ///
+    /// \brief getDefogType
+    /// Returns the text for current defog type.
+    /// \return
+    /// The text.
     QVariant getDefogType();
+
+    ///
+    /// \brief getGammaType
+    /// Returns the text for current gamma type.
+    /// \return
+    /// The text.
     QVariant getGammaType();
+
+    ///
+    /// \brief getFilterType
+    /// Returns the text for current for filter type.
+    /// \return
+    /// The text.
     QVariant getFilterType();
 
+    ///
+    /// \brief joyStickPanTilt
+    /// A function for sending the pan and tilt direction and speed simultaneously
+    /// for both motors of the pan and tilt. This function is applicable while using a joystick
+    /// or gamepad.
+    /// \param panDirection
+    /// The direction of the pan.
+    /// \param panSpeed
+    /// The desired speed for pan.
+    /// \param tiltDirection
+    /// The direction of the tilt.
+    /// \param tiltSpeed
+    /// The desired speed for tilt.
     void joyStickPanTilt(const quint8& panDirection, const quint8& panSpeed,
                          const quint8& tiltDirection, const quint8& tiltSpeed);
 
@@ -410,7 +573,6 @@ private Q_SLOTS:
     void sltWriteSerialPortData(QByteArray data);
     void sltSetCameraMode();
     void sltSetFilterMode();
-
 
 Q_SIGNALS:
     /* platform property event signals */

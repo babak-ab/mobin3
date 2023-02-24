@@ -21,7 +21,6 @@ RC_ICONS = ./Images/Icon.ico
 
 SOURCES += \
         appcontrol.cpp \
-        buttonmodel.cpp \
         main.cpp \
         serialcontrol.cpp \
         videoadapter.cpp \
@@ -43,7 +42,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     appcontrol.h \
-    buttonmodel.h \
     serialcontrol.h \
     videoadapter.h \
     videocapture.h \
