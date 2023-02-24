@@ -23,6 +23,8 @@ GamepadController::GamepadController()
     previousRightAxisY = 0.0;
     previousLeftAxisX = 0.0;
     previousLeftAxisY = 0.0;
+
+    m_previousCommand = Command_Normal;
 }
 
 GamepadController::~GamepadController()
@@ -233,6 +235,8 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
     }
     case Button_RightAxisClick:
     {
+        command = Commands::Command_NextDefogLevel;
+
         mappedValue = analogValueMapper(button, value);
 
         break;
@@ -247,7 +251,15 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
             // Make sure that the major axis move will be applied
             if (qAbs(m_gamepad->axisLeftX()) > qAbs(m_gamepad->axisLeftY()))
             {
-                command = Commands::Command_FocusNear;
+                if (m_previousCommand == Command_ZoomIn
+                        || m_previousCommand == Command_ZoomOut)
+                {
+                    command = Commands::Command_ZoomStop;
+                }
+                else
+                {
+                    command = Commands::Command_FocusNear;
+                }
 
                 previousLeftAxisX = value;
             }
@@ -258,7 +270,15 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
             // Make sure that the major axis move will be applied
             if (qAbs(m_gamepad->axisLeftX()) > qAbs(m_gamepad->axisLeftY()))
             {
-                command = Commands::Command_FocusFar;
+                if (m_previousCommand == Command_ZoomIn
+                        || m_previousCommand == Command_ZoomOut)
+                {
+                    command = Commands::Command_ZoomStop;
+                }
+                else
+                {
+                    command = Commands::Command_FocusFar;
+                }
 
                 previousLeftAxisX = value;
             }
@@ -284,7 +304,15 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
             // Make sure that the major axis move will be applied
             if (qAbs(m_gamepad->axisLeftY()) > qAbs(m_gamepad->axisLeftX()))
             {
-                command = Commands::Command_ZoomOut;
+                if (m_previousCommand == Command_FocusFar
+                        || m_previousCommand == Command_FocusNear)
+                {
+                    command = Commands::Command_FocusStop;
+                }
+                else
+                {
+                    command = Commands::Command_ZoomOut;
+                }
 
                 previousLeftAxisY = value;
             }
@@ -295,7 +323,15 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
             // Make sure that the major axis move will be applied
             if (qAbs(m_gamepad->axisLeftY()) > qAbs(m_gamepad->axisLeftX()))
             {
-                command = Commands::Command_ZoomIn;
+                if (m_previousCommand == Command_FocusFar
+                        || m_previousCommand == Command_FocusNear)
+                {
+                    command = Commands::Command_FocusStop;
+                }
+                else
+                {
+                    command = Commands::Command_ZoomIn;
+                }
 
                 previousLeftAxisY = value;
             }
@@ -339,7 +375,7 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
     }
     case Button_X:
     {
-        command = Commands::Command_NextDefogLevel;
+        command = Commands::Command_NextFilter;
 
         mappedValue = analogValueMapper(button, value);
 
@@ -531,6 +567,8 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
     {
         qDebug() << button << value << mappedValue;
     }
+
+    m_previousCommand = command;
 
     checkCommandAndAppendToBuffer(command, mappedValue);
 

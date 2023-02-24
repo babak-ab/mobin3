@@ -231,6 +231,16 @@ void AppControl::processGamepadCommand(const CommandPacket& packet)
         m_serialControl->setNextCamera();
         break;
     }
+    case Command_NextFilter:
+    {
+        if (packet.value == 0)
+        {
+            return;
+        }
+
+        m_serialControl->setNextFilter();
+        break;
+    }
     case Command_NextDefogLevel:
     {
         if (packet.value == 0)
@@ -280,7 +290,7 @@ void AppControl::processGamepadCommand(const CommandPacket& packet)
             return;
         }
 
-        m_serialControl->showMenuPressed();
+        m_serialControl->showMenuPressedRequested();
         m_serialControl->showMenuReleased();
         break;
     }

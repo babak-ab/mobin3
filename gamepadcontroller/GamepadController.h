@@ -107,6 +107,8 @@ private:
 
     QTimer m_processCommandsTimer;
 
+    Commands m_previousCommand;
+
     bool m_isRB_ButtonPressed;
     bool m_isLB_ButtonPressed;
     bool m_isToggleIlluminatorCommandSent;

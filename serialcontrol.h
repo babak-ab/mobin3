@@ -49,6 +49,8 @@ class SerialControl : public RingQueue
     Q_PROPERTY(quint8 mode READ mode WRITE setMode NOTIFY sigDataChanged)
     Q_PROPERTY(quint8 sendingMode READ sendingMode NOTIFY sigDataChanged)
     Q_PROPERTY(quint16 continuousModeInterval READ continuousModeInterval WRITE setContinuousSendingMode NOTIFY sigDataChanged)
+    Q_PROPERTY(QString messageBox READ messageBox NOTIFY sigMessageBoxRequested)
+    Q_PROPERTY(bool showLoginWindow READ showLoginWindow NOTIFY sigLoginWindowRequested)
 
     // For updating labels
     Q_PROPERTY(QVariant noiseReductionType READ getNoiseReductionType NOTIFY sigDataChanged)
@@ -182,6 +184,7 @@ public:
     Q_INVOKABLE void setNextCamera();
     Q_INVOKABLE void setSelectedCamera(const CameraSelection camera);
 
+    Q_INVOKABLE void setNextFilter();
     Q_INVOKABLE void setSelectedFilter(const FilterModes filter);
 
     Q_INVOKABLE void setNextDefogMode();
@@ -202,6 +205,7 @@ public:
     Q_INVOKABLE void setBrightnessLevel(const quint8 level);
     Q_INVOKABLE void setMode(const quint8 mode);
 
+    Q_INVOKABLE void showMenuPressedRequested();
     Q_INVOKABLE void showMenuPressed();
     Q_INVOKABLE void showMenuReleased();
     Q_INVOKABLE void menuUpPressed();
@@ -317,6 +321,10 @@ public:
 
     quint8 continuousModeInterval() const;
 
+    QString messageBox() const;
+
+    bool showLoginWindow() const;
+
     QVariant getNoiseReductionType();
     QVariant getDefogType();
     QVariant getGammaType();
@@ -353,6 +361,7 @@ private:
     quint8 m_panTiltSpeed;
     int m_repeatCounter;
     bool m_focusMode;
+    QString m_message;
 
     CameraSelection m_selectedCamera;
 
@@ -375,6 +384,8 @@ private:
     bool m_isIlluminatorEnabled;
     bool m_isUpdatingFovEnabled;
     bool m_isUpdatingFocusEnabled;
+
+    bool m_showLoginWindow;
 
     // Private Functions
     void writeDataOnPlatformsSerialPort(const QByteArray &data);
@@ -405,6 +416,8 @@ Q_SIGNALS:
     /* platform property event signals */
     void sigWriteData(QByteArray data);
     void sigDataChanged();
+    void sigMessageBoxRequested();
+    void sigLoginWindowRequested();
 };
 
 

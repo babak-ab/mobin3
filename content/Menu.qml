@@ -158,7 +158,8 @@ Item {
                     }
 
                     onPressed: {
-                        appControl.serialControl.showMenuPressed()
+                        appControl.serialControl.showMenuPressedRequested()
+
                     }
 
                     onDownChanged: {

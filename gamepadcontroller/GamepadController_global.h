@@ -25,25 +25,27 @@ enum Commands
     Command_TiltStop                        = 12,
 
     Command_NextCamera                      = 13,
-    Command_NextDefogLevel                  = 14,
-    Command_NextGammaLevel                  = 15,
-    Command_NextNoiseReductionLevel         = 16,
+    Command_NextFilter                      = 14,
 
-    Command_ToggleDigitalZoom               = 17,
+    Command_NextDefogLevel                  = 15,
+    Command_NextGammaLevel                  = 16,
+    Command_NextNoiseReductionLevel         = 17,
 
-    Command_OpenCameraMenu                  = 18,
-    Command_MenuItemUp                      = 19,
-    Command_MenuItemDown                    = 20,
-    Command_MenuItemLeft                    = 21,
-    Command_MenuItemRight                   = 22,
+    Command_ToggleDigitalZoom               = 18,
 
-    Command_CloseCameraMenu                 = 23,
+    Command_OpenCameraMenu                  = 19,
+    Command_MenuItemUp                      = 20,
+    Command_MenuItemDown                    = 21,
+    Command_MenuItemLeft                    = 22,
+    Command_MenuItemRight                   = 23,
 
-    Command_ShutdownSystem                  = 24,
+    Command_CloseCameraMenu                 = 24,
 
-    Command_ToggleIlluminator               = 25,
-    Command_IncreaseAngleOfIlluminator      = 26,
-    Command_IncreaseBrightnessOfIlluminator = 27
+    Command_ShutdownSystem                  = 25,
+
+    Command_ToggleIlluminator               = 26,
+    Command_IncreaseAngleOfIlluminator      = 27,
+    Command_IncreaseBrightnessOfIlluminator = 28
 };
 
 struct CommandPacket

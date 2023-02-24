@@ -136,7 +136,7 @@ ApplicationWindow {
             }
 
             Row {
-                spacing: 5
+                spacing: 15
                 Text {
                     text: "Illuminator:"
                     font.family: "Helvetica"
@@ -176,6 +176,7 @@ ApplicationWindow {
                     color: "white"
                     style: Text.Outline
                     styleColor: "black"
+                    width: 150
                     anchors.verticalCenter: parent.verticalCenter
                 }
 
@@ -827,6 +828,114 @@ ApplicationWindow {
         onRejected: {
             illuminatorOnOffSwitch.checked = false
         }
+    }
+
+    Dialog {
+        visible: appControl.serialControl.messageBox === "" ? false : true
+        standardButtons: Dialog.Ok
+        parent: Overlay.overlay
+
+        Text {
+            text: appControl.serialControl.messageBox
+            font.family: "Helvetica"
+            font.pointSize: 15
+            color: "white"
+            style: Text.Outline;
+            styleColor: "black"
+        }
+
+        background: Rectangle {
+            implicitWidth: 100
+            implicitHeight: 60
+            color: "black"
+            opacity: 0.5
+            radius: 5
+            border.color: "white"
+
+        }
+
+        x: parent ? ((parent.width - width) / 2) : 0
+        y: parent ? ((parent.height - height) / 2) : 0
+
+    }
+
+    GroupBox {
+        id: cameraLoginMenu
+        anchors.margins: 5
+        visible: appControl.serialControl.showLoginWindow
+        parent: Overlay.overlay
+Column
+{
+        Text {
+            text: "Camera Menu Login"
+            font.family: "Helvetica"
+            font.pointSize: 15
+            color: "red"
+            style: Text.Outline
+            styleColor: "black"
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+
+        RowLayout {
+            Layout.alignment: Qt.AlignHCenter
+            Label {
+                text: "Login Password: "
+            }
+            TextField {
+                id: password
+                Layout.fillWidth: true
+                echoMode: TextInput.Password
+                placeholderText: "password"
+            }
+        }
+
+        RowLayout {
+            Layout.fillWidth: true
+            anchors.horizontalCenter: parent.horizontalCenter
+            Button {
+                text: "OK"
+                Layout.fillWidth: true
+                onClicked: {
+                    if (password.text == "1234") {
+
+                        appControl.serialControl.showMenuPressed()
+                        cameraLoginMenu.visible = false;
+
+                    } else {
+                        passwordDialog.open()
+                    }
+                }
+            }
+            Button {
+                text: "Cancel"
+                Layout.fillWidth: true
+
+                onClicked: {
+                    cameraLoginMenu.visible = false;
+                }
+            }
+        }
+
+}
+        x: parent ? ((parent.width - width) / 2) : 0
+        y: parent ? ((parent.height - height) / 2) : 0
+    }
+
+    Dialog {
+        id: passwordDialog
+        title: "Password is wrong"
+        modal: true
+
+        parent: Overlay.overlay
+
+        x: parent ? ((parent.width - width) / 2) : 0
+        y: parent ? ((parent.height - height) / 2) : 0
+
+        width: 300
+        height: 100
+        standardButtons: Dialog.Ok
+
+        onAccepted: passwordDialog.close()
     }
 
     RecordIndicator {}

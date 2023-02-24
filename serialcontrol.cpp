@@ -33,12 +33,15 @@ SerialControl::SerialControl(QObject* parent)
     m_contrastLevel = ContrastLevel_Level2;
     m_brightnessLevel = BrightnessLevel_Level2;
     m_mode = 1;
-    m_illuminatorBrightness = 0;
+    m_illuminatorBrightness = 255;
     m_illuminatorAngleOffset = 50;
     m_continuousModeInterval = 50;
 
     m_focusMode = true;
     m_sendingMode = SendingMode_Request;
+
+    m_showLoginWindow = false;
+    m_message = "";
 
     init_crc8();
 }
@@ -149,7 +152,6 @@ QByteArray SerialControl::interpret(IRQueue<quint8>* queueRead)
     crc[1] = packet.at(10);
 
     //    std::cerr << "CHECKSUM : " << crc.toHex(' ').toStdString() << std::endl;
-
 
     // check first, second and crc bytes
     if (/*crcValue == packet.at(lengthByte)*/ true)
@@ -344,6 +346,16 @@ quint8 SerialControl::continuousModeInterval() const
     return m_continuousModeInterval;
 }
 
+QString SerialControl::messageBox() const
+{
+    return m_message;
+}
+
+bool SerialControl::showLoginWindow() const
+{
+    return m_showLoginWindow;
+}
+
 QVariant SerialControl::getNoiseReductionType()
 {
     return QVariant::fromValue(m_noiseReductionMode);
@@ -376,6 +388,12 @@ void SerialControl::writeDataOnPlatformsSerialPort(const QByteArray& data)
 
     if (m_serialPort->isOpen()) {
         m_serialPort->write(data);
+    }
+    else
+    {
+        m_message = "Serial Port is not connected!";
+
+        Q_EMIT sigMessageBoxRequested();
     }
 }
 
@@ -644,7 +662,6 @@ void SerialControl::setNextCamera()
     }
     case CameraSelection_Spotter:
     {
-//        m_selectedCamera = CameraSelection_SWIRSpotter;
         m_selectedCamera = CameraSelection_ContinuousZoom;
         break;
     }
@@ -665,6 +682,25 @@ void SerialControl::setSelectedCamera(const SerialControl::CameraSelection camer
     sendCommand1(63, camera);
 
     Q_EMIT sigDataChanged();
+}
+
+void SerialControl::setNextFilter()
+{
+    switch (m_filterMode)
+    {
+    case Color:
+    {
+        m_filterMode = NIR;
+        break;
+    }
+    case NIR:
+    {
+        m_filterMode = Color;
+        break;
+    }
+    }
+
+    setSelectedFilter(m_filterMode);
 }
 
 void SerialControl::setSelectedFilter(const SerialControl::FilterModes filter)
@@ -803,16 +839,25 @@ void SerialControl::enableFocusUpdate(const bool state)
 
 void SerialControl::enableIlluminator(const bool state)
 {
-    m_isIlluminatorEnabled = state;
+    if (m_serialPort->isOpen())
+    {
+        m_isIlluminatorEnabled = state;
 
-    quint8 param;
-    if (state) {
-        param = 2;
-    } else {
-        param = 1;
+        quint8 param;
+        if (state) {
+            param = 2;
+        } else {
+            param = 1;
+        }
+
+        sendCommand1(90, param);
     }
+    else
+    {
+        m_message = "Serial Port is not connected!";
 
-    sendCommand1(90, param);
+        Q_EMIT sigMessageBoxRequested();
+    }
 
     Q_EMIT sigDataChanged();
 }
@@ -909,6 +954,20 @@ void SerialControl::setMode(const quint8 mode)
     sendCommand1(117, m_mode);
 
     Q_EMIT sigDataChanged();
+}
+
+void SerialControl::showMenuPressedRequested()
+{
+    if (!m_showLoginWindow)
+    {
+        m_showLoginWindow = true;
+
+        Q_EMIT sigLoginWindowRequested();
+    }
+    else
+    {
+        showMenuPressed();
+    }
 }
 
 void SerialControl::showMenuPressed()
