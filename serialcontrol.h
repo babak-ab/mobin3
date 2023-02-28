@@ -222,6 +222,7 @@ public:
     Q_INVOKABLE void setContrastMode(const quint8 level);
     Q_INVOKABLE void setBrightnessLevel(const quint8 level);
     Q_INVOKABLE void setMode(const quint8 mode);
+    Q_INVOKABLE void toggleMunu();
     Q_INVOKABLE void showMenuPressedRequested();
     Q_INVOKABLE void showMenuPressed();
     Q_INVOKABLE void showMenuReleased();
@@ -549,6 +550,8 @@ private:
     bool m_isUpdatingFocusEnabled;
 
     bool m_showLoginWindow;
+
+    bool m_isMenuOpened;
 
     // Private Functions
     void writeDataOnPlatformsSerialPort(const QByteArray &data);

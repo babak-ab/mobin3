@@ -123,9 +123,8 @@ QString AppControl::appVersion() const
 
 void AppControl::processGamepadCommand(const CommandPacket& packet)
 {
-    std::cerr << "---- processGamepadCommand: " << (Commands)packet.command << "  " << (double)packet.value << std::endl;
-
-    switch (packet.command) {
+    switch (packet.command)
+    {
     case Command_ZoomIn: {
         m_serialControl->setZoomSpeed(packet.value);
         m_serialControl->zoomIn();
@@ -290,8 +289,8 @@ void AppControl::processGamepadCommand(const CommandPacket& packet)
             return;
         }
 
-        m_serialControl->showMenuPressedRequested();
-        m_serialControl->showMenuReleased();
+        m_serialControl->toggleMunu();
+
         break;
     }
     case Command_MenuItemUp:

@@ -161,7 +161,6 @@ void GamepadController::removeConnections()
 
 void GamepadController::keyHandler(const GamepadController::Buttons &button, double &value)
 {
-
     bool shouldHandleCommand = deathBandMechanism(button, value);
 
     if (shouldHandleCommand == true)
@@ -535,7 +534,7 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
     }
     case Button_ChangeView:
     {
-        command = Commands::Command_CloseCameraMenu;
+        command = Commands::Command_ToggleDigitalZoom;
 
         mappedValue = analogValueMapper(button, value);
 
@@ -543,7 +542,6 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
     }
     case Button_XBoxHome:
     {
-        qDebug() << "shutdown system req";
         command = Commands::Command_ShutdownSystem;
 
         mappedValue = analogValueMapper(button, value);
@@ -563,11 +561,6 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
         return;
     }
 
-    if (command == Commands::Command_ShutdownSystem)
-    {
-        qDebug() << button << value << mappedValue;
-    }
-
     m_previousCommand = command;
 
     checkCommandAndAppendToBuffer(command, mappedValue);
@@ -585,9 +578,7 @@ bool GamepadController::deathBandMechanism(const GamepadController::Buttons &but
     if (button == GamepadController::Buttons::Button_LeftAxisX ||
             button == GamepadController::Buttons::Button_LeftAxisY ||
             button == GamepadController::Buttons::Button_RightAxisX ||
-            button == GamepadController::Buttons::Button_RightAxisY /*||
-                                    button == GamepadController::Buttons::Button_LT ||
-                                    button == GamepadController::Buttons::Button_RT*/)
+            button == GamepadController::Buttons::Button_RightAxisY)
     {
         if (qAbs(value) < DEATH_BAND_VALUE)
         {
@@ -655,7 +646,6 @@ quint8 GamepadController::analogValueMapper(const GamepadController::Buttons &bu
         return static_cast<quint8>((value * 50) + 50);
     }
 
-
     return static_cast<quint8>(value);
 }
 
@@ -664,9 +654,10 @@ void GamepadController::processNextCommand()
     if (m_commandsBuffer.isEmpty() == false)
     {
         QMap<Commands, quint8>::iterator firstItem = m_commandsBuffer.begin();
-        m_commandsBuffer.erase(firstItem);
 
         CommandPacket packet(firstItem.key(), firstItem.value());
+
+        m_commandsBuffer.erase(firstItem);
 
         if (firstItem.key() == Command_PanStop
                 && qAbs(m_gamepad->axisRightX()) > DEATH_BAND_VALUE)

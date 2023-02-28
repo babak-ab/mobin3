@@ -41,6 +41,9 @@ SerialControl::SerialControl(QObject* parent)
     m_sendingMode = SendingMode_Request;
 
     m_showLoginWindow = false;
+
+    m_isMenuOpened = false;
+
     m_message = "";
 
     init_crc8();
@@ -956,6 +959,23 @@ void SerialControl::setMode(const quint8 mode)
     Q_EMIT sigDataChanged();
 }
 
+void SerialControl::toggleMunu()
+{
+    std::cerr << " _------------------------ -_ \n";
+
+    if (m_isMenuOpened == false) // show menu
+    {
+        qDebug() << " show menu requested";
+        showMenuPressedRequested();
+        showMenuReleased();
+    }
+    else // hide menu
+    {
+        qDebug() << " hide menu requested";
+        menuESCReleased();
+    }
+}
+
 void SerialControl::showMenuPressedRequested()
 {
     if (!m_showLoginWindow)
@@ -973,6 +993,8 @@ void SerialControl::showMenuPressedRequested()
 void SerialControl::showMenuPressed()
 {
     sendCommand1(64, 1);
+    m_isMenuOpened = true;
+    qDebug() << " menu is opened now ";
 }
 
 void SerialControl::showMenuReleased()
@@ -1023,6 +1045,8 @@ void SerialControl::menuRightReleased()
 void SerialControl::menuESCReleased()
 {
     sendCommand1(58, 1);
+    m_isMenuOpened = false;
+    qDebug() << " menu is hide now ";
 }
 
 void SerialControl::sendCommand1(const quint8& command,
