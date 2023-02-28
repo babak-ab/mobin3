@@ -859,64 +859,65 @@ ApplicationWindow {
 
     }
 
-    GroupBox {
+    Dialog {
         id: cameraLoginMenu
-        anchors.margins: 5
+        //anchors.margins: 5
         visible: appControl.serialControl.showLoginWindow
         parent: Overlay.overlay
-Column
-{
-        Text {
-            text: "Camera Menu Login"
-            font.family: "Helvetica"
-            font.pointSize: 15
-            color: "red"
-            style: Text.Outline
-            styleColor: "black"
-            anchors.horizontalCenter: parent.horizontalCenter
-        }
-
-        RowLayout {
-            Layout.alignment: Qt.AlignHCenter
-            Label {
-                text: "Login Password: "
+        Column
+        {
+            Text {
+                text: "Camera Menu Login"
+                font.family: "Helvetica"
+                font.pointSize: 15
+                color: "red"
+                style: Text.Outline
+                styleColor: "black"
+                anchors.horizontalCenter: parent.horizontalCenter
             }
-            TextField {
-                id: password
-                Layout.fillWidth: true
-                echoMode: TextInput.Password
-                placeholderText: "password"
+
+            RowLayout {
+                Layout.alignment: Qt.AlignHCenter
+                Label {
+                    text: "Login Password: "
+                }
+                TextField {
+                    id: password
+                    Layout.fillWidth: true
+                    echoMode: TextInput.Password
+                    placeholderText: "password"
+                }
             }
-        }
 
-        RowLayout {
-            Layout.fillWidth: true
-            anchors.horizontalCenter: parent.horizontalCenter
-            Button {
-                text: "OK"
+            RowLayout {
                 Layout.fillWidth: true
-                onClicked: {
-                    if (password.text == "1234") {
+                anchors.horizontalCenter: parent.horizontalCenter
+                Button {
+                    text: "OK"
+                    Layout.fillWidth: true
+                    onClicked: {
+                        if (password.text == "1234") {
 
-                        appControl.serialControl.showMenuPressed()
-                        cameraLoginMenu.visible = false;
+                            appControl.serialControl.login()
+                            cameraLoginMenu.close();
 
-                    } else {
-                        passwordDialog.open()
+                        } else {
+                            passwordDialog.open()
+                        }
+                    }
+                }
+                Button {
+                    text: "Cancel"
+                    Layout.fillWidth: true
+
+                    onClicked: {
+                        //appControl.serialControl.resetCameraLoginMenu()
+                        cameraLoginMenu.close()
                     }
                 }
             }
-            Button {
-                text: "Cancel"
-                Layout.fillWidth: true
 
-                onClicked: {
-                    cameraLoginMenu.visible = false;
-                }
-            }
         }
-
-}
         x: parent ? ((parent.width - width) / 2) : 0
         y: parent ? ((parent.height - height) / 2) : 0
     }

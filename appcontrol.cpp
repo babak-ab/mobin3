@@ -289,7 +289,7 @@ void AppControl::processGamepadCommand(const CommandPacket& packet)
             return;
         }
 
-        m_serialControl->toggleMunu();
+        m_serialControl->toggleMenu();
 
         break;
     }

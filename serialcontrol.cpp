@@ -41,6 +41,7 @@ SerialControl::SerialControl(QObject* parent)
     m_sendingMode = SendingMode_Request;
 
     m_showLoginWindow = false;
+    m_isPasswordReceived = false;
 
     m_isMenuOpened = false;
 
@@ -932,6 +933,11 @@ QString SerialControl::serialportName() const
     return m_serialPort->portName();
 }
 
+void SerialControl::login()
+{
+    m_isPasswordReceived = true;
+}
+
 void SerialControl::setContrastMode(const quint8 level)
 {
     m_contrastLevel = (ContrastLevel)(level + 1);
@@ -959,7 +965,7 @@ void SerialControl::setMode(const quint8 mode)
     Q_EMIT sigDataChanged();
 }
 
-void SerialControl::toggleMunu()
+void SerialControl::toggleMenu()
 {
     std::cerr << " _------------------------ -_ \n";
 
@@ -978,7 +984,7 @@ void SerialControl::toggleMunu()
 
 void SerialControl::showMenuPressedRequested()
 {
-    if (!m_showLoginWindow)
+    if (!m_isPasswordReceived)
     {
         m_showLoginWindow = true;
 
