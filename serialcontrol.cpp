@@ -936,6 +936,9 @@ QString SerialControl::serialportName() const
 void SerialControl::login()
 {
     m_isPasswordReceived = true;
+
+    showMenuPressed();
+    showMenuReleased();
 }
 
 void SerialControl::setContrastMode(const quint8 level)
@@ -967,8 +970,6 @@ void SerialControl::setMode(const quint8 mode)
 
 void SerialControl::toggleMenu()
 {
-    std::cerr << " _------------------------ -_ \n";
-
     if (m_isMenuOpened == false) // show menu
     {
         qDebug() << " show menu requested";
@@ -993,6 +994,7 @@ void SerialControl::showMenuPressedRequested()
     else
     {
         showMenuPressed();
+        showMenuReleased();
     }
 }
 

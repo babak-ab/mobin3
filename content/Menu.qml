@@ -161,11 +161,6 @@ Item {
                         appControl.serialControl.showMenuPressedRequested()
 
                     }
-
-                    onDownChanged: {
-                        if (!menuButton.pressed)
-                            appControl.serialControl.showMenuReleased()
-                    }
                 }
 
                 QQC2.Button {
