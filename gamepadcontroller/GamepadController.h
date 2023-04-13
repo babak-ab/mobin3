@@ -26,6 +26,7 @@
 #define MIN_DIFF_VALUE          0.05
 #define THRESHOLD_VALUE         0.1
 #define TIMER_INTERVAL          30
+#define STOP_TIMER_INTERVAL     15
 
 ///
 /// \brief third-party module to add gamepad shortcut feature to project
@@ -106,6 +107,7 @@ private:
     QMap<Commands, quint8> m_commandsBuffer;
 
     QTimer m_processCommandsTimer;
+    QTimer m_stopCommandTimer;
 
     Commands m_previousCommand;
 
@@ -113,10 +115,14 @@ private:
     bool m_isLB_ButtonPressed;
     bool m_isToggleIlluminatorCommandSent;
 
-    double previousRightAxisX;
-    double previousRightAxisY;
-    double previousLeftAxisX;
-    double previousLeftAxisY;
+    double m_previousRightAxisX;
+    double m_previousRightAxisY;
+    double m_previousLeftAxisX;
+    double m_previousLeftAxisY;
+
+    double m_lastLeftAxisX;
+    double m_lastLeftAxisY;
+
     // **********************************************************************
     // PRIVATE METHODS DECLARATION
     // **********************************************************************
@@ -138,6 +144,7 @@ private:
                              const double &value);
 
     void processNextCommand();
+    void sendZoomFocusStopCommand();
 
 Q_SIGNALS:
     void sigExecuteCommandRequested(const CommandPacket &packet);

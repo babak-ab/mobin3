@@ -125,36 +125,48 @@ void AppControl::processGamepadCommand(const CommandPacket& packet)
 {
     switch (packet.command)
     {
-    case Command_ZoomIn: {
+    case Command_ZoomIn:
+    {
+        std::cerr << "Command_ZoomIn" << std::endl;
+
         m_serialControl->setZoomSpeed(packet.value);
         m_serialControl->zoomIn();
         break;
     }
     case Command_ZoomOut:
     {
+        std::cerr << "Command_ZoomOut" << std::endl;
+
         m_serialControl->setZoomSpeed(packet.value);
         m_serialControl->zoomOut();
         break;
     }
     case Command_ZoomStop:
     {
+        std::cerr << "Command_ZoomStop" << std::endl;
+
         m_serialControl->zoomStop();
         break;
     }
     case Command_FocusFar:
     {
+        std::cerr << "Command_FocusFar" << std::endl;
+
         m_serialControl->setFocusSpeed(packet.value);
         m_serialControl->focusFar();
         break;
     }
     case Command_FocusNear:
     {
+        std::cerr << "Command_FocusNear" << std::endl;
+
         m_serialControl->setFocusSpeed(packet.value);
         m_serialControl->focusNear();
         break;
     }
     case Command_FocusStop:
     {
+        std::cerr << "Command_FocusStop" << std::endl;
         m_serialControl->focusStop();
         break;
     }

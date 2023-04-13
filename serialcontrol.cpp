@@ -66,20 +66,7 @@ bool SerialControl::connectToSerialPort(const QString& portName)
         return false;
     }
 
-    sendInitializingCommands();
-
     return true;
-}
-
-void SerialControl::sendInitializingCommands()
-{
-    // Set Default Camera and Filter
-    QTimer::singleShot(200, this, &SerialControl::sltSetCameraMode);
-    QTimer::singleShot(300, this, &SerialControl::sltSetFilterMode);
-
-    // Set Auto Focus Mode
-    QTimer::singleShot(400, this, &SerialControl::autoFocus);
-
 }
 
 bool SerialControl::disconnectSerialPort()
@@ -388,7 +375,7 @@ void SerialControl::joyStickPanTilt(const quint8 &panDirection, const quint8 &pa
 
 void SerialControl::writeDataOnPlatformsSerialPort(const QByteArray& data)
 {
-    qDebug() << "write data :" << data.toHex(' ');
+    //qDebug() << "write data :" << data.toHex(' ');
 
     if (m_serialPort->isOpen()) {
         m_serialPort->write(data);
@@ -501,8 +488,6 @@ void SerialControl::zoomOut()
 void SerialControl::zoomStop()
 {
     sendCommand1(188, m_zoomSpeed);
-
-
 }
 
 void SerialControl::focusFar()
@@ -518,8 +503,6 @@ void SerialControl::focusNear()
 void SerialControl::focusStop()
 {
     sendCommand1(179, m_focusSpeed);
-
-
 }
 
 void SerialControl::setFocusMode(const bool mode)

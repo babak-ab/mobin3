@@ -567,7 +567,6 @@ private:
 
     void autoFocus();
     void manualFocus();
-    void sendInitializingCommands();
 
     void init_crc8();
     quint8 crc8(quint8 buf[], quint8 len) const;

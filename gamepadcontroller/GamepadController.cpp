@@ -15,14 +15,27 @@ GamepadController::GamepadController()
         processNextCommand();
     });
 
+
+    m_stopCommandTimer.setInterval(STOP_TIMER_INTERVAL);
+    connect(&m_stopCommandTimer, &QTimer::timeout,
+            this, [this]()
+    {
+        sendZoomFocusStopCommand();
+    });
+    m_stopCommandTimer.start();
+
+
     m_isRB_ButtonPressed = false;
     m_isLB_ButtonPressed = false;
     m_isToggleIlluminatorCommandSent = false;
 
-    previousRightAxisX = 0.0;
-    previousRightAxisY = 0.0;
-    previousLeftAxisX = 0.0;
-    previousLeftAxisY = 0.0;
+    m_previousRightAxisX = 0.0;
+    m_previousRightAxisY = 0.0;
+    m_previousLeftAxisX = 0.0;
+    m_previousLeftAxisY = 0.0;
+
+    m_lastLeftAxisX = 0.0;
+    m_lastLeftAxisY = 0.0;
 
     m_previousCommand = Command_Normal;
 }
@@ -181,18 +194,18 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
     case Button_RightAxisX:
     {
         if (value > 0
-                && qAbs(value - previousRightAxisX) > MIN_DIFF_VALUE)
+                && qAbs(value - m_previousRightAxisX) > MIN_DIFF_VALUE)
         {
             command = Commands::Command_PanRight;
 
-            previousRightAxisX = value;
+            m_previousRightAxisX = value;
         }
         else if (value < 0
-                 && qAbs(value - previousRightAxisX) > MIN_DIFF_VALUE)
+                 && qAbs(value - m_previousRightAxisX) > MIN_DIFF_VALUE)
         {
             command = Commands::Command_PanLeft;
 
-            previousRightAxisX = value;
+            m_previousRightAxisX = value;
         }
         else if (value == 0)
         {
@@ -208,18 +221,18 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
     case Button_RightAxisY:
     {
         if (value > 0
-                && qAbs(value - previousRightAxisY) > MIN_DIFF_VALUE)
+                && qAbs(value - m_previousRightAxisY) > MIN_DIFF_VALUE)
         {
             command = Commands::Command_TiltDown;
 
-            previousRightAxisY = value;
+            m_previousRightAxisY = value;
         }
         else if (value < 0
-                 && qAbs(value - previousRightAxisY) > MIN_DIFF_VALUE)
+                 && qAbs(value - m_previousRightAxisY) > MIN_DIFF_VALUE)
         {
             command = Commands::Command_TiltUp;
 
-            previousRightAxisY = value;
+            m_previousRightAxisY = value;
         }
         else if (value == 0)
         {
@@ -240,46 +253,29 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
 
         break;
     }
-        // ==============================================
+
     case Button_LeftAxisX:
     {
-
         if (value > 0
-                && qAbs(value - previousLeftAxisX) > MIN_DIFF_VALUE)
+                && qAbs(value - m_previousLeftAxisX) > MIN_DIFF_VALUE)
         {
             // Make sure that the major axis move will be applied
             if (qAbs(m_gamepad->axisLeftX()) > qAbs(m_gamepad->axisLeftY()))
             {
-                if (m_previousCommand == Command_ZoomIn
-                        || m_previousCommand == Command_ZoomOut)
-                {
-                    command = Commands::Command_ZoomStop;
-                }
-                else
-                {
-                    command = Commands::Command_FocusNear;
-                }
+                command = Commands::Command_FocusNear;
 
-                previousLeftAxisX = value;
+                m_previousLeftAxisX = value;
             }
         }
         else if (value < 0
-                 && qAbs(value - previousLeftAxisX) > MIN_DIFF_VALUE)
+                 && qAbs(value - m_previousLeftAxisX) > MIN_DIFF_VALUE)
         {
             // Make sure that the major axis move will be applied
             if (qAbs(m_gamepad->axisLeftX()) > qAbs(m_gamepad->axisLeftY()))
             {
-                if (m_previousCommand == Command_ZoomIn
-                        || m_previousCommand == Command_ZoomOut)
-                {
-                    command = Commands::Command_ZoomStop;
-                }
-                else
-                {
-                    command = Commands::Command_FocusFar;
-                }
+                command = Commands::Command_FocusFar;
 
-                previousLeftAxisX = value;
+                m_previousLeftAxisX = value;
             }
         }
         else if (value == 0)
@@ -296,43 +292,26 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
     }
     case Button_LeftAxisY:
     {
-
         if (value > 0
-                && qAbs(value - previousLeftAxisY) > MIN_DIFF_VALUE)
+                && qAbs(value - m_previousLeftAxisY) > MIN_DIFF_VALUE)
         {
             // Make sure that the major axis move will be applied
             if (qAbs(m_gamepad->axisLeftY()) > qAbs(m_gamepad->axisLeftX()))
             {
-                if (m_previousCommand == Command_FocusFar
-                        || m_previousCommand == Command_FocusNear)
-                {
-                    command = Commands::Command_FocusStop;
-                }
-                else
-                {
-                    command = Commands::Command_ZoomOut;
-                }
+                command = Commands::Command_ZoomOut;
 
-                previousLeftAxisY = value;
+                m_previousLeftAxisY = value;
             }
         }
         else if (value < 0
-                 && qAbs(value - previousLeftAxisY) > MIN_DIFF_VALUE)
+                 && qAbs(value - m_previousLeftAxisY) > MIN_DIFF_VALUE)
         {
             // Make sure that the major axis move will be applied
-            if (qAbs(m_gamepad->axisLeftY()) > qAbs(m_gamepad->axisLeftX()))
+            if (qAbs(m_gamepad->axisLeftY()) >= qAbs(m_gamepad->axisLeftX()))
             {
-                if (m_previousCommand == Command_FocusFar
-                        || m_previousCommand == Command_FocusNear)
-                {
-                    command = Commands::Command_FocusStop;
-                }
-                else
-                {
-                    command = Commands::Command_ZoomIn;
-                }
+                command = Commands::Command_ZoomIn;
 
-                previousLeftAxisY = value;
+                m_previousLeftAxisY = value;
             }
         }
         else if (value == 0)
@@ -561,9 +540,9 @@ void GamepadController::commandCreator(const GamepadController::Buttons &button,
         return;
     }
 
-    m_previousCommand = command;
-
     checkCommandAndAppendToBuffer(command, mappedValue);
+
+    m_previousCommand = command;
 
     if (m_processCommandsTimer.isActive() == false)
     {
@@ -668,11 +647,13 @@ void GamepadController::processNextCommand()
             return;
 
         if (firstItem.key() == Command_ZoomStop
-                && qAbs(m_gamepad->axisLeftY()) > DEATH_BAND_VALUE)
+                && qAbs(m_gamepad->axisLeftY()) > DEATH_BAND_VALUE
+                && qAbs(m_gamepad->axisLeftX()) < qAbs(m_gamepad->axisLeftY()))
             return;
 
         if (firstItem.key() == Command_FocusStop
-                && qAbs(m_gamepad->axisLeftX()) > DEATH_BAND_VALUE)
+                && qAbs(m_gamepad->axisLeftX()) > DEATH_BAND_VALUE
+                && qAbs(m_gamepad->axisLeftX()) > qAbs(m_gamepad->axisLeftY()))
             return;
 
         Q_EMIT sigExecuteCommandRequested(packet);
@@ -680,6 +661,42 @@ void GamepadController::processNextCommand()
     else
     {
         m_processCommandsTimer.stop();
+    }
+}
+
+void GamepadController::sendZoomFocusStopCommand()
+{
+    if (qAbs(m_gamepad->axisLeftX()) > DEATH_BAND_VALUE
+            || qAbs(m_gamepad->axisLeftY()) > DEATH_BAND_VALUE) {
+
+        if (m_lastLeftAxisX < m_lastLeftAxisY
+                && qAbs(m_gamepad->axisLeftX()) > qAbs(m_gamepad->axisLeftY()))
+        {
+            if (qAbs(m_gamepad->axisLeftX()) > qAbs(m_gamepad->axisLeftY())) {
+                checkCommandAndAppendToBuffer(Command_ZoomStop, 0);
+
+                if (m_processCommandsTimer.isActive() == false)
+                {
+                    m_processCommandsTimer.start();
+                }
+            }
+
+        } else if (m_lastLeftAxisX > m_lastLeftAxisY
+                   && qAbs(m_gamepad->axisLeftX()) < qAbs(m_gamepad->axisLeftY()))
+        {
+
+            if (qAbs(m_gamepad->axisLeftY()) > qAbs(m_gamepad->axisLeftX())) {
+                checkCommandAndAppendToBuffer(Command_FocusStop, 0);
+
+                if (m_processCommandsTimer.isActive() == false)
+                {
+                    m_processCommandsTimer.start();
+                }
+            }
+        }
+
+        m_lastLeftAxisX = qAbs(m_gamepad->axisLeftX());
+        m_lastLeftAxisY = qAbs(m_gamepad->axisLeftY());
     }
 }
 
