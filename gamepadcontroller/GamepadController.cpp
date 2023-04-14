@@ -666,37 +666,42 @@ void GamepadController::processNextCommand()
 
 void GamepadController::sendZoomFocusStopCommand()
 {
-    if (qAbs(m_gamepad->axisLeftX()) > DEATH_BAND_VALUE
-            || qAbs(m_gamepad->axisLeftY()) > DEATH_BAND_VALUE) {
+    if(m_gamepad != Q_NULLPTR) {
 
-        if (m_lastLeftAxisX < m_lastLeftAxisY
-                && qAbs(m_gamepad->axisLeftX()) > qAbs(m_gamepad->axisLeftY()))
-        {
-            if (qAbs(m_gamepad->axisLeftX()) > qAbs(m_gamepad->axisLeftY())) {
-                checkCommandAndAppendToBuffer(Command_ZoomStop, 0);
+        qDebug() << "XXXXXXXXXXXXXX ----- ";
 
-                if (m_processCommandsTimer.isActive() == false)
-                {
-                    m_processCommandsTimer.start();
+        if (qAbs(m_gamepad->axisLeftX()) > DEATH_BAND_VALUE
+                || qAbs(m_gamepad->axisLeftY()) > DEATH_BAND_VALUE) {
+
+            if (m_lastLeftAxisX < m_lastLeftAxisY
+                    && qAbs(m_gamepad->axisLeftX()) > qAbs(m_gamepad->axisLeftY()))
+            {
+                if (qAbs(m_gamepad->axisLeftX()) > qAbs(m_gamepad->axisLeftY())) {
+                    checkCommandAndAppendToBuffer(Command_ZoomStop, 0);
+
+                    if (m_processCommandsTimer.isActive() == false)
+                    {
+                        m_processCommandsTimer.start();
+                    }
+                }
+
+            } else if (m_lastLeftAxisX > m_lastLeftAxisY
+                       && qAbs(m_gamepad->axisLeftX()) < qAbs(m_gamepad->axisLeftY()))
+            {
+
+                if (qAbs(m_gamepad->axisLeftY()) > qAbs(m_gamepad->axisLeftX())) {
+                    checkCommandAndAppendToBuffer(Command_FocusStop, 0);
+
+                    if (m_processCommandsTimer.isActive() == false)
+                    {
+                        m_processCommandsTimer.start();
+                    }
                 }
             }
 
-        } else if (m_lastLeftAxisX > m_lastLeftAxisY
-                   && qAbs(m_gamepad->axisLeftX()) < qAbs(m_gamepad->axisLeftY()))
-        {
-
-            if (qAbs(m_gamepad->axisLeftY()) > qAbs(m_gamepad->axisLeftX())) {
-                checkCommandAndAppendToBuffer(Command_FocusStop, 0);
-
-                if (m_processCommandsTimer.isActive() == false)
-                {
-                    m_processCommandsTimer.start();
-                }
-            }
+            m_lastLeftAxisX = qAbs(m_gamepad->axisLeftX());
+            m_lastLeftAxisY = qAbs(m_gamepad->axisLeftY());
         }
-
-        m_lastLeftAxisX = qAbs(m_gamepad->axisLeftX());
-        m_lastLeftAxisY = qAbs(m_gamepad->axisLeftY());
     }
 }
 
