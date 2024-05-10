@@ -58,6 +58,9 @@ class SerialControl : public RingQueue
     Q_PROPERTY(QVariant defogType READ getDefogType NOTIFY sigDataChanged)
     Q_PROPERTY(QVariant gammaType READ getGammaType NOTIFY sigDataChanged)
     Q_PROPERTY(QVariant filterType READ getFilterType NOTIFY sigDataChanged)
+	Q_PROPERTY(quint8 boardVersion READ boardVersion NOTIFY sigDataChanged)
+    Q_PROPERTY(QString sensor READ sensor NOTIFY sigDataChanged)
+    Q_PROPERTY(QString imageType READ imageType NOTIFY sigDataChanged)
 
 public:
 
@@ -146,8 +149,8 @@ public:
         SensorValue_Farabin5B           = 0x03,
         SensorValue_Farabin9            = 0x04,
         SensorValue_Farabin18           = 0x05,
-        SensorValue_Farabin315          = 0x06,
-        SensorValue_Farabin315i3        = 0x07,
+        SensorValue_Farabin15          = 0x06,
+        SensorValue_Farabin15i3        = 0x07,
     };
     Q_ENUM(SensorValues)
 
@@ -185,6 +188,14 @@ public:
         ModeLevel_Level5                = 0x05
     };
     Q_ENUM(ModeLevels)
+	
+	enum ImageType {
+        ImageType_Unknown                            = -1,
+        ImageType_Normal                             = 0x01,
+        ImageType_LicensePlateRecognition1           = 0x02,
+        ImageType_LicensePlateRecognition2           = 0x03
+    };
+    Q_ENUM(ImageType)
 
     Q_INVOKABLE void zoomIn();
     Q_INVOKABLE void zoomOut();
@@ -410,6 +421,8 @@ public:
     /// \return
     /// The level.
     ContrastLevel contrastLevel() const;
+	
+	QString imageType() const;
 
     ///
     /// \brief brightnessLevel
@@ -424,6 +437,10 @@ public:
     /// \return
     /// The mode.
     quint8 mode() const;
+
+    quint8 boardVersion() const;
+
+    QString sensor() const;
 
     ///
     /// \brief sendingMode
@@ -538,11 +555,12 @@ private:
     SensorValues m_sensorValue; // initialize
     ContrastLevel m_contrastLevel;
     BrightnessLevel m_brightnessLevel;
+	ImageType m_imageType;
     quint8 m_mode;
     quint8 m_illuminatorBrightness;
     quint8 m_illuminatorAngleOffset;
     quint8 m_crc8_table[256];
-    quint8 m_panelVersion; // initialize
+    quint8 m_boardVersion; // initialize
     quint16 m_continuousModeInterval;
 
     bool m_isDigitalZoomEnabled;

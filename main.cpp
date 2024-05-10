@@ -29,7 +29,6 @@ int main(int argc, char* argv[])
     qmlRegisterType<SerialControl>("SerialControl", 1, 0, "SerialControl");
 
     engine.rootContext()->setContextProperty("appControl", &app_control);
-    engine.rootContext()->setContextProperty("software_version", SOFTWARE_VERSION);
 
     engine.load(url);
 

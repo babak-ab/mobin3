@@ -45,5 +45,6 @@
         <file>Images/caution-icon.png</file>
         <file>IlluminatorIndicator.qml</file>
         <file>Images/stop-record-icon.png</file>
+		<file>content/SensorInformation.qml</file>
     </qresource>
 </RCC>

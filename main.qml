@@ -711,6 +711,10 @@ ApplicationWindow {
             title: "Connections"
             page: "content/Connections.qml"
         }
+		ListElement {
+            title: "Sensor Information"
+            page: "content/SensorInformation.qml"
+        }
         ListElement {
             title: "Exit"
         }
@@ -742,6 +746,7 @@ ApplicationWindow {
             ListView {
                 model: pageModel
                 anchors.fill: parent
+				spacing: -12
                 delegate: AndroidDelegate {
                     text: title
                     onClicked: {

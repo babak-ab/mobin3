@@ -15,6 +15,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 include($$PWD/gamepadcontroller/GamepadController.pri)
 include($$PWD/utils/utils.pri)
 
+VERSION = 1.6.0
+DEFINES += SOFTWARE_VERSION=\\\"$$VERSION\\\"
+
 win32{
 RC_ICONS = ./Images/Icon.ico
 }

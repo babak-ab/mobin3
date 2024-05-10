@@ -46,6 +46,11 @@ SerialControl::SerialControl(QObject* parent)
     m_isMenuOpened = false;
 
     m_message = "";
+	
+	m_imageType = ImageType_Unknown;
+
+    m_boardVersion = 0;
+    m_sensorValue = SensorValue_Unknown;
 
     init_crc8();
 }
@@ -101,8 +106,9 @@ QByteArray SerialControl::interpret(IRQueue<quint8>* queueRead)
         return QByteArray();
     }
 
-    if (lengthByte != static_cast<char>(0x0A) &&
-            lengthByte != static_cast<char>(0x0B))
+    if (lengthByte != static_cast<char>(0x0A)
+		&& lengthByte != static_cast<char>(0x0B)
+		&& lengthByte != static_cast<char>(0x0C))
     {
         return QByteArray();
     }
@@ -206,23 +212,44 @@ QByteArray SerialControl::interpret(IRQueue<quint8>* queueRead)
         }
         // byte 9               => Version
         {
-            quint8 panelVersion = packet.at(9);
+            quint8 boardVersion = packet.at(9);
 
-            m_panelVersion = panelVersion;
+            m_boardVersion = boardVersion;
         }
-        // byte 10              => Extra Status
+        // byte 10              => Extra Status1
         {
-            if (packet.count() == 13)
+            if (packet.count() == 13
+                    || packet.count() == 14)
             {
                 quint8 extraStatus = packet.at(10);
 
-                ContrastLevel contrasLevel      = static_cast<ContrastLevel>((0x0003 & extraStatus));                   // 0000 00XX
-                BrightnessLevel brightnessLevel = static_cast<BrightnessLevel>(0x0003 & ((0x000C & extraStatus) >> 2)); // 0000 XX00
-                ModeLevels modeLevel            = static_cast<ModeLevels>(0x0007 & ((0x0700 & extraStatus) >> 4));      // 0XXX 0000
+                ContrastLevel contrasLevel      = static_cast<ContrastLevel>((0x03 & extraStatus));                 // 0000 00XX
+                BrightnessLevel brightnessLevel = static_cast<BrightnessLevel>(0x03 & ((0x0C & extraStatus) >> 2)); // 0000 XX00
+                ModeLevels modeLevel            = static_cast<ModeLevels>(0x07 & ((0x70 & extraStatus) >> 4));      // 0XXX 0000
+                bool value                      = static_cast<bool>(0x01 & ((0x80 & extraStatus) >> 7));            // X000 0000
 
                 m_contrastLevel = contrasLevel;
                 m_brightnessLevel = brightnessLevel;
                 m_mode = modeLevel;
+				
+				
+                if (packet.count() == 13)
+                    m_isDigitalZoomEnabled = value;
+                else if (packet.count() == 14)
+                    m_isIlluminatorEnabled = value;
+            }
+        }
+        // byte 11              => Extra Status2
+        {
+            if (packet.count() == 14)
+            {
+                quint8 extraStatus = packet.at(11);
+
+                ImageType imageType  = static_cast<ImageType>((0x03 & extraStatus));                     // 0000 00XX
+                bool digitalZoom     = static_cast<BrightnessLevel>(0x01 & ((0x04 & extraStatus) >> 2)); // 0000 0X00
+
+                m_imageType = imageType;
+                m_isDigitalZoomEnabled = digitalZoom;
             }
         }
     }
@@ -317,6 +344,21 @@ SerialControl::ContrastLevel SerialControl::contrastLevel() const
     return (ContrastLevel) (m_contrastLevel - 1);
 }
 
+QString SerialControl::imageType() const
+{
+    switch (m_imageType) {
+    case ImageType_Normal:
+        return "Normal";
+    case ImageType_LicensePlateRecognition1:
+        return "License Plate Recognition 1";
+    case ImageType_LicensePlateRecognition2:
+        return "License Plate Recognition 2";
+
+    default:
+        return "Unknown";
+    }
+}
+
 SerialControl::BrightnessLevel SerialControl::brightnessLevel() const
 {
     return (BrightnessLevel) (m_brightnessLevel);
@@ -325,6 +367,35 @@ SerialControl::BrightnessLevel SerialControl::brightnessLevel() const
 quint8 SerialControl::mode() const
 {
     return (m_mode - 1);
+}
+
+quint8 SerialControl::boardVersion() const
+{
+    return m_boardVersion;
+}
+
+QString SerialControl::sensor() const
+{
+    switch (m_sensorValue) {
+
+    case SensorValue_Farabin3:
+        return "Farabin3";
+    case SensorValue_Farabin5:
+        return "Farabin5";
+    case SensorValue_Farabin5B:
+        return "Farabin5B";
+    case SensorValue_Farabin9:
+        return "Farabin9";
+    case SensorValue_Farabin18:
+        return "Farabin18";
+    case SensorValue_Farabin15:
+        return "Farabin15";
+    case SensorValue_Farabin15i3:
+        return "Farabin15i3";
+
+    default:
+        return "Unknown";
+    }
 }
 
 quint8 SerialControl::sendingMode() const
