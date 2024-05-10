@@ -67,7 +67,7 @@ public:
     /// the beginning of the application.
     /// \return
     /// The dectected serial port lists, which is used in the UI (QML)
-    QStringList serialPortList() const;
+    QStringList serialPortList();
 
     ///
     /// \brief serialControl
@@ -210,6 +210,7 @@ private:
     quint8 m_lastJoystickTiltDirection;
     void processGamepadCommand(const CommandPacket& packet);
 
+    void fillSerialPortNames();
 private Q_SLOTS:
     void sltExecuteCommandRequested(const CommandPacket& packet);
 

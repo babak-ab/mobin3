@@ -15,13 +15,9 @@ AppControl::AppControl(QObject* parent)
 {
 
     gst_init(NULL,NULL);
-    // Fill the serial port names
-    foreach (const QSerialPortInfo& serialPortInfo, QSerialPortInfo::availablePorts()) {
-        m_serialPortList.append(serialPortInfo.portName());
-    }
 
-    if (m_serialPortList.count() > 0)
-        m_serialPortName = m_serialPortList[0];
+
+    fillSerialPortNames();
 
     m_serialControl = new SerialControl;
 #ifdef Q_OS_WIN32
@@ -479,8 +475,23 @@ void AppControl::disconnectSerialPort()
     }
 }
 
-QStringList AppControl::serialPortList() const
+void AppControl::fillSerialPortNames()
 {
+    m_serialPortList.clear();
+
+    // Fill the serial port names
+    foreach (const QSerialPortInfo& serialPortInfo, QSerialPortInfo::availablePorts()) {
+        m_serialPortList.append(serialPortInfo.portName());
+    }
+
+    if (m_serialPortList.count() > 0)
+        m_serialPortName = m_serialPortList[0];
+}
+
+QStringList AppControl::serialPortList()
+{
+    fillSerialPortNames();
+
     qDebug() << "_serialPortList: " << m_serialPortList;
     return m_serialPortList;
 }
