@@ -29,7 +29,7 @@ AppControl::AppControl(QObject* parent)
 #endif
 
 #ifdef Q_OS_LINUX
-    _captureDevice = "/dev/video0";
+    m_captureDevice = "/dev/video0";
 
 #endif
 
