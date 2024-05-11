@@ -4,10 +4,10 @@ SerialControl::SerialControl(QObject* parent)
     : RingQueue("serialControl", 10, 10000, parent)
 {
     RingQueue::initialize();
-    QObject::connect(this, &RingQueue::sigReadData,
-                     this, &SerialControl::sltReadData, Qt::DirectConnection);
+//    QObject::connect(this, &RingQueue::sigReadData,
+//                     this, &SerialControl::sltReadData);
     QObject::connect(this, &RingQueue::sigWriteData,
-                     this, &SerialControl::sigWriteData, Qt::DirectConnection);
+                     this, &SerialControl::sigWriteData);
 
     m_serialPort = new QSerialPort;
     QObject::connect(m_serialPort, &QSerialPort::readyRead,
@@ -100,15 +100,14 @@ QByteArray SerialControl::interpret(IRQueue<quint8>* queueRead)
         return QByteArray();
     }
 
-
     if (!queueRead->dequeue(lengthByte))
     {
         return QByteArray();
     }
 
     if (lengthByte != static_cast<char>(0x0A)
-		&& lengthByte != static_cast<char>(0x0B)
-		&& lengthByte != static_cast<char>(0x0C))
+        && lengthByte != static_cast<char>(0x0B)
+        && lengthByte != static_cast<char>(0x0C))
     {
         return QByteArray();
     }
@@ -130,25 +129,25 @@ QByteArray SerialControl::interpret(IRQueue<quint8>* queueRead)
         packet[i] = data;
     }
 
-    // calculate crc
-    {
-        quint8 *crcInput = new quint8;
+//    // calculate crc
+//    {
+//        bug, it crahes here, this variable is not an array >> quint8 *crcInput = new quint8;
 
-        for (int i = 2; i < packet.count() - 2; i++)
-        {
-            crcInput[i - 2] = packet.at(i);
-        }
+//        for (int i = 2; i < packet.count() - 2; i++)
+//        {
+//            crcInput[i - 2] = packet.at(i);
+//        }
 
-        crcValue = crc8(crcInput, lengthByte - 2);
+//        crcValue = crc8(crcInput, lengthByte - 2);
 
-        delete crcInput;
-    }
+//        delete crcInput;
+//    }
 
-    QByteArray crc(2, 0x00);
-    crc[0] = crcValue;
-    crc[1] = packet.at(10);
+//    QByteArray crc(2, 0x00);
+//    crc[0] = crcValue;
+//    crc[1] = packet.at(10);
 
-    //    std::cerr << "CHECKSUM : " << crc.toHex(' ').toStdString() << std::endl;
+//    std::cerr << "CHECKSUM : " << crc.toHex(' ').toStdString() << std::endl;
 
     // check first, second and crc bytes
     if (/*crcValue == packet.at(lengthByte)*/ true)
@@ -253,6 +252,8 @@ QByteArray SerialControl::interpret(IRQueue<quint8>* queueRead)
             }
         }
     }
+
+    qDebug() << "XXXXX";
 
     Q_EMIT sigDataChanged();
 
