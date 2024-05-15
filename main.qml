@@ -108,7 +108,17 @@ ApplicationWindow {
         }
 
         Text {
-            text: "FOV: " + (appControl.serialControl.fovPosition / 1000).toFixed(2) + " °"
+            text: "FOV: " + (appControl.serialControl.fovPosition / 1000).toFixed(2) + " °,"
+            font.family: "Helvetica"
+            font.pointSize: 20
+            font.bold: true
+            color: "white"
+            style: Text.Outline
+            styleColor: "black"
+        }
+
+        Text {
+            text: "Focus: " + (appControl.serialControl.focusPosition)
             font.family: "Helvetica"
             font.pointSize: 20
             font.bold: true
