@@ -139,10 +139,10 @@ Item {
 
                 QQC2.RadioButton {
                     id: swirSpotter
-                    text: "SWIR Spotter"
+                    text: "SWIR"
                     checked: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_SWIRSpotter
                     font.pixelSize: 25
-                    visible: false
+                    visible: true
 
                     background: Rectangle {
                         implicitWidth: 100

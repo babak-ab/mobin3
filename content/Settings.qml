@@ -104,34 +104,145 @@ Item {
                 border.color: "white"
             }
 
-            QQC2.SpinBox {
-                id: defogSpinbox
-                from: 0
-                to: items.length - 1
-                value: appControl.serialControl.defogMode
+            //            QQC2.SpinBox {
+            //                id: defogSpinbox
+            //                from: 0
+            //                to: items.length - 1
+            //                value: appControl.serialControl.defogMode
 
-                property var items: ["Off", "Low", "Medium", "High"]
+            //                property var items: ["Off", "Low", "Medium", "High"]
 
-                validator: RegExpValidator {
-                    regExp: new RegExp("(Off|Low|Medium|High)", "i")
-                }
+            //                validator: RegExpValidator {
+            //                    regExp: new RegExp("(Off|Low|Medium|High)", "i")
+            //                }
 
-                textFromValue: function(value) {
-                    return items[value];
-                }
+            //                textFromValue: function(value) {
+            //                    return items[value];
+            //                }
 
-                valueFromText: function(text) {
-                    for (var i = 0; i < items.length; ++i) {
-                        if (items[i].toLowerCase().indexOf(text.toLowerCase()) === 0)
-                            return i
+            //                valueFromText: function(text) {
+            //                    for (var i = 0; i < items.length; ++i) {
+            //                        if (items[i].toLowerCase().indexOf(text.toLowerCase()) === 0)
+            //                            return i
+            //                    }
+            //                    return sb.value
+            //                }
+
+            //                onValueChanged: {
+            //                    if (defogSpinbox.value !== appControl.serialControl.defogMode) {
+            //                        appControl.serialControl.setDefogMode(
+            //                                    defogSpinbox.value)
+            //                    }
+            //                }
+            //            }
+
+            Column {
+                spacing: 10
+                Row {
+                    spacing: 10
+                    QQC2.Button {
+                        contentItem: Text {
+                            text: "Off"
+                            color: "white"
+                            opacity: 1.0
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                            font.pixelSize: 25
+                            font.bold: true
+                            elide: Text.ElideRight
+                        }
+
+                        background: Rectangle {
+                            implicitWidth: 180
+                            implicitHeight: 60
+                            color: appControl.serialControl.defogMode === 0 ? "red" : "black"
+                            opacity: 0.5
+                            radius: 5
+                            border.color: "white"
+                        }
+
+                        onPressed: {
+                            appControl.serialControl.setDefogMode(0)
+                        }
                     }
-                    return sb.value
+                    QQC2.Button {
+                        contentItem: Text {
+                            text: "Low"
+                            color: "white"
+                            opacity: 1.0
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                            font.pixelSize: 25
+                            font.bold: true
+                            elide: Text.ElideRight
+                        }
+
+                        background: Rectangle {
+                            implicitWidth: 180
+                            implicitHeight: 60
+                            color: appControl.serialControl.defogMode === 1 ? "red" : "black"
+                            opacity: 0.5
+                            radius: 5
+                            border.color: "white"
+                        }
+
+                        onPressed: {
+                            appControl.serialControl.setDefogMode(1)
+                        }
+                    }
                 }
 
-                onValueChanged: {
-                    if (defogSpinbox.value !== appControl.serialControl.defogMode) {
-                        appControl.serialControl.setDefogMode(
-                                    defogSpinbox.value)
+                Row {
+                    spacing: 10
+                    QQC2.Button {
+                        contentItem: Text {
+                            text: "Medium"
+                            color: "white"
+                            opacity: 1.0
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                            font.pixelSize: 25
+                            font.bold: true
+                            elide: Text.ElideRight
+                        }
+
+                        background: Rectangle {
+                            implicitWidth: 180
+                            implicitHeight: 60
+                            color: appControl.serialControl.defogMode === 2 ? "red" : "black"
+                            opacity: 0.5
+                            radius: 5
+                            border.color: "white"
+                        }
+
+                        onPressed: {
+                            appControl.serialControl.setDefogMode(2)
+                        }
+                    }
+                    QQC2.Button {
+                        contentItem: Text {
+                            text: "High"
+                            color: "white"
+                            opacity: 1.0
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                            font.pixelSize: 25
+                            font.bold: true
+                            elide: Text.ElideRight
+                        }
+
+                        background: Rectangle {
+                            implicitWidth: 180
+                            implicitHeight: 60
+                            color: appControl.serialControl.defogMode === 3 ? "red" : "black"
+                            opacity: 0.5
+                            radius: 5
+                            border.color: "white"
+                        }
+
+                        onPressed: {
+                            appControl.serialControl.setDefogMode(3)
+                        }
                     }
                 }
             }

@@ -52,6 +52,8 @@ class SerialControl : public RingQueue
     Q_PROPERTY(quint16 continuousModeInterval READ continuousModeInterval WRITE setContinuousSendingMode NOTIFY sigDataChanged)
     Q_PROPERTY(QString messageBox READ messageBox NOTIFY sigMessageBoxRequested)
     Q_PROPERTY(bool showLoginWindow READ showLoginWindow NOTIFY sigLoginWindowRequested)
+    Q_PROPERTY(float roll READ roll NOTIFY sigDataChanged)
+    Q_PROPERTY(float pitch READ pitch NOTIFY sigDataChanged)
 
     // For updating labels
     Q_PROPERTY(QVariant noiseReductionType READ getNoiseReductionType NOTIFY sigDataChanged)
@@ -257,6 +259,8 @@ public:
     Q_INVOKABLE void setContinuousSendingMode(const quint8 interval);
     Q_INVOKABLE QString serialportName() const;
     Q_INVOKABLE void login();
+    Q_INVOKABLE void setImageType(const quint8 type);
+    Q_INVOKABLE void bootLoader();
 
     ///
     /// \brief SerialControl default constructor
@@ -422,7 +426,7 @@ public:
     /// The level.
     ContrastLevel contrastLevel() const;
 	
-	QString imageType() const;
+    QString imageType() const;
 
     ///
     /// \brief brightnessLevel
@@ -438,8 +442,18 @@ public:
     /// The mode.
     quint8 mode() const;
 
+    ///
+    /// \brief boardVersion
+    /// Returns the current board version.
+    /// \return
+    /// A number indicating board version.
     quint8 boardVersion() const;
 
+    ///
+    /// \brief sensor
+    ///  Returns sensor type.
+    /// \return
+    /// The name of the sensor.
     QString sensor() const;
 
     ///
@@ -470,6 +484,20 @@ public:
     /// \return
     /// The permision result.
     bool showLoginWindow() const;
+
+    ///
+    /// \brief roll
+    /// Returns the roll angle.
+    /// \return
+    /// The roll value.
+    float roll() const;
+
+    ///
+    /// \brief pitch
+    /// Returns the pitch value.
+    /// \return
+    /// The pitch value.
+    float pitch() const;
 
     ///
     /// \brief getNoiseReductionType
@@ -544,6 +572,9 @@ private:
     int m_repeatCounter;
     bool m_focusMode;
     QString m_message;
+
+    float m_roll;
+    float m_pitch;
 
     CameraSelection m_selectedCamera;
 

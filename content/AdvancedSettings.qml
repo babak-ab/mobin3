@@ -50,7 +50,7 @@
 
 import QtQuick 2.2
 import QtQuick.Controls.Styles 1.1
-
+import QtQuick.Controls 2.14
 import QtQuick.Controls 2.3 as QQC2
 import QtQuick.Controls 1.4 as QQC1
 
@@ -84,7 +84,7 @@ Item {
             styleColor: "#fc0303"
         }
 
-        QQC2.GroupBox {
+        QQC2.GroupBox { // Contrast ------------------------------
             font.pixelSize: 25
 
             label: QQC2.Label {
@@ -138,7 +138,7 @@ Item {
             }
         }
 
-        QQC2.GroupBox {
+        QQC2.GroupBox { // Brightness --------------------------
             font.pixelSize: 25
 
             label: QQC2.Label {
@@ -191,7 +191,7 @@ Item {
             }
         }
 
-        QQC2.GroupBox {
+        QQC2.GroupBox { // Mode --------------------
             font.pixelSize: 25
 
             label: QQC2.Label {
@@ -242,6 +242,107 @@ Item {
                     }
                 }
             }
+        }
+
+        QQC2.GroupBox { // Image Type (In Night) -------------
+            font.pixelSize: 25
+
+            label: QQC2.Label {
+                text: " Image Type (In Night): "
+                color: "white"
+                elide: Text.ElideRight
+                style: Text.Outline;
+                styleColor: "black"
+            }
+
+            background: Rectangle {
+                implicitWidth: 100
+                implicitHeight: 60
+                color: "black"
+                opacity: 0.5
+                radius: 5
+                border.color: "white"
+            }
+            QQC2.SpinBox {
+                id: imageTypeSpinbox
+                from: 0
+                to: items.length - 1
+                value: appControl.serialControl.imageType
+
+                property var items: ["Normal", "License Plate Recognition 1", "License Plate Recognition 2"]
+
+                validator: RegExpValidator {
+                    regExp: new RegExp("(Normal|License Plate Recognition 1|License Plate Recognition 2)", "i")
+                }
+
+                textFromValue: function(value) {
+                    return items[value];
+                }
+
+                valueFromText: function(text) {
+                    for (var i = 0; i < items.length; ++i) {
+                        if (items[i].toLowerCase().indexOf(text.toLowerCase()) === 0)
+                            return i
+                    }
+                    return sb.value
+                }
+
+                onValueChanged: {
+                    if (imageTypeSpinbox.value !== appControl.serialControl.imageType) {
+                        appControl.serialControl.setImageType(
+                                    imageTypeSpinbox.value)
+                    }
+                }
+            }
+        }
+
+        QQC2.GroupBox { // Bootloader Program ---------------
+            font.pixelSize: 25
+
+            label: QQC2.Label {
+                text: " Bootloader Program: "
+                color: "white"
+                elide: Text.ElideRight
+                style: Text.Outline;
+                styleColor: "black"
+            }
+
+            background: Rectangle {
+                implicitWidth: 100
+                implicitHeight: 60
+                color: "black"
+                opacity: 0.5
+                radius: 5
+                border.color: "white"
+            }
+
+            QQC2.Button {
+                id: activateBootLoader
+                contentItem: Text {
+                    text: "Activate"
+                    color: "white"
+                    opacity: 1.0
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    font.pixelSize: 25
+                    font.bold: true
+                    elide: Text.ElideRight
+                }
+
+                background: Rectangle {
+                    implicitWidth: 180
+                    implicitHeight: 60
+                    color: activateBootLoader.down ? "red" : "black"
+                    opacity: 0.5
+                    radius: 5
+                    border.color: "white"
+                }
+
+                onPressed: {
+                    bootLoaderDialog.open()
+                }
+            }
+
         }
     }
 
@@ -340,6 +441,37 @@ Item {
                 border.color: "#555"
                 border.width: 2
             }
+        }
+    }
+
+    Dialog {
+        id: bootLoaderDialog
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        parent: Overlay.overlay
+
+        Text {
+            text: "Are you sure to activate Bootloader?\nThis may be harmful for the system!"
+            font.family: "Helvetica"
+            font.pointSize: 15
+            color: "white"
+            style: Text.Outline;
+            styleColor: "black"
+        }
+
+        background: Rectangle {
+            implicitWidth: 100
+            implicitHeight: 60
+            color: "black"
+            opacity: 0.5
+            radius: 5
+            border.color: "white"
+        }
+
+        x: parent ? ((parent.width - width) / 2) : 0
+        y: parent ? ((parent.height - height) / 2) : 0
+
+        onAccepted: {
+            appControl.serialControl.bootLoader()
         }
     }
 }

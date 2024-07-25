@@ -21,6 +21,9 @@ SerialControl::SerialControl(QObject* parent)
     m_panTiltSpeed = 100;
     m_repeatCounter = 0;
 
+    m_roll = 0.0;
+    m_pitch = 0.0;
+
     m_selectedCamera = CameraSelection_ContinuousZoom;
     m_filterMode = Color;
     m_defogMode = D_High;
@@ -107,7 +110,8 @@ QByteArray SerialControl::interpret(IRQueue<quint8>* queueRead)
 
     if (lengthByte != static_cast<char>(0x0A)
         && lengthByte != static_cast<char>(0x0B)
-        && lengthByte != static_cast<char>(0x0C))
+        && lengthByte != static_cast<char>(0x0C)
+        && lengthByte != static_cast<char>(0x10))
     {
         return QByteArray();
     }
@@ -251,9 +255,21 @@ QByteArray SerialControl::interpret(IRQueue<quint8>* queueRead)
                 m_isDigitalZoomEnabled = digitalZoom;
             }
         }
+        // byte 12-13              => AngleX
+        {
+            if (packet.count() == 18)
+            {
+                m_roll = static_cast<float>(packet.at(12) * 256 + packet.at(13)) / 100.0;
+            }
+        }
+        // byte 14-15              => Angle Y
+        {
+            if (packet.count() == 18)
+            {
+                m_pitch = static_cast<float>(packet.at(14) * 256 + packet.at(15)) / 100.0;
+            }
+        }
     }
-
-    qDebug() << "XXXXX";
 
     Q_EMIT sigDataChanged();
 
@@ -417,6 +433,16 @@ QString SerialControl::messageBox() const
 bool SerialControl::showLoginWindow() const
 {
     return m_showLoginWindow;
+}
+
+float SerialControl::roll() const
+{
+    return m_roll;
+}
+
+float SerialControl::pitch() const
+{
+    return m_pitch;
 }
 
 QVariant SerialControl::getNoiseReductionType()
@@ -994,6 +1020,20 @@ void SerialControl::login()
 
     showMenuPressed();
     showMenuReleased();
+}
+
+void SerialControl::setImageType(const quint8 type)
+{
+    m_imageType = ImageType(type + 1);
+
+    sendCommand1(94, m_imageType);
+
+    Q_EMIT sigDataChanged();
+}
+
+void SerialControl::bootLoader()
+{
+    sendCommand1(110, 0);
 }
 
 void SerialControl::setContrastMode(const quint8 level)

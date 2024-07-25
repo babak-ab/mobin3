@@ -116,6 +116,24 @@ Item {
                 }
 
                 Text {
+                    text: "Roll:  " + appControl.serialControl.roll.toFixed(2) + " °"
+                    font.family: "Helvetica"
+                    font.pointSize: 15
+                    color: "white"
+                    style: Text.Outline;
+                    styleColor: "black"
+                }
+
+                Text {
+                    text: "Pitch:  " + appControl.serialControl.pitch.toFixed(2) + " °"
+                    font.family: "Helvetica"
+                    font.pointSize: 15
+                    color: "white"
+                    style: Text.Outline;
+                    styleColor: "black"
+                }
+
+                Text {
                     text: "Version:  " + appControl.serialControl.boardVersion
                     font.family: "Helvetica"
                     font.pointSize: 15
