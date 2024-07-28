@@ -87,10 +87,12 @@ VideoCapture::VideoCapture(QString device, QSize resolution)
     , _resolution(resolution)
 
 {
+
 }
 
 VideoCapture::~VideoCapture()
 {
+
 }
 
 void VideoCapture::initialize()
@@ -104,8 +106,8 @@ void VideoCapture::initialize()
 
 
     QString pipestr = QString("ksvideosrc device-index=%1  do-stats=TRUE "
-                              "! video/x-raw, format=(string)YUY2, width=%2, height=%3, framerate=(fraction)30/1, pixel-aspect-ratio=(fraction)1/1"
-                              "! videoconvert ! video/x-raw, format=BGRA, width=%4, height=%5, framerate=%6/1 ! queue ! appsink name=sink caps=%7")
+                              " ! video/x-raw, format=(string)YUY2, width=%2, height=%3, framerate=(fraction)30/1, pixel-aspect-ratio=(fraction)1/1"
+                              " ! videoconvert ! video/x-raw, format=BGRA, width=%4, height=%5, framerate=%6/1 ! queue ! appsink name=sink caps=%7")
                           .arg(_device)
                           .arg(QString::number(_resolution.width()))
                           .arg(QString::number(_resolution.height()))

@@ -271,6 +271,9 @@ QByteArray SerialControl::interpret(IRQueue<quint8>* queueRead)
         }
     }
 
+//    qDebug() << "m_filterMode: " << m_filterMode
+//             << "m_selectedCamera: " << m_selectedCamera;
+
     Q_EMIT sigDataChanged();
 
     return QByteArray();

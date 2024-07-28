@@ -70,6 +70,7 @@ public:
     /// \brief The CameraSelection enum
     /// An enum for selecting between the camera types.
     enum CameraSelection {
+        CameraSelection_Unknown         = 0x00,
         CameraSelection_ContinuousZoom  = 0x01,
         CameraSelection_Spotter         = 0x02,
         CameraSelection_SWIRSpotter     = 0x03

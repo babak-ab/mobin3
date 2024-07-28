@@ -342,6 +342,7 @@ ApplicationWindow {
                     font.bold: true
                     visible: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_ContinuousZoom
                              || appControl.serialControl.selectedCamera === SerialControl.CameraSelection_Spotter
+                             || appControl.serialControl.selectedCamera === SerialControl.CameraSelection_Unknown
 
                     background: Rectangle {
                         implicitWidth: 60
@@ -366,6 +367,7 @@ ApplicationWindow {
                     font.bold: true
                     visible: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_ContinuousZoom
                              || appControl.serialControl.selectedCamera === SerialControl.CameraSelection_Spotter
+                             || appControl.serialControl.selectedCamera === SerialControl.CameraSelection_Unknown
 
                     background: Rectangle {
                         implicitWidth: 60
