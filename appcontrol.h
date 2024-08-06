@@ -208,11 +208,17 @@ private:
     quint8 m_lastJoystickPanDirection;
     quint8 m_lastJoystickTiltSpeed;
     quint8 m_lastJoystickTiltDirection;
-    void processGamepadCommand(const CommandPacket& packet);
 
+    QElapsedTimer m_elapsedTimerTvCaptureWatchdog;
+    QTimer m_timerTvWatchdog;
+
+    void processGamepadCommand(const CommandPacket& packet);
     void fillSerialPortNames();
+
 private Q_SLOTS:
     void sltExecuteCommandRequested(const CommandPacket& packet);
+    void sltCheckTVCapture();
+    void restartElapsedTimerRequested(const QByteArray &data);
 
 Q_SIGNALS:
     void signalVideoAdapter();

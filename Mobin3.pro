@@ -15,7 +15,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 include($$PWD/gamepadcontroller/GamepadController.pri)
 include($$PWD/utils/utils.pri)
 
-VERSION = 1.7.2
+VERSION = 1.7.
 DEFINES += SOFTWARE_VERSION=\\\"$$VERSION\\\"
 
 win32{

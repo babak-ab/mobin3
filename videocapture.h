@@ -66,6 +66,7 @@ public:
     /// The size.
     QSize resolution() const;
 
+    void checkConnection();
 public:
     QString device() const;
     void setDevice(const QString& device);
@@ -73,7 +74,7 @@ public:
     void setReset(bool reset);
 
 Q_SIGNALS:
-    void sigFrameReady(QByteArray ba);
+    void sigFrameReady(const QByteArray &ba);
 };
 
 #endif // VIDEOCAPTURE_H

@@ -21,12 +21,16 @@ AppControl::AppControl(QObject* parent)
 
     m_serialControl = new SerialControl;
 #ifdef Q_OS_WIN32
-    m_captureDevice = "0";
+    int counter = 0;
+    const QList<QCameraInfo> cameras = QCameraInfo::availableCameras();
+    for (const QCameraInfo& cameraInfo : cameras) {
+        counter++;
+    }
+    m_captureDevice = QString::number(counter - 1);
 #endif
 
 #ifdef Q_OS_LINUX
     m_captureDevice = "/dev/video0";
-
 #endif
 
     m_recordingLocation = QStandardPaths::MoviesLocation;
@@ -39,13 +43,11 @@ AppControl::AppControl(QObject* parent)
 
     m_videoRecord = new VideoRecord(QSize(FRAME_WIDTH, FRAME_HEIGHT));
 
-
     m_videoAdapter = new VideoAdapter(QSize(FRAME_WIDTH, FRAME_HEIGHT));
 
-
     connect(m_videoCapture, &VideoCapture::sigFrameReady, m_videoAdapter, &VideoAdapter::onFrameReady);
+    connect(m_videoCapture, &VideoCapture::sigFrameReady, this, &AppControl::restartElapsedTimerRequested);
     connect(m_videoCapture, &VideoCapture::sigFrameReady, m_videoRecord, &VideoRecord::pushFrame);
-
 
     m_toggleIlluminatorTimer.setInterval(5000);
     connect(&m_toggleIlluminatorTimer, &QTimer::timeout,
@@ -70,6 +72,11 @@ AppControl::AppControl(QObject* parent)
     m_lastJoystickTiltSpeed   = 0;
     m_lastJoystickPanDirection = 0;
     m_lastJoystickTiltDirection = 0;
+
+    m_timerTvWatchdog.setInterval(300);
+    connect(&m_timerTvWatchdog, &QTimer::timeout, this, &AppControl::sltCheckTVCapture);
+    m_elapsedTimerTvCaptureWatchdog.restart();
+    m_timerTvWatchdog.start();
 }
 
 AppControl::~AppControl()
@@ -517,4 +524,21 @@ void AppControl::setGamepadManager(QGamepadManager* manager)
 void AppControl::sltExecuteCommandRequested(const CommandPacket& packet)
 {
     processGamepadCommand(packet);
+}
+
+void AppControl::sltCheckTVCapture()
+{
+    qDebug() << "sltCheckTVCapture";
+
+    if (m_elapsedTimerTvCaptureWatchdog.elapsed() > 3000) {
+
+        m_videoCapture->checkConnection();
+
+        m_elapsedTimerTvCaptureWatchdog.restart();
+    }
+}
+
+void AppControl::restartElapsedTimerRequested(const QByteArray& data)
+{
+    m_elapsedTimerTvCaptureWatchdog.restart();
 }

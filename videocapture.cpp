@@ -180,3 +180,10 @@ QSize VideoCapture::resolution() const
 {
     return _resolution;
 }
+
+void VideoCapture::checkConnection()
+{
+    stop();
+    initialize();
+    start();
+}
