@@ -528,8 +528,6 @@ void AppControl::sltExecuteCommandRequested(const CommandPacket& packet)
 
 void AppControl::sltCheckTVCapture()
 {
-    qDebug() << "sltCheckTVCapture";
-
     if (m_elapsedTimerTvCaptureWatchdog.elapsed() > 3000) {
 
         m_videoCapture->checkConnection();

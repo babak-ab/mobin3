@@ -7,6 +7,10 @@ import SerialControl 1.0
 import QtMultimedia 5.12
 import "content"
 
+import QtQuick.Controls 1.4 as QQC1
+import QtQuick.Controls.Styles 1.1
+import QtQuick.Controls 2.12 as QQC2
+
 ApplicationWindow {
     id: root
     visible: true
@@ -34,8 +38,8 @@ ApplicationWindow {
             id: menuButton
             icon.source: "Images/menu-icon.png"
             icon.color: "transparent"
-            icon.height: 70
-            icon.width: 70
+            icon.height: 90
+            icon.width: 90
             background: Rectangle {
                 color: "black"
                 opacity: 0.6
@@ -80,7 +84,7 @@ ApplicationWindow {
         Text {
             text: "NR: " + appControl.serialControl.noiseReductionType.toString() + ","
             font.family: "Helvetica"
-            font.pointSize: 20
+            font.pointSize: 25
             font.bold: true
             color: "white"
             style: Text.Outline
@@ -90,7 +94,7 @@ ApplicationWindow {
         Text {
             text: "Defog: " + appControl.serialControl.defogType.toString() + ","
             font.family: "Helvetica"
-            font.pointSize: 20
+            font.pointSize: 25
             font.bold: true
             color: "white"
             style: Text.Outline
@@ -100,7 +104,7 @@ ApplicationWindow {
         Text {
             text: "Gamma: " + appControl.serialControl.gammaType.toString() + ","
             font.family: "Helvetica"
-            font.pointSize: 20
+            font.pointSize: 25
             font.bold: true
             color: "white"
             style: Text.Outline
@@ -110,7 +114,7 @@ ApplicationWindow {
         Text {
             text: "FOV: " + (appControl.serialControl.fovPosition / 1000).toFixed(2) + " °,"
             font.family: "Helvetica"
-            font.pointSize: 20
+            font.pointSize: 25
             font.bold: true
             color: "white"
             style: Text.Outline
@@ -120,7 +124,7 @@ ApplicationWindow {
         Text {
             text: "Focus: " + (appControl.serialControl.focusPosition)
             font.family: "Helvetica"
-            font.pointSize: 20
+            font.pointSize: 25
             font.bold: true
             color: "white"
             style: Text.Outline
@@ -150,7 +154,7 @@ ApplicationWindow {
                 Text {
                     text: "Illuminator:"
                     font.family: "Helvetica"
-                    font.pointSize: 18
+                    font.pointSize: 20
                     font.bold: true
                     color: "white"
                     style: Text.Outline;
@@ -499,8 +503,8 @@ ApplicationWindow {
             id: zoomInButton
             icon.source: "qrc:/Images/zoom-in-icon.png"
             icon.color: "white"
-            icon.height: 60
-            icon.width: 60
+            icon.height: 70
+            icon.width: 70
 
             background: Rectangle {
                 opacity: 0.5
@@ -521,8 +525,8 @@ ApplicationWindow {
             id: zoomOutButton
             icon.source: "qrc:/Images/zoom-out-icon.png"
             icon.color: "white"
-            icon.height: 60
-            icon.width: 60
+            icon.height: 70
+            icon.width: 70
 
             background: Rectangle {
                 color: zoomOutButton.down ? "red" : "black"
@@ -543,8 +547,8 @@ ApplicationWindow {
             id: focusFarButton
             icon.source: "qrc:/Images/focus-far.png"
             icon.color: "white"
-            icon.height: 60
-            icon.width: 60
+            icon.height: 70
+            icon.width: 70
 
             background: Rectangle {
                 opacity: 0.5
@@ -565,8 +569,8 @@ ApplicationWindow {
             id: focusNearButton
             icon.source: "qrc:/Images/focus-near.png"
             icon.color: "white"
-            icon.height: 60
-            icon.width: 60
+            icon.height: 70
+            icon.width: 70
 
             background: Rectangle {
                 opacity: 0.5
@@ -587,8 +591,8 @@ ApplicationWindow {
             id: rightPanButton
             icon.source: "qrc:/Images/right-arrow.png"
             icon.color: "white"
-            icon.height: 60
-            icon.width: 60
+            icon.height: 70
+            icon.width: 70
 
             background: Rectangle {
                 color: rightPanButton.down ? "red" : "black"
@@ -609,8 +613,8 @@ ApplicationWindow {
             id: leftPanButton
             icon.source: "qrc:/Images/left-arrow.png"
             icon.color: "white"
-            icon.height: 60
-            icon.width: 60
+            icon.height: 70
+            icon.width: 70
 
             background: Rectangle {
                 color: leftPanButton.down ? "red" : "black"
@@ -631,8 +635,8 @@ ApplicationWindow {
             id: upTiltButton
             icon.source: "qrc:/Images/up-arrow.png"
             icon.color: "white"
-            icon.height: 60
-            icon.width: 60
+            icon.height: 70
+            icon.width: 70
 
             background: Rectangle {
                 color: upTiltButton.down ? "red" : "black"
@@ -653,8 +657,8 @@ ApplicationWindow {
             id: downTiltButton
             icon.source: "qrc:/Images/down-arrow.png"
             icon.color: "white"
-            icon.height: 60
-            icon.width: 60
+            icon.height: 70
+            icon.width: 70
 
             background: Rectangle {
                 color: downTiltButton.down ? "red" : "black"
@@ -723,7 +727,7 @@ ApplicationWindow {
             title: "Connections"
             page: "content/Connections.qml"
         }
-		ListElement {
+        ListElement {
             title: "Sensor Information"
             page: "content/SensorInformation.qml"
         }
@@ -756,9 +760,10 @@ ApplicationWindow {
             width: 400
             height: parent.height
             ListView {
+                id: listView
                 model: pageModel
                 anchors.fill: parent
-				spacing: -12
+                spacing: -12
                 delegate: AndroidDelegate {
                     text: title
                     onClicked: {
@@ -779,11 +784,12 @@ ApplicationWindow {
         id: exitDialog
         standardButtons: Dialog.Ok | Dialog.Cancel
         parent: Overlay.overlay
+        font.pointSize: 20
 
         Text {
             text: "Are you sure to exit the application?"
             font.family: "Helvetica"
-            font.pointSize: 15
+            font.pointSize: 20
             color: "white"
             style: Text.Outline;
             styleColor: "black"
@@ -848,18 +854,15 @@ ApplicationWindow {
     }
 
     Dialog {
+        id: serialDialog
         visible: appControl.serialControl.messageBox === "" ? false : true
-        standardButtons: Dialog.Ok
-        parent: Overlay.overlay
+        //        standardButtons: Dialog.Ok
+        //        parent: Overlay.overlay
+        font.pointSize: 20
+        width: 450
+        height: 280
 
-        Text {
-            text: appControl.serialControl.messageBox
-            font.family: "Helvetica"
-            font.pointSize: 15
-            color: "white"
-            style: Text.Outline;
-            styleColor: "black"
-        }
+        spacing: 40
 
         background: Rectangle {
             implicitWidth: 100
@@ -874,6 +877,99 @@ ApplicationWindow {
         x: parent ? ((parent.width - width) / 2) : 0
         y: parent ? ((parent.height - height) / 2) : 0
 
+        Column {
+
+        Text {
+            text: appControl.serialControl.messageBox
+            font.family: "Helvetica"
+            font.pointSize: 25
+            color: "red"
+            style: Text.Outline;
+            styleColor: "black"
+        }
+
+
+            spacing: 40
+            Row {
+                spacing: 15
+                Text {
+                    text: "Serial Port: "
+                    font.family: "Helvetica"
+                    font.pointSize: 20
+                    color: "white"
+                    style: Text.Outline
+                    styleColor: "black"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                QQC2.ComboBox {
+                    id: control
+                    model: appControl.serialPortList
+
+                    delegate: QQC2.ItemDelegate {
+                        width: control.width
+                        contentItem: Text {
+                            text: modelData
+                            color: "black"
+                            font: control.font
+                            elide: Text.ElideRight
+                            verticalAlignment: Text.AlignVCenter
+                            horizontalAlignment: Text.AlignHCenter
+                        }
+
+                        highlighted: control.highlightedIndex === index
+                    }
+
+                    currentIndex: appControl.findSerialPortName(
+                                      appControl.serialControl.serialportName())
+                }
+            }
+
+            Button {
+                id: controlBt
+                text: appControl.serialControl.isConnected ? "Disconnect" : "Connect"
+                font.pixelSize: 32
+                checkable: true
+                checked: appControl.serialControl.isConnected
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                contentItem: Text {
+                    text: appControl.serialControl.isConnected ? "Disconnect" : "Connect"
+                    font: controlBt.font
+                    opacity: enabled ? 1.0 : 0.3
+                    color: appControl.serialControl.isConnected ? "#12de56" : "black"
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    elide: Text.ElideRight
+                }
+
+                background: Rectangle {
+                    implicitWidth: 150
+                    implicitHeight: 60
+                    opacity: enabled ? 1 : 0.3
+                    border.color: appControl.serialControl.isConnected ? "#12de56" : "white"
+                    border.width: 1
+                    radius: 2
+                    color: appControl.serialControl.isConnected ? "#12de56" : "gray"
+                }
+
+                onClicked: {
+
+                    appControl.setSerialPortName(control.currentText)
+
+
+                    if (controlBt.text == "Connect") {
+
+                        if (appControl.connectToSerialPort()) {
+                            serialDialog.close()
+                        }
+
+                    } else {
+                        appControl.disconnectSerialPort()
+                    }
+                }
+            }
+        }
     }
 
     Dialog {
