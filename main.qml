@@ -17,6 +17,8 @@ ApplicationWindow {
     width: 1920
     height: 1080
     title: qsTr("Mobin3")
+    property  bool isSecondPageOpen: false
+
     onVisibleChanged: {
         if (visible) {
             root.showFullScreen()
@@ -50,9 +52,28 @@ ApplicationWindow {
 
                 onClicked: {
 
-                    stackView.visible = !stackView.visible
+                    if (isSecondPageOpen === false) {
 
-                    if (stackView.visible) {
+                        stackView.visible = !stackView.visible
+
+                        if (stackView.visible) {
+
+                            menuButton.icon.source = "qrc:/Images/navigation_previous_item.png"
+                            menuButton.icon.color = "transparent"
+
+                            stackView.pop()
+                            background.color = "black"
+
+                            stackView.anchors.topMargin = 120
+                            stackView.anchors.leftMargin = 30
+
+                        } else {
+
+                            menuButton.icon.source = "qrc:/Images/menu-icon.png"
+                            menuButton.icon.color = "transparent"
+                        }
+                    } else {
+
                         menuButton.icon.source = "qrc:/Images/navigation_previous_item.png"
                         menuButton.icon.color = "transparent"
                         stackView.pop()
@@ -60,9 +81,8 @@ ApplicationWindow {
 
                         stackView.anchors.topMargin = 120
                         stackView.anchors.leftMargin = 30
-                    } else {
-                        menuButton.icon.source = "qrc:/Images/menu-icon.png"
-                        menuButton.icon.color = "transparent"
+
+                        isSecondPageOpen = false
                     }
                 }
             }
@@ -770,6 +790,8 @@ ApplicationWindow {
                         if (title == "Exit") {
                             exitDialog.open()
                         } else {
+
+                            isSecondPageOpen = true
 
                             stackView.push(Qt.resolvedUrl(page))
                             background.color = "transparent"
