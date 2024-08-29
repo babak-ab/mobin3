@@ -213,6 +213,7 @@ public:
     Q_INVOKABLE void gotoFocus(const quint16 position);
     Q_INVOKABLE void setPosition(const quint8 positionNumber);
     Q_INVOKABLE void clearPosition(const quint8 positionNumber);
+    Q_INVOKABLE void gotoPosition(const quint8 positionNumber);
     Q_INVOKABLE void tiltUp();
     Q_INVOKABLE void tiltDown();
     Q_INVOKABLE void tiltStop();
@@ -427,6 +428,10 @@ public:
     /// The level.
     ContrastLevel contrastLevel() const;
 	
+    ///
+    /// \brief imageType
+    /// \return
+    ///
     QString imageType() const;
 
     ///

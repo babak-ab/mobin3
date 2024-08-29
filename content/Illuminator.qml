@@ -313,11 +313,12 @@ Item {
         id: illuminatorDialog
         standardButtons: QQC2.Dialog.Ok | QQC2.Dialog.Cancel
         parent: QQC2.Overlay.overlay
+        font.pointSize: 20
 
         Text {
             text: "Are you sure to power on the illuminator?"
             font.family: "Helvetica"
-            font.pointSize: 15
+            font.pointSize: 20
             color: "white"
             style: Text.Outline;
             styleColor: "black"

@@ -1,4 +1,5 @@
 #include "appcontrol.h"
+#include "reticle.h"
 
 #include <QQmlContext>
 #include <QGuiApplication>
@@ -27,6 +28,7 @@ int main(int argc, char* argv[])
 
     qmlRegisterType<AppControl>("AppControl", 1, 0, "AppControl");
     qmlRegisterType<SerialControl>("SerialControl", 1, 0, "SerialControl");
+    qmlRegisterType<Reticle>("Reticle", 1, 0, "Reticle");
 
     engine.rootContext()->setContextProperty("appControl", &app_control);
 

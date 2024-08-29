@@ -6,6 +6,7 @@ import AppControl 1.0
 import SerialControl 1.0
 import QtMultimedia 5.12
 import "content"
+import Reticle 1.0
 
 import QtQuick.Controls 1.4 as QQC1
 import QtQuick.Controls.Styles 1.1
@@ -93,6 +94,22 @@ ApplicationWindow {
         id: videoRender
         anchors.fill: parent
         source: appControl.videoAdapter
+    }
+
+    Reticle {
+        id: reticle
+        z: 1001
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
+        width: parent.width / 8
+        height: parent.height / 8
+        visible: appControl.reticleVisible
+
+        onSigDataChanged: {
+
+            console.log("ZZZZZZZ reticle update");
+            reticle.update()
+        }
     }
 
     Row {
@@ -840,11 +857,12 @@ ApplicationWindow {
         id: illuminatorDialog
         standardButtons: Dialog.Ok | Dialog.Cancel
         parent: Overlay.overlay
+        font.pointSize: 20
 
         Text {
             text: "Are you sure to power on the illuminator?"
             font.family: "Helvetica"
-            font.pointSize: 15
+            font.pointSize: 20
             color: "white"
             style: Text.Outline;
             styleColor: "black"

@@ -20,6 +20,8 @@ AppControl::AppControl(QObject* parent)
     fillSerialPortNames();
 
     m_serialControl = new SerialControl;
+    m_reticle = new Reticle;
+
 #ifdef Q_OS_WIN32
     int counter = 0;
     const QList<QCameraInfo> cameras = QCameraInfo::availableCameras();
@@ -40,6 +42,8 @@ AppControl::AppControl(QObject* parent)
     m_videoCapture->start();
 
     m_recordVisible = false;
+
+    m_reticleVisible = true;
 
     m_videoRecord = new VideoRecord(QSize(FRAME_WIDTH, FRAME_HEIGHT));
 
@@ -77,6 +81,12 @@ AppControl::AppControl(QObject* parent)
     connect(&m_timerTvWatchdog, &QTimer::timeout, this, &AppControl::sltCheckTVCapture);
     m_elapsedTimerTvCaptureWatchdog.restart();
     m_timerTvWatchdog.start();
+
+
+    connect(m_reticle, &Reticle::sigDataChanged,
+            this, &AppControl::reticleVisibleChanged);
+
+
 }
 
 AppControl::~AppControl()
@@ -446,6 +456,17 @@ void AppControl::stopRecord()
     setRecordVisible(false);
 }
 
+bool AppControl::reticleVisible() const
+{
+    return m_reticleVisible;
+}
+
+void AppControl::setReticleVisible(bool reticleVisible)
+{
+    m_reticleVisible = reticleVisible;
+    Q_EMIT reticleVisibleChanged();
+}
+
 QString AppControl::messageTitle() const
 {
     return m_messageTitle;
@@ -506,6 +527,11 @@ QStringList AppControl::serialPortList()
 SerialControl* AppControl::serialControl() const
 {
     return m_serialControl;
+}
+
+Reticle *AppControl::reticle() const
+{
+    return m_reticle;
 }
 
 void AppControl::setGamepadController(GamepadController* gamepadController)

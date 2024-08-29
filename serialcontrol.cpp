@@ -698,6 +698,11 @@ void SerialControl::clearPosition(const quint8 positionNumber)
     sendCommand1(112, positionNumber);
 }
 
+void SerialControl::gotoPosition(const quint8 positionNumber)
+{
+    sendCommand1(113, positionNumber);
+}
+
 void SerialControl::tiltUp()
 {
     sendCommand1(173, m_panTiltSpeed);

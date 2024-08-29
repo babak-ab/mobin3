@@ -15,6 +15,7 @@
 
 #include "GamepadController.h"
 #include "serialcontrol.h"
+#include "reticle.h"
 #include "videoadapter.h"
 #include "videocapture.h"
 #include "videorecord.h"
@@ -29,13 +30,14 @@ class AppControl : public QObject {
     // The properties for notifying the QML of the changes in the code
     Q_PROPERTY(QObject* videoAdapter READ videoAdapter NOTIFY signalVideoAdapter)
     Q_PROPERTY(SerialControl* serialControl READ serialControl NOTIFY signalVideoAdapter)
+    Q_PROPERTY(Reticle* reticle READ reticle NOTIFY signalVideoAdapter)
     Q_PROPERTY(QStringList serialPortList READ serialPortList NOTIFY signalVideoAdapter);
     Q_PROPERTY(QString messageTitle READ messageTitle NOTIFY sigThrowSerialMessageRequested);
     Q_PROPERTY(QString messageText READ messageText NOTIFY sigThrowSerialMessageRequested);
     Q_PROPERTY(bool recordVisible READ recordVisible WRITE setRecordVisible NOTIFY recordVisibleChanged)
     Q_PROPERTY(QString recordingLocation READ recordingLocation WRITE setRecordingLocation NOTIFY recordingLocationChanged)
     Q_PROPERTY(QString appVersion READ appVersion NOTIFY signalVideoAdapter)
-
+    Q_PROPERTY(bool reticleVisible READ reticleVisible WRITE setReticleVisible NOTIFY reticleVisibleChanged)
 
 public:
     ///
@@ -75,6 +77,13 @@ public:
     /// \return
     ///
     SerialControl* serialControl() const;
+
+    ///
+    /// \brief reticle
+    /// A function for getting the instance of the reticle controller
+    /// \return
+    ///
+    Reticle* reticle() const;
 
     ///
     /// \brief setGamepadController
@@ -177,6 +186,9 @@ public:
     /// This finction stops the recording.
     Q_INVOKABLE void stopRecord();
 
+    bool reticleVisible() const;
+    Q_INVOKABLE void setReticleVisible(bool reticleVisible);
+
 private:
     QString m_recordingLocation;
     QString m_captureDevice;
@@ -186,6 +198,7 @@ private:
     VideoRecord* m_videoRecord;
 
     SerialControl* m_serialControl;
+    Reticle* m_reticle;
     GamepadController* m_gamepadController;
 
     QGamepadManager* m_gamepadManager;
@@ -204,6 +217,8 @@ private:
 
     bool m_recordVisible;
 
+    bool m_reticleVisible;
+
     quint8 m_lastJoystickPanSpeed;
     quint8 m_lastJoystickPanDirection;
     quint8 m_lastJoystickTiltSpeed;
@@ -215,6 +230,8 @@ private:
     void processGamepadCommand(const CommandPacket& packet);
     void fillSerialPortNames();
 
+
+
 private Q_SLOTS:
     void sltExecuteCommandRequested(const CommandPacket& packet);
     void sltCheckTVCapture();
@@ -225,6 +242,7 @@ Q_SIGNALS:
     void sigThrowSerialMessageRequested();
     void recordingLocationChanged();
     void recordVisibleChanged();
+    void reticleVisibleChanged();
 };
 
 #endif // APPCONTROL_H

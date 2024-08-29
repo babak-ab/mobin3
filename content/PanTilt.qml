@@ -56,6 +56,7 @@ import QtQuick.Controls 2.3 as QQC2
 import QtQuick.Controls 1.4 as QQC1
 
 import AppControl 1.0
+import Reticle 1.0
 
 Item {
 //    width: parent.width
@@ -222,6 +223,88 @@ Item {
                     appControl.serialControl.tiltStop()
             }
         }
+
+
+        QQC2.GroupBox { // Reticle ----------------------------
+            font.pixelSize: 25
+
+            label: QQC2.Label {
+                text: " Reticle: "
+                color: "white"
+                elide: Text.ElideRight
+                style: Text.Outline;
+                styleColor: "black"
+            }
+
+            background: Rectangle {
+                implicitWidth: 100
+                implicitHeight: 60
+                color: "black"
+                opacity: 0.4
+                radius: 5
+                border.color: "white"
+            }
+
+            Column {
+
+                spacing: 40
+
+                QQC1.Switch {
+                    id: reticleSwitch
+                    style: switchStyle
+                    checked: appControl.reticleVisible
+
+                    onCheckedChanged: {
+                        if (reticleSwitch.checked !== appControl.reticleVisible) {
+                            appControl.setReticleVisible(
+                                        reticleSwitch.checked)
+                        }
+                    }
+                }
+
+                Row {
+
+                    Text {
+                        text: "Color:  "
+                        font.family: "Helvetica"
+                        font.pointSize: 18
+                        color: "red"
+                        style: Text.Outline;
+                        styleColor: "black"
+                    }
+
+                    QQC2.SpinBox {
+                        id: reticleColorSpinbox
+                        from: 0
+                        to: items.length - 1
+                        value: appControl.reticle.color
+
+                        property var items: ["Blue", "Red", "Green"]
+
+                        validator: RegExpValidator {
+                            regExp: new RegExp("(Blue|Red|Green)", "i")
+                        }
+
+                        textFromValue: function(value) {
+                            return items[value];
+                        }
+
+                        valueFromText: function(text) {
+                            for (var i = 0; i < items.length; ++i) {
+                                if (items[i].toLowerCase().indexOf(text.toLowerCase()) === 0)
+                                    return i
+                            }
+                            return sb.value
+                        }
+
+                        onValueChanged: {
+                            appControl.reticle.setReticleColor(
+                                        reticleColorSpinbox.value)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     Component {
@@ -252,6 +335,54 @@ Item {
                         width: parent.width * control.value / control.maximumValue
                     }
                 }
+            }
+        }
+    }
+
+    Component {
+        id: switchStyle
+        SwitchStyle {
+
+            groove: Rectangle {
+                implicitHeight: 50
+                implicitWidth: 152
+                Rectangle {
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    anchors.bottom: parent.bottom
+                    width: parent.width/2 - 2
+                    height: 20
+                    anchors.margins: 2
+                    color: control.checked ? "#468bb7" : "#222"
+                    Behavior on color {ColorAnimation {}}
+                    Text {
+                        font.pixelSize: 23
+                        color: "white"
+                        anchors.centerIn: parent
+                        text: "ON"
+                    }
+                }
+                Item {
+                    width: parent.width/2
+                    height: parent.height
+                    anchors.right: parent.right
+                    Text {
+                        font.pixelSize: 23
+                        color: "white"
+                        anchors.centerIn: parent
+                        text: "OFF"
+                    }
+                }
+                color: "#222"
+                border.color: "#444"
+                border.width: 2
+            }
+            handle: Rectangle {
+                width: parent.parent.width/2
+                height: control.height
+                color: "#444"
+                border.color: "#555"
+                border.width: 2
             }
         }
     }

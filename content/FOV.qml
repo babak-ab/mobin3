@@ -97,6 +97,7 @@ Item {
                 style: Text.Outline;
                 styleColor: "black"
                 anchors.verticalCenter: parent.verticalCenter
+                width: 150
             }
 
             QQC1.Slider {
@@ -118,6 +119,9 @@ Item {
                             appControl.serialControl.gotoFov(
                                         gotoFovSlider.value)
                         }
+
+                        fovValueText.text = "FOV:  " + appControl.serialControl.fovPosition / 1000 + " °"
+
                     } else {
                         appControl.serialControl.enableFovUpdate(false)
                     }
@@ -146,6 +150,7 @@ Item {
                 style: Text.Outline;
                 styleColor: "black"
                 anchors.verticalCenter: parent.verticalCenter
+                width: 150
             }
 
             QQC1.Slider {
@@ -167,6 +172,8 @@ Item {
                             appControl.serialControl.gotoFocus(
                                         gotoFocusSlider.value)
                         }
+
+                        focusValueText.text = "Focus:  " + appControl.serialControl.focusPosition
                     } else {
                         appControl.serialControl.enableFocusUpdate(false)
                     }
