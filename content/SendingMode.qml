@@ -80,6 +80,7 @@ ScrollView {
             label: QQC2.Label {
                 text: " Sending Mode: "
                 color: "white"
+                font.family: "Helvetica"
                 elide: Text.ElideRight
                 style: Text.Outline;
                 styleColor: "black"
@@ -101,6 +102,7 @@ ScrollView {
                     QQC2.RadioButton {
                         id: requestSendingMode
                         text: "Request"
+                        font.family: "Helvetica"
                         checked: appControl.serialControl.sendingMode === 2
                         font.pixelSize: 25
                         anchors.verticalCenter: parent.verticalCenter
@@ -131,6 +133,7 @@ ScrollView {
                         contentItem: Text {
                             text: "Status"
                             color: "white"
+                            font.family: "Helvetica"
                             opacity: 1.0
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
@@ -164,6 +167,7 @@ ScrollView {
                     QQC2.RadioButton {
                         id: continuousSendingMode
                         text: "Continuous"
+                        font.family: "Helvetica"
                         checked: appControl.serialControl.sendingMode === 1
                         font.pixelSize: 25
 

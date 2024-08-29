@@ -68,6 +68,7 @@ Item {
     Text {
         id: textitem
         color: "white"
+        font.family: "Helvetica"
         font.pixelSize: 32
         text: modelData
         anchors.verticalCenter: parent.verticalCenter

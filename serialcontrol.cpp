@@ -81,6 +81,7 @@ bool SerialControl::disconnectSerialPort()
 {
     if (m_serialPort->isOpen()) {
         m_serialPort->close();
+        Q_EMIT sigDataChanged();
         return true;
     }
 
@@ -279,8 +280,9 @@ QByteArray SerialControl::interpret(IRQueue<quint8>* queueRead)
     return QByteArray();
 }
 
-bool SerialControl::isConnected() const
+bool SerialControl::isConnected()
 {
+    Q_EMIT sigDataChanged();
     return m_serialPort->isOpen();
 }
 

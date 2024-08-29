@@ -7,8 +7,8 @@ RowLayout {
     id: root
     anchors.right: parent.right
     anchors.top: parent.top
-    anchors.rightMargin: 20
-    anchors.topMargin: 160
+    anchors.rightMargin: 110
+    anchors.topMargin: 110
     visible: appControl.serialControl.illuminator
 
     RoundButton {

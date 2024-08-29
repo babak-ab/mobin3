@@ -78,6 +78,7 @@ Item {
             label: QQC2.Label {
                 text: " Camera Mode: "
                 color: "White"
+                font.family: "Helvetica"
                 elide: Text.ElideRight
                 style: Text.Outline;
                 styleColor: "black"
@@ -98,6 +99,7 @@ Item {
                 QQC2.RadioButton {
                     id: continuousZoom
                     text: "Continuous Zoom"
+                    font.family: "Helvetica"
                     checked: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_ContinuousZoom
                     font.pixelSize: 25
 
@@ -119,6 +121,7 @@ Item {
                 QQC2.RadioButton {
                     id: spotter
                     text: "Spotter"
+                    font.family: "Helvetica"
                     checked: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_Spotter
                     font.pixelSize: 25
 
@@ -140,6 +143,7 @@ Item {
                 QQC2.RadioButton {
                     id: swirSpotter
                     text: "SWIR"
+                    font.family: "Helvetica"
                     checked: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_SWIRSpotter
                     font.pixelSize: 25
                     visible: true
@@ -167,6 +171,7 @@ Item {
             label: QQC2.Label {
                 text: " Filter Mode: "
                 color: "White"
+                font.family: "Helvetica"
                 elide: Text.ElideRight
                 style: Text.Outline;
                 styleColor: "black"
@@ -190,6 +195,7 @@ Item {
                     QQC2.RadioButton {
                         id: colorFilter
                         text: "Color"
+                        font.family: "Helvetica"
                         checked: appControl.serialControl.selectedFilter === SerialControl.Color
                         font.pixelSize: 25
                         visible: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_ContinuousZoom
@@ -214,6 +220,7 @@ Item {
                     QQC2.RadioButton {
                         id: nirFilter
                         text: "NIR"
+                        font.family: "Helvetica"
                         checked: appControl.serialControl.selectedFilter === SerialControl.NIR
                         font.pixelSize: 25
                         visible: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_ContinuousZoom
@@ -238,6 +245,7 @@ Item {
                     QQC2.RadioButton {
                         id: laserFilter
                         text: "Laser"
+                        font.family: "Helvetica"
                         checked: appControl.serialControl.selectedFilter === SerialControl.F1064
                         font.pixelSize: 25
                         visible: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_Spotter
@@ -265,6 +273,7 @@ Item {
                     QQC2.RadioButton {
                         id: bwFilter
                         text: "BW"
+                        font.family: "Helvetica"
                         checked: appControl.serialControl.selectedFilter === SerialControl.Color
                         font.pixelSize: 25
                         visible: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_SWIRSpotter
@@ -287,6 +296,7 @@ Item {
                     QQC2.RadioButton {
                         id: gwFilter
                         text: "GW"
+                        font.family: "Helvetica"
                         checked: appControl.serialControl.selectedFilter === SerialControl.NIR
                         font.pixelSize: 25
                         visible: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_SWIRSpotter

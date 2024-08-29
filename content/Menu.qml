@@ -88,6 +88,7 @@ Item {
             id: upButton
             icon.source: "qrc:/Images/up-tilt-icon.png"
             icon.color: "white"
+            font.family: "Helvetica"
             icon.height: 60
             icon.width: 60
             anchors.horizontalCenter: parent.horizontalCenter
@@ -118,6 +119,7 @@ Item {
                 id: leftButton
                 icon.source: "qrc:/Images/left-pan-icon.png"
                 icon.color: "white"
+                font.family: "Helvetica"
                 icon.height: 60
                 icon.width: 60
 
@@ -145,6 +147,7 @@ Item {
                 QQC2.Button {
                     id: menuButton
                     text: "Menu"
+                    font.family: "Helvetica"
                     font.bold: true
                     font.pixelSize: 24
 
@@ -167,6 +170,7 @@ Item {
                     anchors.horizontalCenter: column.horizontalCenter
                     id: escButton
                     text: "ESC"
+                    font.family: "Helvetica"
                     font.bold: true
                     font.pixelSize: 24
 
@@ -190,6 +194,7 @@ Item {
                 id: rightButton
                 icon.source: "qrc:/Images/right-pan-icon.png"
                 icon.color: "white"
+                font.family: "Helvetica"
                 icon.height: 60
                 icon.width: 60
 
@@ -216,6 +221,7 @@ Item {
             id: downButton
             icon.source: "qrc:/Images/down-tilt-icon.png"
             icon.color: "white"
+            font.family: "Helvetica"
             icon.height: 60
             icon.width: 60
             anchors.horizontalCenter: parent.horizontalCenter

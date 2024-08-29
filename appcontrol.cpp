@@ -314,6 +314,8 @@ void AppControl::processGamepadCommand(const CommandPacket& packet)
             return;
         }
 
+        qDebug()  << "XXXX  Command_OpenCameraMenu";
+
         m_serialControl->toggleMenu();
 
         break;

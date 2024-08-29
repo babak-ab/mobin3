@@ -94,7 +94,7 @@ Item {
             Text {
                 text: "Serial Port: "
                 font.family: "Helvetica"
-                font.pointSize: 15
+                font.pointSize: 18
                 color: "white"
                 style: Text.Outline
                 styleColor: "black"
@@ -104,6 +104,9 @@ Item {
             QQC2.ComboBox {
                 id: control
                 model: appControl.serialPortList
+                font.family: "Helvetica"
+                font.pixelSize: 20
+                width: 150
 
                 delegate: QQC2.ItemDelegate {
                     width: control.width
@@ -212,6 +215,7 @@ Item {
                 verticalAlignment: Text.AlignVCenter
                 font.pixelSize: 24
                 color: "#FFFFFF"
+                font.family: "Helvetica"
                 text: appControl.serialControl.isConnected ? "Disconnect" : "Connect"
             }
 
@@ -256,6 +260,7 @@ Item {
                 font.pointSize: 15
                 font.capitalization: Font.SmallCaps
                 color: "white"
+                font.family: "Helvetica"
                 text: control.currentText
             }
         }
@@ -280,6 +285,7 @@ Item {
                         text: control.text
                         anchors.centerIn: parent
                         color: "white"
+                        font.family: "Helvetica"
                         font.pixelSize: 23
                         renderType: Text.NativeRendering
                     }
@@ -307,6 +313,7 @@ Item {
                         text: control.text
                         anchors.centerIn: parent
                         color: "white"
+                        font.family: "Helvetica"
                         font.pixelSize: 23
                         renderType: Text.NativeRendering
                     }

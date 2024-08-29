@@ -90,6 +90,7 @@ Item {
             label: QQC2.Label {
                 text: " Contrast: "
                 color: "white"
+                font.family: "Helvetica"
                 elide: Text.ElideRight
                 style: Text.Outline;
                 styleColor: "black"
@@ -144,6 +145,7 @@ Item {
             label: QQC2.Label {
                 text: " Brightness: "
                 color: "white"
+                font.family: "Helvetica"
                 elide: Text.ElideRight
                 style: Text.Outline;
                 styleColor: "black"
@@ -197,6 +199,7 @@ Item {
             label: QQC2.Label {
                 text: " Mode: "
                 color: "white"
+                font.family: "Helvetica"
                 elide: Text.ElideRight
                 style: Text.Outline;
                 styleColor: "black"
@@ -250,6 +253,7 @@ Item {
             label: QQC2.Label {
                 text: " Image Type (In Night): "
                 color: "white"
+                font.family: "Helvetica"
                 elide: Text.ElideRight
                 style: Text.Outline;
                 styleColor: "black"
@@ -302,6 +306,7 @@ Item {
             label: QQC2.Label {
                 text: " Bootloader Program: "
                 color: "white"
+                font.family: "Helvetica"
                 elide: Text.ElideRight
                 style: Text.Outline;
                 styleColor: "black"
@@ -321,6 +326,7 @@ Item {
                 contentItem: Text {
                     text: "Activate"
                     color: "white"
+                    font.family: "Helvetica"
                     opacity: 1.0
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
@@ -361,7 +367,7 @@ Item {
                 verticalAlignment: Text.AlignVCenter
                 horizontalAlignment: Text.AlignHCenter
                 font.pointSize: 15
-                font.family: "Courier"
+                font.family: "Helvetica"
                 font.capitalization: Font.SmallCaps
                 color: "white"
                 text: control.currentText
@@ -388,6 +394,7 @@ Item {
                         text: control.text
                         anchors.centerIn: parent
                         color: "white"
+                        font.family: "Helvetica"
                         font.pixelSize: 23
                         renderType: Text.NativeRendering
                     }
@@ -417,6 +424,7 @@ Item {
                         color: "white"
                         anchors.centerIn: parent
                         text: "ON"
+                        font.family: "Helvetica"
                     }
                 }
                 Item {
@@ -428,6 +436,7 @@ Item {
                         color: "white"
                         anchors.centerIn: parent
                         text: "OFF"
+                        font.family: "Helvetica"
                     }
                 }
                 color: "#222"

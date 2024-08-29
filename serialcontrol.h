@@ -313,7 +313,7 @@ public:
     /// Gets the current connection state of the serial port
     /// \return
     /// The result
-    bool isConnected() const;
+    bool isConnected();
 
     ///
     /// \brief zoomSpeed

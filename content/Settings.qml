@@ -90,6 +90,7 @@ Item {
             label: QQC2.Label {
                 text: " Defog: "
                 color: "white"
+                font.family: "Helvetica"
                 elide: Text.ElideRight
                 style: Text.Outline;
                 styleColor: "black"
@@ -144,6 +145,7 @@ Item {
                         contentItem: Text {
                             text: "Off"
                             color: "white"
+                            font.family: "Helvetica"
                             opacity: 1.0
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
@@ -169,6 +171,7 @@ Item {
                         contentItem: Text {
                             text: "Low"
                             color: "white"
+                            font.family: "Helvetica"
                             opacity: 1.0
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
@@ -198,6 +201,7 @@ Item {
                         contentItem: Text {
                             text: "Medium"
                             color: "white"
+                            font.family: "Helvetica"
                             opacity: 1.0
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
@@ -223,6 +227,7 @@ Item {
                         contentItem: Text {
                             text: "High"
                             color: "white"
+                            font.family: "Helvetica"
                             opacity: 1.0
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
@@ -254,6 +259,7 @@ Item {
             label: QQC2.Label {
                 text: " Gamma: "
                 color: "white"
+                font.family: "Helvetica"
                 elide: Text.ElideRight
                 style: Text.Outline;
                 styleColor: "black"
@@ -273,6 +279,7 @@ Item {
                 from: 0
                 to: items.length - 1
                 value: appControl.serialControl.gammaLevel
+                font.family: "Helvetica"
 
                 property var items: ["Level 1", "Level 2"]
 
@@ -307,6 +314,7 @@ Item {
             label: QQC2.Label {
                 text: " Noise Reduction: "
                 color: "white"
+                font.family: "Helvetica"
                 elide: Text.ElideRight
                 style: Text.Outline;
                 styleColor: "black"
@@ -326,6 +334,7 @@ Item {
                 from: 0
                 to: items.length - 1
                 value: appControl.serialControl.noiseReductionMode
+                font.family: "Helvetica"
 
                 property var items: ["Low", "High"]
 
@@ -360,6 +369,7 @@ Item {
             label: QQC2.Label {
                 text: " Digital Zoom: "
                 color: "white"
+                font.family: "Helvetica"
                 elide: Text.ElideRight
                 style: Text.Outline;
                 styleColor: "black"
@@ -387,6 +397,88 @@ Item {
                 }
             }
         }
+
+        QQC2.GroupBox { // Reticle ----------------------------
+            font.pixelSize: 25
+
+            label: QQC2.Label {
+                text: " Reticle: "
+                color: "white"
+                font.family: "Helvetica"
+                elide: Text.ElideRight
+                style: Text.Outline;
+                styleColor: "black"
+            }
+
+            background: Rectangle {
+                implicitWidth: 100
+                implicitHeight: 60
+                color: "black"
+                opacity: 0.4
+                radius: 5
+                border.color: "white"
+            }
+
+//            Column {
+
+//                spacing: 40
+
+                QQC1.Switch {
+                    id: reticleSwitch
+                    style: switchStyle
+                    checked: appControl.reticleVisible
+
+                    onCheckedChanged: {
+                        if (reticleSwitch.checked !== appControl.reticleVisible) {
+                            appControl.setReticleVisible(
+                                        reticleSwitch.checked)
+                        }
+                    }
+                }
+
+//                Row {
+
+//                    Text {
+//                        text: "Color:  "
+//                        font.family: "Helvetica"
+//                        font.pointSize: 18
+//                        color: "red"
+//                        style: Text.Outline;
+//                        styleColor: "black"
+//                    }
+
+//                    QQC2.SpinBox {
+//                        id: reticleColorSpinbox
+//                        from: 0
+//                        to: items.length - 1
+//                        value: appControl.reticle.color
+
+//                        property var items: ["Blue", "Red", "Green"]
+
+//                        validator: RegExpValidator {
+//                            regExp: new RegExp("(Blue|Red|Green)", "i")
+//                        }
+
+//                        textFromValue: function(value) {
+//                            return items[value];
+//                        }
+
+//                        valueFromText: function(text) {
+//                            for (var i = 0; i < items.length; ++i) {
+//                                if (items[i].toLowerCase().indexOf(text.toLowerCase()) === 0)
+//                                    return i
+//                            }
+//                            return sb.value
+//                        }
+
+//                        onValueChanged: {
+//                            appControl.reticle.setReticleColor(
+//                                        reticleColorSpinbox.value)
+//                        }
+//                    }
+//                }
+//            }
+        }
     }
 
     Component {
@@ -404,7 +496,8 @@ Item {
                 verticalAlignment: Text.AlignVCenter
                 horizontalAlignment: Text.AlignHCenter
                 font.pointSize: 15
-                font.family: "Courier"
+
+                font.family: "Helvetica"
                 font.capitalization: Font.SmallCaps
                 color: "white"
                 text: control.currentText
@@ -460,6 +553,7 @@ Item {
                         color: "white"
                         anchors.centerIn: parent
                         text: "ON"
+                        font.family: "Helvetica"
                     }
                 }
                 Item {
@@ -471,6 +565,7 @@ Item {
                         color: "white"
                         anchors.centerIn: parent
                         text: "OFF"
+                        font.family: "Helvetica"
                     }
                 }
                 color: "#222"

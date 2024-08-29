@@ -41,6 +41,7 @@ ApplicationWindow {
             id: menuButton
             icon.source: "Images/menu-icon.png"
             icon.color: "transparent"
+            font.family: "Helvetica"
             icon.height: 90
             icon.width: 90
             background: Rectangle {
@@ -315,6 +316,7 @@ ApplicationWindow {
                 RadioButton {
                     id: continuousZoom
                     text: "Cont. Zoom"
+                    font.family: "Helvetica"
                     checked: appControl.serialControl.selectedCamera
                              === SerialControl.CameraSelection_ContinuousZoom
                     font.pixelSize: 18
@@ -338,6 +340,7 @@ ApplicationWindow {
                 RadioButton {
                     id: spotter
                     text: "Spotter"
+                    font.family: "Helvetica"
                     checked: appControl.serialControl.selectedCamera
                              === SerialControl.CameraSelection_Spotter
                     font.pixelSize: 18
@@ -378,6 +381,7 @@ ApplicationWindow {
                 RadioButton {
                     id: colorFilter
                     text: "Color"
+                    font.family: "Helvetica"
                     checked: appControl.serialControl.selectedFilter === SerialControl.Color
                     font.pixelSize: 18
                     font.bold: true
@@ -403,6 +407,7 @@ ApplicationWindow {
                 RadioButton {
                     id: nirFilter
                     text: "NIR"
+                    font.family: "Helvetica"
                     checked: appControl.serialControl.selectedFilter === SerialControl.NIR
                     font.pixelSize: 18
                     font.bold: true
@@ -446,6 +451,7 @@ ApplicationWindow {
                 RadioButton {
                     id: autoFocusButton
                     text: "AF"
+                    font.family: "Helvetica"
                     checked: appControl.serialControl.focusMode
                     font.pixelSize: 18
                     font.bold: true
@@ -468,6 +474,7 @@ ApplicationWindow {
                 RadioButton {
                     id: manualFocusButton
                     text: "MF"
+                    font.family: "Helvetica"
                     checked: !appControl.serialControl.focusMode
                     font.pixelSize: 18
                     font.bold: true
@@ -495,6 +502,7 @@ ApplicationWindow {
             icon.color: "transparent"
             icon.height: 60
             icon.width: 60
+            font.family: "Helvetica"
 
             checkable: true
             highlighted: checked
@@ -540,6 +548,7 @@ ApplicationWindow {
             id: zoomInButton
             icon.source: "qrc:/Images/zoom-in-icon.png"
             icon.color: "white"
+            font.family: "Helvetica"
             icon.height: 70
             icon.width: 70
 
@@ -562,6 +571,7 @@ ApplicationWindow {
             id: zoomOutButton
             icon.source: "qrc:/Images/zoom-out-icon.png"
             icon.color: "white"
+            font.family: "Helvetica"
             icon.height: 70
             icon.width: 70
 
@@ -584,6 +594,7 @@ ApplicationWindow {
             id: focusFarButton
             icon.source: "qrc:/Images/focus-far.png"
             icon.color: "white"
+            font.family: "Helvetica"
             icon.height: 70
             icon.width: 70
 
@@ -606,6 +617,7 @@ ApplicationWindow {
             id: focusNearButton
             icon.source: "qrc:/Images/focus-near.png"
             icon.color: "white"
+            font.family: "Helvetica"
             icon.height: 70
             icon.width: 70
 
@@ -628,6 +640,7 @@ ApplicationWindow {
             id: rightPanButton
             icon.source: "qrc:/Images/right-arrow.png"
             icon.color: "white"
+            font.family: "Helvetica"
             icon.height: 70
             icon.width: 70
 
@@ -650,6 +663,7 @@ ApplicationWindow {
             id: leftPanButton
             icon.source: "qrc:/Images/left-arrow.png"
             icon.color: "white"
+            font.family: "Helvetica"
             icon.height: 70
             icon.width: 70
 
@@ -672,6 +686,7 @@ ApplicationWindow {
             id: upTiltButton
             icon.source: "qrc:/Images/up-arrow.png"
             icon.color: "white"
+            font.family: "Helvetica"
             icon.height: 70
             icon.width: 70
 
@@ -694,6 +709,7 @@ ApplicationWindow {
             id: downTiltButton
             icon.source: "qrc:/Images/down-arrow.png"
             icon.color: "white"
+            font.family: "Helvetica"
             icon.height: 70
             icon.width: 70
 
@@ -715,7 +731,7 @@ ApplicationWindow {
         Text {
             text: appControl.appVersion
             font.family: "Helvetica"
-            font.pointSize: 15
+            font.pointSize: 20
             color: "white"
             style: Text.Outline
             styleColor: "black"
@@ -779,6 +795,7 @@ ApplicationWindow {
         visible: false
         height: root.height
         anchors.fill: parent
+        font.family: "Helvetica"
         background: Rectangle {
             id: background
             color: "black"
@@ -803,6 +820,7 @@ ApplicationWindow {
                 spacing: -12
                 delegate: AndroidDelegate {
                     text: title
+
                     onClicked: {
                         if (title == "Exit") {
                             exitDialog.open()
@@ -945,6 +963,8 @@ ApplicationWindow {
                 QQC2.ComboBox {
                     id: control
                     model: appControl.serialPortList
+                    font.family: "Helvetica"
+                    width: 150
 
                     delegate: QQC2.ItemDelegate {
                         width: control.width
@@ -968,6 +988,7 @@ ApplicationWindow {
             Button {
                 id: controlBt
                 text: appControl.serialControl.isConnected ? "Disconnect" : "Connect"
+                font.family: "Helvetica"
                 font.pixelSize: 32
                 checkable: true
                 checked: appControl.serialControl.isConnected
@@ -977,7 +998,7 @@ ApplicationWindow {
                     text: appControl.serialControl.isConnected ? "Disconnect" : "Connect"
                     font: controlBt.font
                     opacity: enabled ? 1.0 : 0.3
-                    color: appControl.serialControl.isConnected ? "#12de56" : "black"
+                    color: appControl.serialControl.isConnected ? "green" : "black"
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                     elide: Text.ElideRight
@@ -987,10 +1008,9 @@ ApplicationWindow {
                     implicitWidth: 150
                     implicitHeight: 60
                     opacity: enabled ? 1 : 0.3
-                    border.color: appControl.serialControl.isConnected ? "#12de56" : "white"
+                    border.color: appControl.serialControl.isConnected ? "darkred" : "gray"
                     border.width: 1
                     radius: 2
-                    color: appControl.serialControl.isConnected ? "#12de56" : "gray"
                 }
 
                 onClicked: {
@@ -1006,6 +1026,7 @@ ApplicationWindow {
 
                     } else {
                         appControl.disconnectSerialPort()
+                        serialDialog.close()
                     }
                 }
             }
@@ -1033,12 +1054,14 @@ ApplicationWindow {
                 Layout.alignment: Qt.AlignHCenter
                 Label {
                     text: "Login Password: "
+                    font.family: "Helvetica"
                 }
                 TextField {
                     id: password
                     Layout.fillWidth: true
                     echoMode: TextInput.Password
                     placeholderText: "password"
+                    font.family: "Helvetica"
                 }
             }
 
@@ -1047,6 +1070,7 @@ ApplicationWindow {
                 anchors.horizontalCenter: parent.horizontalCenter
                 Button {
                     text: "OK"
+                    font.family: "Helvetica"
                     Layout.fillWidth: true
                     onClicked: {
                         if (password.text == "1234") {
@@ -1061,6 +1085,7 @@ ApplicationWindow {
                 }
                 Button {
                     text: "Cancel"
+                    font.family: "Helvetica"
                     Layout.fillWidth: true
 
                     onClicked: {
@@ -1078,6 +1103,7 @@ ApplicationWindow {
     Dialog {
         id: passwordDialog
         title: "Password is wrong"
+        font.family: "Helvetica"
         modal: true
 
         parent: Overlay.overlay

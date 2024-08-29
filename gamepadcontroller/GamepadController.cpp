@@ -668,8 +668,6 @@ void GamepadController::sendZoomFocusStopCommand()
 {
     if(m_gamepad != Q_NULLPTR) {
 
-        qDebug() << "XXXXXXXXXXXXXX ----- ";
-
         if (qAbs(m_gamepad->axisLeftX()) > DEATH_BAND_VALUE
                 || qAbs(m_gamepad->axisLeftY()) > DEATH_BAND_VALUE) {
 

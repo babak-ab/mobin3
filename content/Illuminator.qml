@@ -93,7 +93,7 @@ Item {
             Text {
                 text: "Illuminator Power: "
                 font.family: "Helvetica"
-                font.pointSize: 15
+                font.pointSize: 18
                 color: "white"
                 style: Text.Outline;
                 styleColor: "black"
@@ -128,6 +128,7 @@ Item {
             label: QQC2.Label {
                 text: " Illuminator Brightness: "
                 color: "white"
+                font.family: "Helvetica"
                 elide: Text.ElideRight
                 style: Text.Outline;
                 styleColor: "black"
@@ -190,6 +191,7 @@ Item {
                 contentItem: Text {
                     text: "Smaller Angle"
                     color: "white"
+                    font.family: "Helvetica"
                     opacity: 1.0
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
@@ -217,6 +219,7 @@ Item {
                 contentItem: Text {
                     text: "Larger Angle"
                     color: "white"
+                    font.family: "Helvetica"
                     opacity: 1.0
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
@@ -246,6 +249,7 @@ Item {
             label: QQC2.Label {
                 text: " Angle Ratio of the Illuminator: "
                 color: "white"
+                font.family: "Helvetica"
                 elide: Text.ElideRight
                 style: Text.Outline;
                 styleColor: "black"
@@ -378,6 +382,7 @@ Item {
                         text: control.text
                         anchors.centerIn: parent
                         color: "white"
+                        font.family: "Helvetica"
                         font.pixelSize: 25
                         renderType: Text.NativeRendering
                     }
@@ -439,6 +444,7 @@ Item {
                         color: "white"
                         anchors.centerIn: parent
                         text: "ON"
+                        font.family: "Helvetica"
                     }
                 }
                 Item {
@@ -448,6 +454,7 @@ Item {
                     Text {
                         font.pixelSize: 23
                         color: "white"
+                        font.family: "Helvetica"
                         anchors.centerIn: parent
                         text: "OFF"
                     }

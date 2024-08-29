@@ -100,7 +100,7 @@ Item {
                 Text {
                     text: "Sensor:  " + appControl.serialControl.sensor
                     font.family: "Helvetica"
-                    font.pointSize: 15
+                    font.pointSize: 20
                     color: "white"
                     style: Text.Outline;
                     styleColor: "black"
@@ -109,7 +109,7 @@ Item {
                 Text {
                     text: "Image Type:  " + appControl.serialControl.imageType
                     font.family: "Helvetica"
-                    font.pointSize: 15
+                    font.pointSize: 20
                     color: "white"
                     style: Text.Outline;
                     styleColor: "black"
@@ -118,7 +118,7 @@ Item {
                 Text {
                     text: "Roll:  " + appControl.serialControl.roll.toFixed(2) + " °"
                     font.family: "Helvetica"
-                    font.pointSize: 15
+                    font.pointSize: 20
                     color: "white"
                     style: Text.Outline;
                     styleColor: "black"
@@ -127,7 +127,7 @@ Item {
                 Text {
                     text: "Pitch:  " + appControl.serialControl.pitch.toFixed(2) + " °"
                     font.family: "Helvetica"
-                    font.pointSize: 15
+                    font.pointSize: 20
                     color: "white"
                     style: Text.Outline;
                     styleColor: "black"
@@ -136,7 +136,7 @@ Item {
                 Text {
                     text: "Version:  " + appControl.serialControl.boardVersion
                     font.family: "Helvetica"
-                    font.pointSize: 15
+                    font.pointSize: 20
                     color: "white"
                     style: Text.Outline;
                     styleColor: "black"
@@ -174,6 +174,7 @@ Item {
                         text: control.text
                         anchors.centerIn: parent
                         color: "white"
+                        font.family: "Helvetica"
                         font.pixelSize: 25
                         renderType: Text.NativeRendering
                     }
@@ -235,6 +236,7 @@ Item {
                         color: "white"
                         anchors.centerIn: parent
                         text: "ON"
+                        font.family: "Helvetica"
                     }
                 }
                 Item {
@@ -246,6 +248,7 @@ Item {
                         color: "white"
                         anchors.centerIn: parent
                         text: "OFF"
+                        font.family: "Helvetica"
                     }
                 }
                 color: "#222"

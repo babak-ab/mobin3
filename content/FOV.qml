@@ -92,12 +92,12 @@ Item {
                 id: fovValueText
                 text: "FOV:  " + appControl.serialControl.fovPosition / 1000 + " °"
                 font.family: "Helvetica"
-                font.pointSize: 15
+                font.pointSize: 20
                 color: "white"
                 style: Text.Outline;
                 styleColor: "black"
                 anchors.verticalCenter: parent.verticalCenter
-                width: 150
+                width: 200
             }
 
             QQC1.Slider {
@@ -145,12 +145,12 @@ Item {
                 id: focusValueText
                 text: "Focus:  " + appControl.serialControl.focusPosition
                 font.family: "Helvetica"
-                font.pointSize: 15
+                font.pointSize: 20
                 color: "white"
                 style: Text.Outline;
                 styleColor: "black"
                 anchors.verticalCenter: parent.verticalCenter
-                width: 150
+                width: 200
             }
 
             QQC1.Slider {
@@ -195,6 +195,7 @@ Item {
             label: QQC2.Label {
                 text: " Positions: "
                 color: "white"
+                font.family: "Helvetica"
                 elide: Text.ElideRight
                 style: Text.Outline;
                 styleColor: "black"
@@ -233,6 +234,7 @@ Item {
                     contentItem: Text {
                         text: "Set Position"
                         color: "white"
+                        font.family: "Helvetica"
                         opacity: 1.0
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
@@ -261,6 +263,7 @@ Item {
                     contentItem: Text {
                         text: "Clear Position"
                         color: "white"
+                        font.family: "Helvetica"
                         opacity: 1.0
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
@@ -289,6 +292,7 @@ Item {
                     contentItem: Text {
                         text: "Goto Position"
                         color: "white"
+                        font.family: "Helvetica"
                         opacity: 1.0
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
@@ -345,6 +349,7 @@ Item {
                         text: control.text
                         anchors.centerIn: parent
                         color: "white"
+                        font.family: "Helvetica"
                         font.pixelSize: 25
                         renderType: Text.NativeRendering
                     }

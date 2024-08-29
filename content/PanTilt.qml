@@ -96,7 +96,7 @@ Item {
             Text {
                 text: "Speed:"
                 font.family: "Helvetica"
-                font.pointSize: 15
+                font.pointSize: 20
                 color: "white"
                 style: Text.Outline;
                 styleColor: "black"
@@ -121,6 +121,7 @@ Item {
             id: upTiltButton
             icon.source: "qrc:/Images/up-arrow.png"
             icon.color: "white"
+            font.family: "Helvetica"
             icon.height: 60
             icon.width: 60
             anchors.horizontalCenter: parent.horizontalCenter
@@ -151,6 +152,7 @@ Item {
                 id: leftPanButton
                 icon.source: "qrc:/Images/left-arrow.png"
                 icon.color: "white"
+                font.family: "Helvetica"
                 icon.height: 60
                 icon.width: 60
 
@@ -176,6 +178,7 @@ Item {
                 id: rightPanButton
                 icon.source: "qrc:/Images/right-arrow.png"
                 icon.color: "white"
+                font.family: "Helvetica"
                 icon.height: 60
                 icon.width: 60
 
@@ -202,6 +205,7 @@ Item {
             id: downTiltButton
             icon.source: "qrc:/Images/down-arrow.png"
             icon.color: "white"
+            font.family: "Helvetica"
             icon.height: 60
             icon.width: 60
             anchors.horizontalCenter: parent.horizontalCenter
@@ -221,88 +225,6 @@ Item {
             onDownChanged: {
                 if (!downTiltButton.pressed)
                     appControl.serialControl.tiltStop()
-            }
-        }
-
-
-        QQC2.GroupBox { // Reticle ----------------------------
-            font.pixelSize: 25
-
-            label: QQC2.Label {
-                text: " Reticle: "
-                color: "white"
-                elide: Text.ElideRight
-                style: Text.Outline;
-                styleColor: "black"
-            }
-
-            background: Rectangle {
-                implicitWidth: 100
-                implicitHeight: 60
-                color: "black"
-                opacity: 0.4
-                radius: 5
-                border.color: "white"
-            }
-
-            Column {
-
-                spacing: 40
-
-                QQC1.Switch {
-                    id: reticleSwitch
-                    style: switchStyle
-                    checked: appControl.reticleVisible
-
-                    onCheckedChanged: {
-                        if (reticleSwitch.checked !== appControl.reticleVisible) {
-                            appControl.setReticleVisible(
-                                        reticleSwitch.checked)
-                        }
-                    }
-                }
-
-                Row {
-
-                    Text {
-                        text: "Color:  "
-                        font.family: "Helvetica"
-                        font.pointSize: 18
-                        color: "red"
-                        style: Text.Outline;
-                        styleColor: "black"
-                    }
-
-                    QQC2.SpinBox {
-                        id: reticleColorSpinbox
-                        from: 0
-                        to: items.length - 1
-                        value: appControl.reticle.color
-
-                        property var items: ["Blue", "Red", "Green"]
-
-                        validator: RegExpValidator {
-                            regExp: new RegExp("(Blue|Red|Green)", "i")
-                        }
-
-                        textFromValue: function(value) {
-                            return items[value];
-                        }
-
-                        valueFromText: function(text) {
-                            for (var i = 0; i < items.length; ++i) {
-                                if (items[i].toLowerCase().indexOf(text.toLowerCase()) === 0)
-                                    return i
-                            }
-                            return sb.value
-                        }
-
-                        onValueChanged: {
-                            appControl.reticle.setReticleColor(
-                                        reticleColorSpinbox.value)
-                        }
-                    }
-                }
             }
         }
     }
@@ -360,6 +282,7 @@ Item {
                         color: "white"
                         anchors.centerIn: parent
                         text: "ON"
+                        font.family: "Helvetica"
                     }
                 }
                 Item {
@@ -371,6 +294,7 @@ Item {
                         color: "white"
                         anchors.centerIn: parent
                         text: "OFF"
+                        font.family: "Helvetica"
                     }
                 }
                 color: "#222"

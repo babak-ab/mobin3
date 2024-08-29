@@ -95,6 +95,7 @@ Item {
             label: QQC2.Label {
                 text: " Zoom: "
                 color: "white"
+                font.family: "Helvetica"
                 elide: Text.ElideRight
                 style: Text.Outline;
                 styleColor: "black"
@@ -120,6 +121,7 @@ Item {
                         contentItem: Text {
                             text: "Zoom In"
                             color: "white"
+                            font.family: "Helvetica"
                             opacity: 1.0
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
@@ -152,6 +154,7 @@ Item {
                         contentItem: Text {
                             text: "Zoom Out"
                             color: "white"
+                            font.family: "Helvetica"
                             opacity: 1.0
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
@@ -185,7 +188,7 @@ Item {
                     Text {
                         text: "Speed:  "
                         font.family: "Helvetica"
-                        font.pointSize: 15
+                        font.pointSize: 20
                         color: "white"
                         style: Text.Outline;
                         styleColor: "black"
@@ -216,6 +219,7 @@ Item {
             label: QQC2.Label {
                 text: " Focus: "
                 color: "white"
+                font.family: "Helvetica"
                 elide: Text.ElideRight
                 style: Text.Outline;
                 styleColor: "black"
@@ -241,6 +245,7 @@ Item {
                         contentItem: Text {
                             text: "Focus Far"
                             color: "white"
+                            font.family: "Helvetica"
                             opacity: 1.0
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
@@ -273,6 +278,7 @@ Item {
                         contentItem: Text {
                             text: "Focus Near"
                             color: "white"
+                            font.family: "Helvetica"
                             opacity: 1.0
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
@@ -306,7 +312,7 @@ Item {
                     Text {
                         text: "Speed:  "
                         font.family: "Helvetica"
-                        font.pointSize: 15
+                        font.pointSize: 20
                         color: "white"
                         style: Text.Outline;
                         styleColor: "black"
@@ -330,11 +336,12 @@ Item {
         }
 
         QQC2.GroupBox {
-            font.pixelSize: 15
+            font.pixelSize: 25
 
             label: QQC2.Label {
                 text: " Focus Mode: "
                 color: "White"
+                font.family: "Helvetica"
                 elide: Text.ElideRight
                 style: Text.Outline;
                 styleColor: "black"
@@ -355,6 +362,7 @@ Item {
                 QQC2.RadioButton {
                     id: autoFocusButton
                     text: "Auto Focus"
+                    font.family: "Helvetica"
                     checked: appControl.serialControl.focusMode
                     font.pixelSize: 25
 
@@ -377,6 +385,7 @@ Item {
                 QQC2.RadioButton {
                     id: manualFocusButton
                     text: "Manual Focus"
+                    font.family: "Helvetica"
                     checked: !appControl.serialControl.focusMode
                     font.pixelSize: 25
 
@@ -401,11 +410,12 @@ Item {
 
 
         QQC2.GroupBox {
-            font.pixelSize: 20
+            font.pixelSize: 25
 
             label: QQC2.Label {
                 text: " Angle Ratio of the Illuminator: "
                 color: "white"
+                font.family: "Helvetica"
                 elide: Text.ElideRight
                 style: Text.Outline;
                 styleColor: "black"
@@ -427,7 +437,7 @@ Item {
                     id: ratioValueText
                     text: "Ratio:  " + appControl.serialControl.illuminatorAngleOffset / 100.0
                     font.family: "Helvetica"
-                    font.pointSize: 15
+                    font.pointSize: 20
                     color: "white"
                     style: Text.Outline;
                     styleColor: "black"
@@ -498,6 +508,7 @@ Item {
                         text: control.text
                         anchors.centerIn: parent
                         color: "white"
+                        font.family: "Helvetica"
                         font.pixelSize: 25
                         renderType: Text.NativeRendering
                     }
