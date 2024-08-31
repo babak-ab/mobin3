@@ -26,6 +26,7 @@ public:
 
 private:
     QColor m_reticleColor;
+    QColor m_backgroundColor;
     quint8 m_thickness;
     quint16 m_xOffset;
     quint16 m_yOffset;

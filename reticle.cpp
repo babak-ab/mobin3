@@ -7,7 +7,8 @@ Reticle::Reticle(QQuickPaintedItem* parent)
     //setFlag(QQuickItem::ItemHasContents);
 
     m_reticleColor = QColor(66, 173, 245);
-    m_thickness = 8;
+    m_backgroundColor = Qt::black;
+    m_thickness = 5;
     m_xOffset = 0;
     m_yOffset = 0;
 }
@@ -24,6 +25,26 @@ void Reticle::paint(QPainter* painter)
     QFontMetrics fm(painter->font());
     int pixelsHigh = fm.height();
 
+
+    // Background
+    painter->fillRect(0, 0, 20, 3 * m_thickness, m_backgroundColor);
+    painter->fillRect(width() - 20, 0, 20, 3 * m_thickness, m_backgroundColor);
+
+    painter->fillRect(0, 0, 3 * m_thickness, 20, m_backgroundColor);
+    painter->fillRect(0, height() - 20, 3 * m_thickness, 20, m_backgroundColor);
+
+    painter->fillRect(0, height() - 3 * m_thickness, 20, 3 * m_thickness, m_backgroundColor);
+    painter->fillRect(width() - 20, height() - 3 * m_thickness, 20, 3 * m_thickness, m_backgroundColor);
+
+    painter->fillRect(width() - 3 * m_thickness, 0, 3 * m_thickness, 20, m_backgroundColor);
+    painter->fillRect(width() - 3 * m_thickness, height() - 20, 3 * m_thickness, 20, m_backgroundColor);
+
+    painter->fillRect(width() / 2 - 2 * 3 * m_thickness, height() / 2 - 3 * m_thickness / 2.0, 4 * 3 * m_thickness, 3 * m_thickness, m_backgroundColor);
+    painter->fillRect(width() / 2 - 3 * m_thickness / 2.0, height() / 2 - 2 * 3 * m_thickness, 3 * m_thickness, 4 * 3 * m_thickness, m_backgroundColor);
+
+
+
+    // Foreground
     painter->fillRect(0, 0, 20, m_thickness, m_reticleColor);
     painter->fillRect(width() - 20, 0, 20, m_thickness, m_reticleColor);
 
