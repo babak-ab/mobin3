@@ -20,7 +20,6 @@
         <file>Images/toolbar.png</file>
         <file>content/CustomMessageBox.qml</file>
         <file>content/ZoomFocus.qml</file>
-        <file>content/Connections.qml</file>
         <file>Images/Icon.png</file>
         <file>Images/Icon.ico</file>
         <file>Images/left-pan-icon.png</file>
@@ -45,6 +44,8 @@
         <file>Images/caution-icon.png</file>
         <file>IlluminatorIndicator.qml</file>
         <file>Images/stop-record-icon.png</file>
-		<file>content/SensorInformation.qml</file>
+        <file>content/SensorInformation.qml</file>
+        <file>font/Helvetica.ttf</file>
+        <file>content/Connections.qml</file>
     </qresource>
 </RCC>

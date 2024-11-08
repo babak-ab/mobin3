@@ -55,6 +55,47 @@ gboolean VideoCapture::bus_message(GstBus* bus, GstMessage* msg, gpointer user_d
     return TRUE;
 }
 
+GstPadProbeReturn VideoCapture::cb_have_data(GstPad *pad, GstPadProbeInfo *info, gpointer user_data)
+{
+
+    VideoCapture* videoCapture = static_cast<VideoCapture*>(user_data);
+    gint x, y;
+    GstMapInfo map;
+    // guint16 *ptr, t;
+    guint16 *t;
+    guint8 *ptr=nullptr;
+    GstBuffer *buffer;
+
+    // g_print("In %s %d \n", __func__,cntr_val++);
+
+    buffer = GST_PAD_PROBE_INFO_BUFFER (info);
+
+    buffer = gst_buffer_make_writable (buffer);
+
+    /* Making a buffer writable can fail (for example if it
+       * cannot be copied and is used more than once)
+       */
+    if (buffer == NULL)
+        return GST_PAD_PROBE_OK;
+
+    /* Mapping a buffer can fail (non-writable) */
+    if (gst_buffer_map (buffer, &map, GST_MAP_READ)) {
+
+        auto _data = map.data;
+        auto _size = info->size;
+
+        QByteArray ba((char*)_data, _size);
+
+        Q_EMIT videoCapture->sigI420_FrameReady(ba);
+
+        gst_buffer_unmap (buffer, &map);
+    }
+
+    GST_PAD_PROBE_INFO_DATA (info) = buffer;
+
+    return GST_PAD_PROBE_OK;
+}
+
 QString VideoCapture::device() const
 {
     return _device;
@@ -100,36 +141,36 @@ void VideoCapture::initialize()
 
 #ifdef Q_OS_WIN32
     QString caps = QString("video/x-raw,format=BGRA,width=%1,height=%2,framerate=%3/1 ")
-                       .arg(QString::number(_resolution.width()))
-                       .arg(QString::number(_resolution.height()))
-                       .arg(QString::number(30));
+            .arg(QString::number(_resolution.width()))
+            .arg(QString::number(_resolution.height()))
+            .arg(QString::number(30));
 
 
     QString pipestr = QString("ksvideosrc device-index=%1  do-stats=TRUE "
                               " ! video/x-raw, format=(string)YUY2, width=%2, height=%3, framerate=(fraction)30/1, pixel-aspect-ratio=(fraction)1/1"
                               " ! videoconvert ! video/x-raw, format=BGRA, width=%4, height=%5, framerate=%6/1 ! queue ! appsink name=sink caps=%7")
-                          .arg(_device)
-                          .arg(QString::number(_resolution.width()))
-                          .arg(QString::number(_resolution.height()))
-                          .arg(QString::number(_resolution.width()))
-                          .arg(QString::number(_resolution.height()))
-                          .arg(QString::number(30))
-                          .arg(caps);
+            .arg(_device)
+            .arg(QString::number(_resolution.width()))
+            .arg(QString::number(_resolution.height()))
+            .arg(QString::number(_resolution.width()))
+            .arg(QString::number(_resolution.height()))
+            .arg(QString::number(30))
+            .arg(caps);
 
 #endif
 #ifdef Q_OS_LINUX
     QString caps = QString("video/x-raw,format=BGRA,width=%1,height=%2,framerate=%3/1 ")
-                       .arg(QString::number(_resolution.width()))
-                       .arg(QString::number(_resolution.height()))
-                       .arg(QString::number(30));
+            .arg(QString::number(_resolution.width()))
+            .arg(QString::number(_resolution.height()))
+            .arg(QString::number(30));
 
-    QString pipestr = QString("v4l2src device=%1 is-live=true ! videoconvert ! "
+    QString pipestr = QString("v4l2src device=%1 is-live=true ! videoconvert name=sourceI420 ! "
                               "video/x-raw,format=BGRA,width=%2,height=%3,framerate=%4/1 ! appsink name=sink caps=%5")
-                          .arg(_device)
-                          .arg(QString::number(_resolution.width()))
-                          .arg(QString::number(_resolution.height()))
-                          .arg(QString::number(30))
-                          .arg(caps);
+            .arg(_device)
+            .arg(QString::number(_resolution.width()))
+            .arg(QString::number(_resolution.height()))
+            .arg(QString::number(30))
+            .arg(caps);
 
     //    QString pipestr = QString("v4l2src device=%1 is-live=true ! image/jpeg,width=%2,height=%3 ! jpegdec !"
     //                              " videoconvert ! video/x-raw,format=BGRA,width=%4,height=%5,framerate=%6/1 ! queue !"
@@ -148,12 +189,20 @@ void VideoCapture::initialize()
 
     _data.pipeline = gst_parse_launch(pipestr.toLatin1().data(), NULL);
 
+    _data.source = gst_bin_get_by_name(GST_BIN(_data.pipeline), "sourceI420");
+
     _data.sink = gst_bin_get_by_name(GST_BIN(_data.pipeline), "sink");
+
+    _data.pad = gst_element_get_static_pad(_data.source, "src");
+    gst_pad_add_probe(_data.pad, GST_PAD_PROBE_TYPE_BUFFER,
+                      (GstPadProbeCallback) cb_have_data, this, NULL);
+
+    gst_object_unref(_data.pad);
 
     g_object_set(G_OBJECT(_data.sink), "emit-signals", TRUE, "sync", FALSE, NULL);
     _data.sink = gst_bin_get_by_name(GST_BIN(_data.pipeline), "sink");
-    g_object_set(G_OBJECT(_data.sink), "emit-signals", TRUE, "sync", FALSE, NULL);
     g_signal_connect(_data.sink, "new-sample", G_CALLBACK(on_new_sample_from_sink), this);
+
 
     _data.bus = gst_pipeline_get_bus(GST_PIPELINE(_data.pipeline));
     gst_bus_add_watch(_data.bus, (GstBusFunc)bus_message, this);

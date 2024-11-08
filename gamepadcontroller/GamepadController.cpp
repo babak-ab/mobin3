@@ -53,7 +53,15 @@ GamepadController::~GamepadController()
 
 void GamepadController::initialize()
 {
-    for (auto device : QGamepadManager::instance()->connectedGamepads())
+#ifdef __linux
+
+    m_manager = QGamepadManager::instance();
+
+    connect(m_manager, &QGamepadManager::connectedGamepadsChanged,
+            this, &GamepadController::sltConnectedDevicesChanged);
+
+#elif define(WIN_32)
+    for (auto device : QGamepad::instance()->connectedGamepads())
     {
         if (m_gamepad != Q_NULLPTR)
         {
@@ -64,6 +72,7 @@ void GamepadController::initialize()
         m_gamepad = new QGamepad(device);
         initialConnections();
     }
+#endif
 }
 
 void GamepadController::initialConnections()
@@ -174,6 +183,9 @@ void GamepadController::removeConnections()
 
 void GamepadController::keyHandler(const GamepadController::Buttons &button, double &value)
 {
+    std::cerr << " HANDLE " << button << value << std::endl;
+
+
     bool shouldHandleCommand = deathBandMechanism(button, value);
 
     if (shouldHandleCommand == true)
@@ -700,6 +712,30 @@ void GamepadController::sendZoomFocusStopCommand()
             m_lastLeftAxisX = qAbs(m_gamepad->axisLeftX());
             m_lastLeftAxisY = qAbs(m_gamepad->axisLeftY());
         }
+    }
+}
+
+void GamepadController::sltConnectedDevicesChanged()
+{
+    auto gamepads = m_manager->connectedGamepads();
+
+    if (gamepads.count() == 0 && m_gamepad != nullptr)
+    {
+        removeConnections();
+
+        delete m_gamepad;
+        m_gamepad = nullptr;
+
+        return;
+    }
+
+    if (gamepads.count() > 0 && m_gamepad == nullptr)
+    {
+        auto gamepads = m_manager->connectedGamepads();
+
+        m_gamepad = new QGamepad(gamepads.at(0));
+
+        initialConnections();
     }
 }
 

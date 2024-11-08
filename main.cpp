@@ -2,16 +2,26 @@
 #include "reticle.h"
 
 #include <QQmlContext>
+#include <QFontDatabase>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 
 int main(int argc, char* argv[])
 {
+#ifdef WIN_32
     QGamepadManager *manager = QGamepadManager::instance();
-
+#endif
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
+
+    int fontIndex = QFontDatabase::
+            addApplicationFont(":/font/Helvetica.ttf");
+
+    if (fontIndex <= 0)
+    {
+        std::cerr << "Cannot add application font.\n";
+    }
 
     AppControl app_control;
 
@@ -41,7 +51,9 @@ int main(int argc, char* argv[])
     GamepadController *gamepadController = new GamepadController();
 
     app_control.setGamepadController(gamepadController);
-    app_control.setGamepadManager(manager);
 
+#ifdef WIN_32
+    app_control.setGamepadManager(manager);
+#endif
     return app.exec();
 }

@@ -59,6 +59,11 @@ Item {
 //    width: parent.width
 //    height: parent.height
 
+    Component.onCompleted:
+    {
+        timerSerialPort.start()
+    }
+
     property real progress: 0
     SequentialAnimation on progress {
         loops: Animation.Infinite
@@ -188,6 +193,20 @@ Item {
 
                 currentIndex: appControl.findSerialPortName(
                                   appControl.serialControl.serialportName())
+            }
+        }
+
+        Timer
+        {
+            id: timerSerialPort
+
+            interval: 10000
+            repeat: no
+
+            onTriggered:
+            {
+                console.log(" PPPPPPPPPPPPPPP ")
+                connectionButton.click()
             }
         }
 

@@ -43,7 +43,7 @@ AppControl::AppControl(QObject* parent)
 
     m_recordVisible = false;
 
-    m_reticleVisible = true;
+    m_reticleVisible = false;
 
     m_videoRecord = new VideoRecord(QSize(FRAME_WIDTH, FRAME_HEIGHT));
 
@@ -51,7 +51,8 @@ AppControl::AppControl(QObject* parent)
 
     connect(m_videoCapture, &VideoCapture::sigFrameReady, m_videoAdapter, &VideoAdapter::onFrameReady);
     connect(m_videoCapture, &VideoCapture::sigFrameReady, this, &AppControl::restartElapsedTimerRequested);
-    connect(m_videoCapture, &VideoCapture::sigFrameReady, m_videoRecord, &VideoRecord::pushFrame);
+//    connect(m_videoCapture, &VideoCapture::sigFrameReady, m_videoRecord, &VideoRecord::pushFrame);
+    connect(m_videoCapture, &VideoCapture::sigI420_FrameReady, m_videoRecord, &VideoRecord::pushFrame);
 
     m_toggleIlluminatorTimer.setInterval(5000);
     connect(&m_toggleIlluminatorTimer, &QTimer::timeout,

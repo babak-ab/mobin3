@@ -93,11 +93,21 @@ bool VideoRecord::pushFrame(QByteArray ba)
 
 void VideoRecord::initialize(const QString& location)
 {
+    QString caps;
 
-    QString caps = QString("video/x-raw,format=BGRA,width=%1,height=%2,framerate=%3/1 ")
-                       .arg(QString::number(_resolution.width()))
-                       .arg(QString::number(_resolution.height()))
-                       .arg(QString::number(30));
+#ifdef Q_OS_WIN32
+    caps = QString("video/x-raw,format=BGRA,width=%1,height=%2,framerate=%3/1 ")
+            .arg(QString::number(_resolution.width()))
+            .arg(QString::number(_resolution.height()))
+            .arg(QString::number(30));
+#endif
+
+#ifdef Q_OS_LINUX
+    caps = QString("video/x-raw,format=I420,width=%1,height=%2,framerate=%3/1 ")
+            .arg(QString::number(_resolution.width()))
+            .arg(QString::number(_resolution.height()))
+            .arg(QString::number(30));
+#endif
 
     QDateTime dt = QDateTime::currentDateTime();
     QString filename = "";
@@ -111,13 +121,26 @@ void VideoRecord::initialize(const QString& location)
     }
 
     QString pipestr;
+
+#ifdef Q_OS_WIN32
     pipestr = QString("appsrc caps=%1 is-live=true name=src block=TRUE format=3 do-timestamp=true ! videoconvert ! video/x-raw,format=I420 ! queue "
                       "! x264enc bitrate=4096 speed-preset=3 "
                       "! h264parse ! splitmuxsink muxer=qtmux max-size-time=600000000000 location=%2")
                   .arg(caps)
                   .arg(_location + "/" + filename);
+#endif
 
-    //qDebug() << "pipestr: " << pipestr;
+
+#ifdef Q_OS_LINUX
+    pipestr = QString("appsrc caps=%1 name=src ! "
+                      "queue ! videoconvert ! nvvidconv ! video/x-raw(memory:NVMM),format=I420 ! "
+                      "nvv4l2h264enc maxperf-enable=1 insert-sps-pps=1 bitrate=600000 ! "
+                      "h264parse ! splitmuxsink muxer=mp4mux sync=false max-size-time=600000000000 location=%2")
+                  .arg(caps)
+                  .arg(_location + "/" + filename);
+#endif
+
+    qDebug() << "pipestr: " << pipestr;
 
     _data.pipeline = gst_parse_launch(pipestr.toLatin1().data(), NULL);
 

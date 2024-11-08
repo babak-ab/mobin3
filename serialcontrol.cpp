@@ -71,6 +71,8 @@ bool SerialControl::connectToSerialPort(const QString& portName)
     m_serialPort->setBaudRate(QSerialPort::Baud38400);
 
     if (!m_serialPort->open(QIODevice::ReadWrite)) {
+        std::cerr << "======= Cannot connect to serial port " << m_serialPort->errorString().toStdString() << std::endl;
+
         return false;
     }
 

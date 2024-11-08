@@ -13,7 +13,9 @@ class VideoCapture : public QObject {
     Q_OBJECT
     struct Data {
         GstElement* pipeline = Q_NULLPTR;
+        GstElement* source = Q_NULLPTR;
         GstElement* sink = Q_NULLPTR;
+        GstPad* pad = Q_NULLPTR;
         GstBus* bus = Q_NULLPTR;
     };
 
@@ -27,6 +29,8 @@ private:
     static GstFlowReturn on_new_sample_from_sink(GstElement* sink, gpointer user_data);
 
     static gboolean bus_message(GstBus* bus, GstMessage* msg, gpointer user_data);
+    static GstPadProbeReturn cb_have_data (GstPad *pad, GstPadProbeInfo *info, gpointer user_data);
+
 
 public:
     ///
@@ -75,6 +79,7 @@ public:
 
 Q_SIGNALS:
     void sigFrameReady(const QByteArray &ba);
+    void sigI420_FrameReady(const QByteArray &ba);
 };
 
 #endif // VIDEOCAPTURE_H

@@ -99,16 +99,14 @@ ApplicationWindow {
 
     Reticle {
         id: reticle
-        z: 1001
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
-        width: parent.width / 8
-        height: parent.height / 8
+        width: parent.width
+        height: parent.height
         visible: appControl.reticleVisible
 
-        onSigDataChanged: {
-
-            console.log("ZZZZZZZ reticle update");
+        onSigDataChanged:
+        {
             reticle.update()
         }
     }

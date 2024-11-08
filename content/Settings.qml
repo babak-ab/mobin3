@@ -49,6 +49,8 @@
 ****************************************************************************/
 
 import QtQuick 2.2
+import QtQuick.Layouts 1.3
+import QtQuick.Controls 2.2
 import QtQuick.Controls.Styles 1.1
 
 import QtQuick.Controls 2.3 as QQC2
@@ -72,10 +74,16 @@ Item {
         }
     }
 
-    Column {
-        spacing: 40
+    GridLayout {
+        rowSpacing: 40
+
+        rows: 5
+        columns: 2
 
         Text {
+            Layout.column: 0
+            Layout.row: 0
+
             text: "  Settings: "
             font.family: "Helvetica"
             font.pointSize: 25
@@ -85,6 +93,9 @@ Item {
         }
 
         QQC2.GroupBox {
+            Layout.column: 0
+            Layout.row: 1
+
             font.pixelSize: 25
 
             label: QQC2.Label {
@@ -254,6 +265,9 @@ Item {
         }
 
         QQC2.GroupBox {
+            Layout.column: 0
+            Layout.row: 2
+
             font.pixelSize: 25
 
             label: QQC2.Label {
@@ -309,6 +323,9 @@ Item {
         }
 
         QQC2.GroupBox {
+            Layout.column: 0
+            Layout.row: 3
+
             font.pixelSize: 25
 
             label: QQC2.Label {
@@ -364,6 +381,9 @@ Item {
         }
 
         QQC2.GroupBox {
+            Layout.column: 0
+            Layout.row: 4
+
             font.pixelSize: 25
 
             label: QQC2.Label {
@@ -398,7 +418,11 @@ Item {
             }
         }
 
-        QQC2.GroupBox { // Reticle ----------------------------
+        QQC2.GroupBox {
+            Layout.column: 1
+            Layout.row: 1
+            Layout.rowSpan: 2
+
             font.pixelSize: 25
 
             label: QQC2.Label {
@@ -419,9 +443,8 @@ Item {
                 border.color: "white"
             }
 
-//            Column {
-
-//                spacing: 40
+            Column {
+                spacing: 20
 
                 QQC1.Switch {
                     id: reticleSwitch
@@ -436,48 +459,172 @@ Item {
                     }
                 }
 
-//                Row {
+                Row {
 
-//                    Text {
-//                        text: "Color:  "
-//                        font.family: "Helvetica"
-//                        font.pointSize: 18
-//                        color: "red"
-//                        style: Text.Outline;
-//                        styleColor: "black"
-//                    }
+                    Text {
+                        text: "Color:  "
+                        font.family: "Helvetica"
+                        font.pointSize: 18
+                        color: "red"
+                        style: Text.Outline;
+                        styleColor: "black"
+                    }
 
-//                    QQC2.SpinBox {
-//                        id: reticleColorSpinbox
-//                        from: 0
-//                        to: items.length - 1
-//                        value: appControl.reticle.color
+                    QQC2.SpinBox {
+                        id: reticleColorSpinbox
+                        from: 0
+                        to: items.length - 1
+                        value: reticle.color
 
-//                        property var items: ["Blue", "Red", "Green"]
+                        property var items: ["Blue", "Red", "Green"]
 
-//                        validator: RegExpValidator {
-//                            regExp: new RegExp("(Blue|Red|Green)", "i")
-//                        }
+                        validator: RegExpValidator {
+                            regExp: new RegExp("(Blue|Red|Green)", "i")
+                        }
 
-//                        textFromValue: function(value) {
-//                            return items[value];
-//                        }
+                        textFromValue: function(value) {
+                            return items[value];
+                        }
 
-//                        valueFromText: function(text) {
-//                            for (var i = 0; i < items.length; ++i) {
-//                                if (items[i].toLowerCase().indexOf(text.toLowerCase()) === 0)
-//                                    return i
-//                            }
-//                            return sb.value
-//                        }
+                        valueFromText: function(text) {
+                            for (var i = 0; i < items.length; ++i) {
+                                if (items[i].toLowerCase().indexOf(text.toLowerCase()) === 0)
+                                    return i
+                            }
+                            return sb.value
+                        }
 
-//                        onValueChanged: {
-//                            appControl.reticle.setReticleColor(
-//                                        reticleColorSpinbox.value)
-//                        }
-//                    }
-//                }
-//            }
+                        onValueChanged: {
+                            reticle.setReticleColor(
+                                        reticleColorSpinbox.value)
+                        }
+                    }
+                }
+
+                Row {
+
+                    Text {
+                        text: "Shape:  "
+                        font.family: "Helvetica"
+                        font.pointSize: 18
+                        color: "red"
+                        style: Text.Outline;
+                        styleColor: "black"
+                    }
+
+                    QQC2.SpinBox {
+                        id: spinBoxReticleShape
+                        from: 0
+                        to: items.length - 1
+                        value: reticle.shape
+
+                        width: 300
+
+                        property var items:
+                            ["Cross",
+                            "Hollow Cross",
+                            "Point Cross",
+                            "Rect Cross"]
+
+                        validator: RegExpValidator {
+                            regExp: new RegExp("(Cross|Hollow Cross|Point Cross|Rect Cross)", "i")
+                        }
+
+                        textFromValue: function(value)
+                        {
+                            return items[value];
+                        }
+
+                        valueFromText: function(text)
+                        {
+                            for (var i = 0; i < items.length; ++i)
+                            {
+                                if (items[i].toLowerCase().
+                                        indexOf(text.toLowerCase()) === 0)
+                                    return i
+                            }
+                            return sb.value
+                        }
+
+                        onValueChanged: {
+                            reticle.setReticleShape(
+                                        spinBoxReticleShape.value)
+                        }
+                    }
+                }
+
+                GridLayout
+                {
+                    rows: 2
+                    columns: 3
+
+                    Text
+                    {
+                        Layout.column: 0
+                        Layout.row: 0
+                        Layout.alignment: Qt.AlignCenter
+
+                        font.family: "Helvetica"
+                        font.pointSize: 18
+                        color: "red"
+                        style: Text.Outline;
+                        styleColor: "black"
+
+                        text: "Reticle X:"
+                    }
+
+                    Text
+                    {
+                        Layout.column: 0
+                        Layout.row: 1
+                        Layout.alignment: Qt.AlignCenter
+
+                        font.family: "Helvetica"
+                        font.pointSize: 18
+                        color: "red"
+                        style: Text.Outline;
+                        styleColor: "black"
+
+                        text: "Reticle Y:"
+                    }
+
+                    QQC2.SpinBox
+                    {
+                        id: sliderReticlePositionX
+                        Layout.column: 1
+                        Layout.row: 0
+                        Layout.alignment: Qt.AlignCenter
+
+                        from: -960
+                        to: 960
+                        value: reticle.reticlePositionX
+
+                        onValueChanged:
+                        {
+                            reticle.setReticlePositionX(
+                                        sliderReticlePositionX.value)
+                        }
+                    }
+
+                    QQC2.SpinBox
+                    {
+                        id: sliderReticlePositionY
+                        Layout.column: 1
+                        Layout.row: 1
+                        Layout.alignment: Qt.AlignCenter
+
+                        from: -540
+                        to: 540
+                        value: reticle.reticlePositionY
+
+                        onValueChanged:
+                        {
+                            reticle.setReticlePositionY(
+                                        sliderReticlePositionY.value)
+                        }
+                    }
+                }
+            }
         }
     }
 

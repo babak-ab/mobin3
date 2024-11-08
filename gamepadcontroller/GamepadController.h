@@ -102,6 +102,7 @@ private:
         Button_Center
     };
 
+    QGamepadManager *m_manager;
     QGamepad *m_gamepad;
 
     QMap<Commands, quint8> m_commandsBuffer;
@@ -153,6 +154,8 @@ private Q_SLOTS:
     // **********************************************************************
     // PRIVATE SLOTS DECLARATION
     // **********************************************************************
+    void sltConnectedDevicesChanged();
+
     void sltAxisLeftXChanged(double value);
     void sltAxisLeftYChanged(double value);
     void sltAxisRightXChanged(double value);
