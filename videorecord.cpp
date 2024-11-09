@@ -53,7 +53,7 @@ VideoRecord::VideoRecord(QSize resolution, QString location)
     , _resolution(resolution)
 
 {
-    _location = QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
+
 }
 
 bool VideoRecord::pushFrame(QByteArray ba)
@@ -65,7 +65,7 @@ bool VideoRecord::pushFrame(QByteArray ba)
     if (_data.pipeline == nullptr)
         return false;
 
-    if (size != _resolution.width() * _resolution.height() * 4) {
+    if (size != _resolution.width() * _resolution.height() * 1.5) {
         return false;
     }
 
@@ -93,54 +93,27 @@ bool VideoRecord::pushFrame(QByteArray ba)
 
 void VideoRecord::initialize(const QString& location)
 {
-    QString caps;
-
-#ifdef Q_OS_WIN32
-    caps = QString("video/x-raw,format=BGRA,width=%1,height=%2,framerate=%3/1 ")
-            .arg(QString::number(_resolution.width()))
-            .arg(QString::number(_resolution.height()))
-            .arg(QString::number(30));
-#endif
-
-#ifdef Q_OS_LINUX
-    caps = QString("video/x-raw,format=I420,width=%1,height=%2,framerate=%3/1 ")
-            .arg(QString::number(_resolution.width()))
-            .arg(QString::number(_resolution.height()))
-            .arg(QString::number(30));
-#endif
-
-    QDateTime dt = QDateTime::currentDateTime();
-    QString filename = "";
-    filename = "video" + dt.toString("_yyyy_MM_dd_HH_mm_ss") + "_%d.mp4";
-
-    QDir dir(location);
-    QFileInfo fileInfo(location);
-    if (location != ""
-        && dir.exists()) {
-        _location = location;
+    _location = location;
+    if (!QDir(_location).exists()) {
+        QDir(_location).mkpath(location);
     }
 
+    QString caps = QString("video/x-raw,format=I420,width=%1,height=%2,framerate=%3/1 ")
+                       .arg(QString::number(_resolution.width()))
+                       .arg(QString::number(_resolution.height()))
+                       .arg(QString::number(30));
+
+    m_currentVideoFileName = _location + videoName();
+
     QString pipestr;
+    pipestr = QString("appsrc caps=%1 is-live=true name=src max-buffers=1 block=TRUE format=3 do-timestamp=true ! "
+                      "queue ! nvvidconv ! video/x-raw(memory:NVMM), format=I420 ! nvv4l2h264enc maxperf-enable=1 insert-sps-pps=1 bitrate=5000000 ! "
+                      "h264parse ! splitmuxsink muxer=mp4mux max-size-time=300000000000 sync=false location=%2")
+            .arg(caps)
+            .arg(m_currentVideoFileName);
 
-#ifdef Q_OS_WIN32
-    pipestr = QString("appsrc caps=%1 is-live=true name=src block=TRUE format=3 do-timestamp=true ! videoconvert ! video/x-raw,format=I420 ! queue "
-                      "! x264enc bitrate=4096 speed-preset=3 "
-                      "! h264parse ! splitmuxsink muxer=qtmux max-size-time=600000000000 location=%2")
-                  .arg(caps)
-                  .arg(_location + "/" + filename);
-#endif
-
-
-#ifdef Q_OS_LINUX
-    pipestr = QString("appsrc caps=%1 name=src ! "
-                      "queue ! videoconvert ! nvvidconv ! video/x-raw(memory:NVMM),format=I420 ! "
-                      "nvv4l2h264enc maxperf-enable=1 insert-sps-pps=1 bitrate=600000 ! "
-                      "h264parse ! splitmuxsink muxer=mp4mux sync=false max-size-time=600000000000 location=%2")
-                  .arg(caps)
-                  .arg(_location + "/" + filename);
-#endif
-
-    qDebug() << "pipestr: " << pipestr;
+    qDebug() << "Video record pipestr: " << pipestr;
+    qDebug() << "----------------------------------------";
 
     _data.pipeline = gst_parse_launch(pipestr.toLatin1().data(), NULL);
 
@@ -153,6 +126,24 @@ void VideoRecord::initialize(const QString& location)
     _data.bus = gst_pipeline_get_bus(GST_PIPELINE(_data.pipeline));
     gst_bus_add_watch(_data.bus, (GstBusFunc)bus_message, this);
     gst_object_unref(_data.bus);
+
+    gst_element_set_state(_data.pipeline, GST_STATE_PLAYING);
+}
+
+void VideoRecord::setResolution(QSize resolution)
+{
+    _resolution = resolution;
+}
+
+QString VideoRecord::videoName()
+{
+    QDateTime dateTime = QDateTime::currentDateTime();
+    QString dateTimeToString = dateTime.toString("yyyy_MM_dd_(hh_mm_ss)");
+    QString name = "/Video_" +
+            dateTimeToString +
+            "_%04d.mp4";
+
+    return name;
 }
 
 void VideoRecord::start()

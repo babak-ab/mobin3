@@ -79,7 +79,7 @@ GstPadProbeReturn VideoCapture::cb_have_data(GstPad *pad, GstPadProbeInfo *info,
         return GST_PAD_PROBE_OK;
 
     /* Mapping a buffer can fail (non-writable) */
-    if (gst_buffer_map (buffer, &map, GST_MAP_READ)) {
+    if (gst_buffer_map (buffer, &map, GST_MAP_WRITE)) {
 
         auto _data = map.data;
         auto _size = info->size;
@@ -158,30 +158,21 @@ void VideoCapture::initialize()
             .arg(caps);
 
 #endif
+
 #ifdef Q_OS_LINUX
     QString caps = QString("video/x-raw,format=BGRA,width=%1,height=%2,framerate=%3/1 ")
             .arg(QString::number(_resolution.width()))
             .arg(QString::number(_resolution.height()))
             .arg(QString::number(30));
 
-    QString pipestr = QString("v4l2src device=%1 is-live=true ! videoconvert name=sourceI420 ! "
-                              "video/x-raw,format=BGRA,width=%2,height=%3,framerate=%4/1 ! appsink name=sink caps=%5")
+    QString pipestr = QString("v4l2src device=%1 ! video/x-raw, format=YUY2, width=%2, height=%3, framerate=30/1 ! "
+                              "videoconvert name=sourceI420 ! video/x-raw, format=I420, width=%2, height=%3, framerate=30/1  ! "
+                              "videoconvert ! video/x-raw,format=BGRA,width=%2,height=%3,framerate=%4/1 ! appsink name=sink caps=%5")
             .arg(_device)
             .arg(QString::number(_resolution.width()))
             .arg(QString::number(_resolution.height()))
             .arg(QString::number(30))
             .arg(caps);
-
-    //    QString pipestr = QString("v4l2src device=%1 is-live=true ! image/jpeg,width=%2,height=%3 ! jpegdec !"
-    //                              " videoconvert ! video/x-raw,format=BGRA,width=%4,height=%5,framerate=%6/1 ! queue !"
-    //                              " appsink name=sink caps=%7")
-    //                          .arg(_device)
-    //                          .arg(QString::number(_resolution.width()))
-    //                          .arg(QString::number(_resolution.height()))
-    //                          .arg(QString::number(_resolution.width()))
-    //                          .arg(QString::number(_resolution.height()))
-    //                          .arg(QString::number(30))
-    //                          .arg(caps);
 
 #endif
 

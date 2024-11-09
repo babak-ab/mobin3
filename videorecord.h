@@ -1,6 +1,5 @@
 #ifndef VIDEORECORD_H
 #define VIDEORECORD_H
-#include "global.h"
 #include "iostream"
 #include <QMetaObject>
 #include <QObject>
@@ -8,11 +7,8 @@
 #include <QTimer>
 #include <gst/gst.h>
 #include <memory>
+#include "global.h"
 
-///
-/// \brief The VideoRecord class
-/// This class provides the capability of the recording
-/// the input video for the application.
 class VideoRecord : public QObject {
     Q_OBJECT
     struct Data {
@@ -30,6 +26,8 @@ private:
     bool _need_data = false;
     bool _stop = false;
 
+    QString m_currentVideoFileName;
+
 private:
     template <typename T>
     static std::shared_ptr<T> takeGstMiniObject(T* o);
@@ -37,46 +35,14 @@ private:
     static void stop_feed(GstElement* appsrc, guint unused, gpointer user_data);
     static bool bus_message(GstBus* bus, GstMessage* msg, gpointer user_data);
 
+    QString videoName();
 public:
-
-    ///
-    /// \brief VideoRecord
-    /// The construction.
-    /// \param resolution
-    /// The resolution of the recording in pixels.
-    /// \param location
-    /// The location of the recording.
     explicit VideoRecord(QSize resolution, QString location = "");
-
-    ///
-    /// \brief pushFrame
-    /// Pushes new frame to the recording buffer.
-    /// \param ba
-    /// The data to be pushed.
-    /// \return
-    /// The result of pushing new frame.
     bool pushFrame(QByteArray ba);
-
-    ///
-    /// \brief initialize
-    /// Initializes the recording procedure.
-    /// \param location
-    /// The location of the recorded file.
     void initialize(const QString& location);
-
-    ///
-    /// \brief finalize
-    /// Finalizes the recording process.
+    void setResolution(QSize resolution);
     void finalize();
-
-    ///
-    /// \brief start
-    /// Starts the recording.
     void start();
-
-    ///
-    /// \brief stop
-    /// Stops the recording.
     void stop();
 
 

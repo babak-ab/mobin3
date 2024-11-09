@@ -35,7 +35,7 @@ AppControl::AppControl(QObject* parent)
     m_captureDevice = "/dev/video0";
 #endif
 
-    m_recordingLocation = QStandardPaths::MoviesLocation;
+    m_recordingLocation = QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
 
     m_videoCapture = new VideoCapture(m_captureDevice, QSize(FRAME_WIDTH, FRAME_HEIGHT));
     m_videoCapture->initialize();
@@ -51,7 +51,6 @@ AppControl::AppControl(QObject* parent)
 
     connect(m_videoCapture, &VideoCapture::sigFrameReady, m_videoAdapter, &VideoAdapter::onFrameReady);
     connect(m_videoCapture, &VideoCapture::sigFrameReady, this, &AppControl::restartElapsedTimerRequested);
-//    connect(m_videoCapture, &VideoCapture::sigFrameReady, m_videoRecord, &VideoRecord::pushFrame);
     connect(m_videoCapture, &VideoCapture::sigI420_FrameReady, m_videoRecord, &VideoRecord::pushFrame);
 
     m_toggleIlluminatorTimer.setInterval(5000);
