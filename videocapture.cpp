@@ -176,7 +176,7 @@ void VideoCapture::initialize()
 
 #endif
 
-    qDebug() << "pipestr" << pipestr;
+//    qDebug() << "pipestr" << pipestr;
 
     _data.pipeline = gst_parse_launch(pipestr.toLatin1().data(), NULL);
 
@@ -184,11 +184,11 @@ void VideoCapture::initialize()
 
     _data.sink = gst_bin_get_by_name(GST_BIN(_data.pipeline), "sink");
 
-    _data.pad = gst_element_get_static_pad(_data.source, "src");
-    gst_pad_add_probe(_data.pad, GST_PAD_PROBE_TYPE_BUFFER,
-                      (GstPadProbeCallback) cb_have_data, this, NULL);
+//    _data.pad = gst_element_get_static_pad(_data.source, "src");
+//    gst_pad_add_probe(_data.pad, GST_PAD_PROBE_TYPE_BUFFER,
+//                      (GstPadProbeCallback) cb_have_data, this, NULL);
 
-    gst_object_unref(_data.pad);
+//    gst_object_unref(_data.pad);
 
     g_object_set(G_OBJECT(_data.sink), "emit-signals", TRUE, "sync", FALSE, NULL);
     _data.sink = gst_bin_get_by_name(GST_BIN(_data.pipeline), "sink");

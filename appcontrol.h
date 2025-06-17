@@ -8,6 +8,7 @@
 #include <QAbstractItemModel>
 #include <QElapsedTimer>
 #include <QFont>
+#include <QMouseEvent>
 #include <QFontMetrics>
 #include <QGamepadManager>
 #include <QGuiApplication>
@@ -19,6 +20,8 @@
 #include "videoadapter.h"
 #include "videocapture.h"
 #include "videorecord.h"
+#include "SerialController.h"
+#include "SerialBoard.h"
 
 ///
 /// \brief The AppControl class
@@ -38,6 +41,7 @@ class AppControl : public QObject {
     Q_PROPERTY(QString recordingLocation READ recordingLocation WRITE setRecordingLocation NOTIFY recordingLocationChanged)
     Q_PROPERTY(QString appVersion READ appVersion NOTIFY signalVideoAdapter)
     Q_PROPERTY(bool reticleVisible READ reticleVisible WRITE setReticleVisible NOTIFY reticleVisibleChanged)
+    Q_PROPERTY(int lastSerialCommand READ lastSerialCommand WRITE setLastSerialCommand)
 
 public:
     ///
@@ -189,6 +193,15 @@ public:
     bool reticleVisible() const;
     Q_INVOKABLE void setReticleVisible(bool reticleVisible);
 
+    Q_INVOKABLE int lastSerialCommand();
+
+    Q_INVOKABLE void setLastSerialCommand(const int &lastCommand);
+
+    Q_INVOKABLE void sendMouseEvent(QObject *object,
+                                    const bool &isPressed);
+
+    Q_INVOKABLE void takeSnapshot();
+
 private:
     QString m_recordingLocation;
     QString m_captureDevice;
@@ -198,6 +211,10 @@ private:
     VideoRecord* m_videoRecord;
 
     SerialControl* m_serialControl;
+
+    SerialController m_serialBoardController;
+    SerialBoard m_serialBoard;
+
     Reticle* m_reticle;
     GamepadController* m_gamepadController;
 
@@ -219,6 +236,8 @@ private:
 
     bool m_reticleVisible;
 
+    SerialBoard::Commands m_lastCommand;
+
     quint8 m_lastJoystickPanSpeed;
     quint8 m_lastJoystickPanDirection;
     quint8 m_lastJoystickTiltSpeed;
@@ -230,12 +249,11 @@ private:
     void processGamepadCommand(const CommandPacket& packet);
     void fillSerialPortNames();
 
-
-
 private Q_SLOTS:
     void sltExecuteCommandRequested(const CommandPacket& packet);
     void sltCheckTVCapture();
     void restartElapsedTimerRequested(const QByteArray &data);
+    void sltNewDataReceived(const QByteArray &packet);
 
 Q_SIGNALS:
     void signalVideoAdapter();
@@ -243,6 +261,7 @@ Q_SIGNALS:
     void recordingLocationChanged();
     void recordVisibleChanged();
     void reticleVisibleChanged();
+    void sigSerialBoardDataReceived(const int &command);
 };
 
 #endif // APPCONTROL_H

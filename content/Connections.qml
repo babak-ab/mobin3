@@ -50,6 +50,8 @@
 **
 ****************************************************************************/
 import QtQuick 2.12
+import QtQuick.Layouts 1.12
+import QtQuick.Extras 1.4
 import QtQuick.Controls 1.4 as QQC1
 import QtQuick.Controls.Styles 1.1
 
@@ -80,11 +82,18 @@ Item {
         }
     }
 
-    Column {
-        spacing: 40
+    GridLayout
+    {
+        rows: 3
+        columns: 3
 
-        Text {
-            text: "  Connections: "
+        Text
+        {
+            Layout.row: 0
+            Layout.column: 0
+            Layout.columnSpan: 3
+
+            text: "Serial Status"
             font.family: "Helvetica"
             font.pointSize: 25
             color: "white"
@@ -92,175 +101,248 @@ Item {
             styleColor: "#fc0303"
         }
 
-        Row {
-
-            spacing: 15
-
-            Text {
-                text: "Serial Port: "
-                font.family: "Helvetica"
-                font.pointSize: 18
-                color: "white"
-                style: Text.Outline
-                styleColor: "black"
-                anchors.verticalCenter: parent.verticalCenter
-            }
-
-            QQC2.ComboBox {
-                id: control
-                model: appControl.serialPortList
-                font.family: "Helvetica"
-                font.pixelSize: 20
-                width: 150
-
-                delegate: QQC2.ItemDelegate {
-                    width: control.width
-                    contentItem: Text {
-                        text: modelData
-                        color: "black"
-                        font: control.font
-                        elide: Text.ElideRight
-                        verticalAlignment: Text.AlignVCenter
-                        horizontalAlignment: Text.AlignHCenter
-                    }
-
-                    highlighted: control.highlightedIndex === index
-                }
-
-                indicator: Canvas {
-                    id: canvas
-                    x: control.width - width - control.rightPadding
-                    y: control.topPadding + (control.availableHeight - height) / 2
-                    width: 12
-                    height: 8
-                    contextType: "2d"
-
-                    Connections {
-                        target: control
-                        function onPressedChanged() {
-                            canvas.requestPaint()
-                        }
-                    }
-
-                    onPaint: {
-                        context.reset()
-                        context.moveTo(0, 0)
-                        context.lineTo(width, 0)
-                        context.lineTo(width / 2, height)
-                        context.closePath()
-                        context.fillStyle = control.pressed ? "#17a81a" : "black"
-                        context.fill()
-                    }
-                }
-
-                contentItem: Text {
-                    anchors.leftMargin: control.indicator.width + control.spacing
-
-                    text: control.displayText
-                    font: control.font
-                    color: control.pressed ? "#17a81a" : "black"
-                    verticalAlignment: Text.AlignVCenter
-                    horizontalAlignment: Text.AlignHCenter
-                    elide: Text.ElideRight
-                }
-
-                background: Rectangle {
-                    implicitWidth: 120
-                    implicitHeight: 40
-                    border.color: control.pressed ? "#17a81a" : "black"
-                    border.width: control.visualFocus ? 2 : 1
-                    radius: 2
-                }
-
-                popup: QQC2.Popup {
-                    y: control.height - 1
-                    width: control.width
-                    implicitHeight: contentItem.implicitHeight
-                    padding: 1
-
-                    contentItem: ListView {
-                        clip: true
-                        implicitHeight: contentHeight
-                        model: control.popup.visible ? control.delegateModel : null
-                        currentIndex: control.highlightedIndex
-                    }
-
-                    background: Rectangle {
-                        border.color: "black"
-                        radius: 2
-                    }
-                }
-
-                currentIndex: appControl.findSerialPortName(
-                                  appControl.serialControl.serialportName())
-            }
-        }
-
-        Timer
+        Text
         {
-            id: timerSerialPort
+            Layout.row: 1
+            Layout.column: 0
 
-            interval: 10000
-            repeat: no
-
-            onTriggered:
-            {
-                console.log(" PPPPPPPPPPPPPPP ")
-                connectionButton.click()
-            }
+            text: "Platform:"
+            font.family: "Helvetica"
+            font.pointSize: 20
+            font.bold: true
+            color: "white"
+            style: Text.Outline;
+            styleColor: "black"
         }
 
-        QQC1.Button {
-            id: connectionButton
-            style: appControl.serialControl.isConnected ? pressedTouchStyle : touchStyle
-            anchors.horizontalCenter: parent.horizontalCenter
-            checkable: true
-            checked: appControl.serialControl.isConnected
+        StatusIndicator
+        {
+            Layout.row: 1
+            Layout.column: 1
 
-            Rectangle {
-                implicitWidth: parent.width
-                implicitHeight: parent.height
-                opacity: 0.5
-                border.width: 1
-                radius: 2
-                color: "black"
-                border.color: "white"
-            }
+            color: "green"
+        }
 
-            Text {
-                id: connectText
-                anchors.fill: parent
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                font.pixelSize: 24
-                color: "#FFFFFF"
-                font.family: "Helvetica"
-                text: appControl.serialControl.isConnected ? "Disconnect" : "Connect"
-            }
+        StatusIndicator
+        {
+            Layout.row: 1
+            Layout.column: 2
 
-            onClicked: {
+            color: "orange"
+        }
 
-                appControl.setSerialPortName(control.currentText)
+        Text
+        {
+            Layout.row: 2
+            Layout.column: 0
 
-                if (connectText.text == "Connect") {
+            text: "Board:"
+            font.family: "Helvetica"
+            font.pointSize: 20
+            font.bold: true
+            color: "white"
+            style: Text.Outline;
+            styleColor: "black"
+        }
 
-                    if (appControl.connectToSerialPort()) {
-                        connectText.text = "Disconnect"
-                        connectionButton.checked = true
-                        connectionButton.style = pressedTouchStyle
-                    } else {
-                        connectText.text = "Connect"
-                        connectionButton.checked = false
-                        connectionButton.style = touchStyle
-                    }
-                } else {
-                    appControl.disconnectSerialPort()
-                    connectText.text = "Connect"
-                    connectionButton.style = touchStyle
-                }
-            }
+        StatusIndicator
+        {
+            Layout.row: 2
+            Layout.column: 1
+
+            color: "green"
+        }
+
+        StatusIndicator
+        {
+            Layout.row: 2
+            Layout.column: 2
+
+            color: "orange"
         }
     }
+
+//    Column {
+//        spacing: 40
+
+//        Text {
+//            text: "  Connections: "
+//            font.family: "Helvetica"
+//            font.pointSize: 25
+//            color: "white"
+//            style: Text.Outline
+//            styleColor: "#fc0303"
+//        }
+
+//        Row {
+
+//            spacing: 15
+
+//            Text {
+//                text: "Serial Port: "
+//                font.family: "Helvetica"
+//                font.pointSize: 18
+//                color: "white"
+//                style: Text.Outline
+//                styleColor: "black"
+//                anchors.verticalCenter: parent.verticalCenter
+//            }
+
+//            QQC2.ComboBox {
+//                id: control
+//                model: appControl.serialPortList
+//                font.family: "Helvetica"
+//                font.pixelSize: 20
+//                width: 150
+
+//                delegate: QQC2.ItemDelegate {
+//                    width: control.width
+//                    contentItem: Text {
+//                        text: modelData
+//                        color: "black"
+//                        font: control.font
+//                        elide: Text.ElideRight
+//                        verticalAlignment: Text.AlignVCenter
+//                        horizontalAlignment: Text.AlignHCenter
+//                    }
+
+//                    highlighted: control.highlightedIndex === index
+//                }
+
+//                indicator: Canvas {
+//                    id: canvas
+//                    x: control.width - width - control.rightPadding
+//                    y: control.topPadding + (control.availableHeight - height) / 2
+//                    width: 12
+//                    height: 8
+//                    contextType: "2d"
+
+//                    Connections {
+//                        target: control
+//                        function onPressedChanged() {
+//                            canvas.requestPaint()
+//                        }
+//                    }
+
+//                    onPaint: {
+//                        context.reset()
+//                        context.moveTo(0, 0)
+//                        context.lineTo(width, 0)
+//                        context.lineTo(width / 2, height)
+//                        context.closePath()
+//                        context.fillStyle = control.pressed ? "#17a81a" : "black"
+//                        context.fill()
+//                    }
+//                }
+
+//                contentItem: Text {
+//                    anchors.leftMargin: control.indicator.width + control.spacing
+
+//                    text: control.displayText
+//                    font: control.font
+//                    color: control.pressed ? "#17a81a" : "black"
+//                    verticalAlignment: Text.AlignVCenter
+//                    horizontalAlignment: Text.AlignHCenter
+//                    elide: Text.ElideRight
+//                }
+
+//                background: Rectangle {
+//                    implicitWidth: 120
+//                    implicitHeight: 40
+//                    border.color: control.pressed ? "#17a81a" : "black"
+//                    border.width: control.visualFocus ? 2 : 1
+//                    radius: 2
+//                }
+
+//                popup: QQC2.Popup {
+//                    y: control.height - 1
+//                    width: control.width
+//                    implicitHeight: contentItem.implicitHeight
+//                    padding: 1
+
+//                    contentItem: ListView {
+//                        clip: true
+//                        implicitHeight: contentHeight
+//                        model: control.popup.visible ? control.delegateModel : null
+//                        currentIndex: control.highlightedIndex
+//                    }
+
+//                    background: Rectangle {
+//                        border.color: "black"
+//                        radius: 2
+//                    }
+//                }
+
+//                currentIndex: appControl.findSerialPortName(
+//                                  appControl.serialControl.serialportName())
+//            }
+//        }
+
+//        Timer
+//        {
+//            id: timerSerialPort
+
+//            interval: 10000
+//            repeat: no
+
+//            onTriggered:
+//            {
+//                console.log(" PPPPPPPPPPPPPPP ")
+//                connectionButton.click()
+//            }
+//        }
+
+//        QQC1.Button {
+//            id: connectionButton
+//            style: appControl.serialControl.isConnected ? pressedTouchStyle : touchStyle
+//            anchors.horizontalCenter: parent.horizontalCenter
+//            checkable: true
+//            checked: appControl.serialControl.isConnected
+
+//            Rectangle {
+//                implicitWidth: parent.width
+//                implicitHeight: parent.height
+//                opacity: 0.5
+//                border.width: 1
+//                radius: 2
+//                color: "black"
+//                border.color: "white"
+//            }
+
+//            Text {
+//                id: connectText
+//                anchors.fill: parent
+//                horizontalAlignment: Text.AlignHCenter
+//                verticalAlignment: Text.AlignVCenter
+//                font.pixelSize: 24
+//                color: "#FFFFFF"
+//                font.family: "Helvetica"
+//                text: appControl.serialControl.isConnected ? "Disconnect" : "Connect"
+//            }
+
+//            onClicked: {
+
+//                appControl.setSerialPortName(control.currentText)
+
+//                if (connectText.text == "Connect") {
+
+//                    if (appControl.connectToSerialPort()) {
+//                        connectText.text = "Disconnect"
+//                        connectionButton.checked = true
+//                        connectionButton.style = pressedTouchStyle
+//                    } else {
+//                        connectText.text = "Connect"
+//                        connectionButton.checked = false
+//                        connectionButton.style = touchStyle
+//                    }
+//                } else {
+//                    appControl.disconnectSerialPort()
+//                    connectText.text = "Connect"
+//                    connectionButton.style = touchStyle
+//                }
+//            }
+//        }
+//    }
 
     Component {
         id: comboTouchStyle

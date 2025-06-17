@@ -1,6 +1,6 @@
 import QtQuick 2.12
 import QtQuick.Window 2.12
-import QtQuick.Controls 2.14
+import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.14
 import AppControl 1.0
 import SerialControl 1.0
@@ -11,6 +11,7 @@ import Reticle 1.0
 import QtQuick.Controls 1.4 as QQC1
 import QtQuick.Controls.Styles 1.1
 import QtQuick.Controls 2.12 as QQC2
+import QtQml 2.12
 
 ApplicationWindow {
     id: root
@@ -25,6 +26,16 @@ ApplicationWindow {
             root.showFullScreen()
         }
     }
+
+    Connections
+    {
+        target: appControl
+        onSigSerialBoardDataReceived:
+        {
+            handleSerialBoardCommand(command)
+        }
+    }
+
 
     Rectangle {
         color: "#212126"
@@ -514,6 +525,7 @@ ApplicationWindow {
             }
 
             onReleased: {
+                console.log("video record button ", checked)
                 if (checked) {
                     recordButton.icon.source = ""
                     recordButton.icon.source = "qrc:/Images/stop-record-icon.png"
@@ -935,14 +947,14 @@ ApplicationWindow {
 
         Column {
 
-        Text {
-            text: appControl.serialControl.messageBox
-            font.family: "Helvetica"
-            font.pointSize: 25
-            color: "red"
-            style: Text.Outline;
-            styleColor: "black"
-        }
+            Text {
+                text: appControl.serialControl.messageBox
+                font.family: "Helvetica"
+                font.pointSize: 25
+                color: "red"
+                style: Text.Outline;
+                styleColor: "black"
+            }
 
 
             spacing: 40
@@ -1119,5 +1131,236 @@ ApplicationWindow {
     RecordIndicator {}
 
     IlluminatorIndicator {}
-}
 
+    function handleSerialBoardCommand(command)
+    {
+        var delay = 1000
+
+        console.log("handleSerialBoardCommand", command, appControl.lastSerialCommand)
+
+        if (command === 0) // Normal
+        {
+            if (appControl.lastSerialCommand === 13 ||
+                    appControl.lastSerialCommand === 14)
+            {
+                appControl.serialControl.tiltStop()
+            }
+            else if (appControl.lastSerialCommand === 15 ||
+                     appControl.lastSerialCommand === 16)
+            {
+                appControl.serialControl.panStop()
+            }
+            else if (appControl.lastSerialCommand === 17 ||
+                     appControl.lastSerialCommand === 18)
+            {
+                appControl.serialControl.zoomStop()
+            }
+            else if (appControl.lastSerialCommand === 19 ||
+                     appControl.lastSerialCommand === 20)
+            {
+                appControl.serialControl.focusStop()
+            }
+
+            //  appControl.sendMouseEvent(upTiltButton, false);
+            //  appControl.sendMouseEvent(downTiltButton, false);
+
+            //  appControl.sendMouseEvent(leftPanButton, false);
+            //  appControl.sendMouseEvent(rightPanButton, false);
+
+            //  appControl.sendMouseEvent(zoomInButton, false);
+            //  appControl.sendMouseEvent(zoomOutButton, false);
+
+            //  appControl.sendMouseEvent(focusFarButton, false);
+            //  appControl.sendMouseEvent(focusNearButton, false);
+        }
+        else if (command === 1) // Continuous
+        {
+            continuousZoom.clicked()
+        }
+        else if (command === 2) // Spotter
+        {
+            spotter.clicked()
+        }
+        else if (command === 3) // NIR Filter
+        {
+            if (colorFilter.checked === true)
+            {
+                nirFilter.clicked()
+            }
+            else
+            {
+                colorFilter.clicked()
+            }
+        }
+        else if (command === 4) // Snapshot
+        {
+            appControl.takeSnapshot()
+        }
+        else if (command === 5) // Video Record
+        {
+            // appControl.sendMouseEvent(recordButton, true)
+            recordButton.checked = !recordButton.checked
+            recordButton.released();
+        }
+        else if (command === 6) // Laser
+        {
+            illuminatorOnOffSwitch.clicked()
+        }
+        else if (command === 7) // Beam angle +
+        {
+            appControl.serialControl.setIlluminatorLargerAngle()
+        }
+        else if (command === 8) // Beam angle -
+        {
+            appControl.serialControl.setIlluminatorSmallerAngle()
+        }
+        else if (command === 9) // Intensity +
+        {
+            var intensityPlus = appControl.serialControl.illuminatorBrightnessLevel
+
+            intensityPlus = intensityPlus + 10
+
+            if (intensityPlus > 255)
+            {
+                intensityPlus = 255
+            }
+
+            appControl.serialControl.setIlluminatorBrightness(intensityPlus)
+        }
+        else if (command === 10) // Intensity -
+        {
+            var intensityMinus = appControl.serialControl.illuminatorBrightnessLevel
+
+            intensityMinus = intensityMinus - 10
+
+            if (intensityMinus < 0)
+            {
+                intensityMinus = 0
+            }
+
+            appControl.serialControl.setIlluminatorBrightness(intensityMinus)
+        }
+        else if (command === 11) // Speed +
+        {
+            var speedPlus = appControl.serialControl.panTiltSpeed
+
+            speedPlus = speedPlus + 10
+
+            if (speedPlus > 255)
+            {
+                speedPlus = 255
+            }
+
+            appControl.serialControl.setPanTiltSpeed(speedPlus)
+
+        }
+        else if (command === 12) // Speed -
+        {
+            var speedMinus = appControl.serialControl.panTiltSpeed
+
+            speedMinus = speedMinus - 10
+
+            if (speedMinus < 0)
+            {
+                speedMinus = 0
+            }
+
+            appControl.serialControl.setPanTiltSpeed(speedMinus)
+        }
+        else if (command === 13) // Move Up
+        {
+            appControl.serialControl.tiltUp()
+
+            // appControl.sendMouseEvent(upTiltButton, true);
+
+            // lambda = ()=>{}
+
+            // sendWithDelay(delay, lambda)
+        }
+        else if (command === 14) // Move Down
+        {
+            appControl.serialControl.tiltDown()
+            // appControl.sendMouseEvent(downTiltButton, true);
+
+            // lambda = ()=>{}
+
+            // sendWithDelay(delay, lambda)
+        }
+        else if (command === 15) // Move Left
+        {
+            appControl.serialControl.panLeft()
+            // appControl.sendMouseEvent(leftPanButton, true);
+
+            // lambda = ()=>{}
+
+            // sendWithDelay(delay, lambda)
+        }
+        else if (command === 16) // Move Right
+        {
+            appControl.serialControl.panRight()
+            // appControl.sendMouseEvent(rightPanButton, true);
+
+            // lambda = ()=>{}
+
+            // sendWithDelay(delay, lambda)
+        }
+        else if (command === 17) // Zoom +
+        {
+            appControl.serialControl.zoomIn()
+            // appControl.sendMouseEvent(zoomInButton, true);
+
+            // lambda = ()=>{}
+
+            // sendWithDelay(delay, lambda)
+        }
+        else if (command === 18) // Zoom -
+        {
+            appControl.serialControl.zoomOut()
+            // appControl.sendMouseEvent(zoomOutButton, true);
+
+            // lambda = ()=>{}
+
+            // sendWithDelay(delay, lambda)
+        }
+        else if (command === 19) // Focus +
+        {
+            appControl.serialControl.focusFar()
+            // appControl.sendMouseEvent(focusFarButton, true);
+
+            // lambda = ()=>{}
+
+            // sendWithDelay(delay, lambda)
+        }
+        else if (command === 20) // Focus -
+        {
+            appControl.serialControl.focusNear()
+            // appControl.sendMouseEvent(focusNearButton, true);
+
+            // lambda = ()=>{}
+
+            // sendWithDelay(delay, lambda)
+        }
+        else if (command === 21) // Auto Focus
+        {
+            if (autoFocusButton.checked === true)
+            {
+                manualFocusButton.clicked()
+            }
+            else
+            {
+                autoFocusButton.clicked()
+            }
+        }
+
+        appControl.lastSerialCommand = command
+    }
+
+    function sendWithDelay(delay, lambda)
+    {
+        var timer = Qt.createQmlObject("import QtQuick 2.0; Timer {}", root);
+        timer.interval = delay;
+        timer.repeat = false;
+        timer.triggered.connect(lambda);
+        timer.start();
+    }
+}

@@ -23,6 +23,8 @@ RC_ICONS = ./Images/Icon.ico
 }
 
 SOURCES += \
+        SerialBoard.cpp \
+        SerialController.cpp \
         appcontrol.cpp \
         main.cpp \
         reticle.cpp \
@@ -45,6 +47,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    SerialBoard.h \
+    SerialController.h \
     appcontrol.h \
     reticle.h \
     serialcontrol.h \

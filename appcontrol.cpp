@@ -71,7 +71,6 @@ AppControl::AppControl(QObject* parent)
         qApp->exit();
     });
 
-
     m_lastJoystickPanSpeed    = 0;
     m_lastJoystickTiltSpeed   = 0;
     m_lastJoystickPanDirection = 0;
@@ -82,11 +81,26 @@ AppControl::AppControl(QObject* parent)
     m_elapsedTimerTvCaptureWatchdog.restart();
     m_timerTvWatchdog.start();
 
-
     connect(m_reticle, &Reticle::sigDataChanged,
             this, &AppControl::reticleVisibleChanged);
 
+    connect(&m_serialBoardController,
+            &SerialController::sigNewDataReceived,
+            this, &AppControl::sltNewDataReceived);
 
+    connect(&m_serialBoard, &SerialBoard::
+            sigNewDataReceived, this,
+            &AppControl::sigSerialBoardDataReceived);
+
+    // Automatic connect to serial ports
+//    m_serialControl->connectToSerialPort("ttyTHS0");
+    m_serialControl->connectToSerialPort("COM1");
+
+    int32_t errorCode;
+
+    m_serialBoardController.openConnection(
+//                "ttyTHS1", 9600, errorCode);
+                "COM2", 9600, errorCode);
 }
 
 AppControl::~AppControl()
@@ -469,6 +483,43 @@ void AppControl::setReticleVisible(bool reticleVisible)
     Q_EMIT reticleVisibleChanged();
 }
 
+int AppControl::lastSerialCommand()
+{
+    return m_lastCommand;
+}
+
+void AppControl::setLastSerialCommand(
+        const int &lastCommand)
+{
+    m_lastCommand = static_cast<
+            SerialBoard::Commands>(lastCommand);
+}
+
+void AppControl::sendMouseEvent(
+        QObject *object, const bool &isPressed)
+{
+    QMouseEvent::Type type =
+            QMouseEvent::Type::MouseButtonPress;
+
+    if (isPressed == false)
+    {
+        type = QMouseEvent::Type::MouseButtonRelease;
+    }
+
+    QMouseEvent *event = new QMouseEvent(
+                type, QPoint(0, 0),
+                Qt::LeftButton,
+                Qt::LeftButton,
+                Qt::NoModifier);
+
+    QApplication::postEvent(object, event);
+}
+
+void AppControl::takeSnapshot()
+{
+    qCritical() << " take snap shotr eque sed.";
+}
+
 QString AppControl::messageTitle() const
 {
     return m_messageTitle;
@@ -567,4 +618,9 @@ void AppControl::sltCheckTVCapture()
 void AppControl::restartElapsedTimerRequested(const QByteArray& data)
 {
     m_elapsedTimerTvCaptureWatchdog.restart();
+}
+
+void AppControl::sltNewDataReceived(const QByteArray &packet)
+{
+    m_serialBoard.processInboundPacket(packet);
 }
