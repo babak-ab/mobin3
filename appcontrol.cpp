@@ -97,14 +97,17 @@ AppControl::AppControl(QObject* parent)
     m_boardSerialOutboundState = false;
 
     // Automatic connect to serial ports
-//    m_serialControl->connectToSerialPort("ttyTHS0");
-    m_serialControl->connectToSerialPort("COM1");
-
     int32_t errorCode;
 
+#ifdef __linux__
+    m_serialControl->connectToSerialPort("ttyTHS0");
     m_serialBoardController.openConnection(
-//                "ttyTHS1", 9600, errorCode);
+                "ttyTHS1", 9600, errorCode);
+#elif defined(WIN32)
+    m_serialControl->connectToSerialPort("COM1");
+    m_serialBoardController.openConnection(
                 "COM2", 9600, errorCode);
+#endif
 }
 
 AppControl::~AppControl()
