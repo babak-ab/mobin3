@@ -121,6 +121,8 @@ Item {
             Layout.column: 1
 
             color: "green"
+
+            active: appControl.serialControl.platformSerialInboundState
         }
 
         StatusIndicator
@@ -129,6 +131,8 @@ Item {
             Layout.column: 2
 
             color: "orange"
+
+            active: appControl.serialControl.platformSerialOutboundState
         }
 
         Text
@@ -159,6 +163,8 @@ Item {
             Layout.column: 2
 
             color: "orange"
+
+            active: appControl.boardSerialOutboundState
         }
     }
 

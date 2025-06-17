@@ -11,7 +11,8 @@
 #include <iostream>
 
 AppControl::AppControl(QObject* parent)
-    : QObject(parent)
+    : QObject(parent) ,
+      m_resetSerialStateDelay(200)
 {
 
     gst_init(NULL,NULL);
@@ -91,6 +92,9 @@ AppControl::AppControl(QObject* parent)
     connect(&m_serialBoard, &SerialBoard::
             sigNewDataReceived, this,
             &AppControl::sigSerialBoardDataReceived);
+
+    m_boardSerialInboundState = false;
+    m_boardSerialOutboundState = false;
 
     // Automatic connect to serial ports
 //    m_serialControl->connectToSerialPort("ttyTHS0");
@@ -517,7 +521,19 @@ void AppControl::sendMouseEvent(
 
 void AppControl::takeSnapshot()
 {
-    qCritical() << " take snap shotr eque sed.";
+
+}
+
+
+
+bool AppControl::boardSerialInboundState() const
+{
+    return m_boardSerialInboundState;
+}
+
+bool AppControl::boardSerialOutboundState() const
+{
+    return m_boardSerialOutboundState;
 }
 
 QString AppControl::messageTitle() const
@@ -567,6 +583,18 @@ void AppControl::fillSerialPortNames()
 
     if (m_serialPortList.count() > 0)
         m_serialPortName = m_serialPortList[0];
+}
+
+void AppControl::changeBoardSerialInboundState(const bool &state)
+{
+    m_boardSerialInboundState = state;
+    Q_EMIT sigSerialStateChanged();
+}
+
+void AppControl::changeBoardSerialOutboundState(const bool &state)
+{
+    m_boardSerialOutboundState = state;
+    Q_EMIT sigSerialStateChanged();
 }
 
 QStringList AppControl::serialPortList()
@@ -622,5 +650,9 @@ void AppControl::restartElapsedTimerRequested(const QByteArray& data)
 
 void AppControl::sltNewDataReceived(const QByteArray &packet)
 {
+    changeBoardSerialOutboundState(true);
+    QTimer::singleShot(m_resetSerialStateDelay, this,
+                       [this](){changeBoardSerialOutboundState(false);});
+
     m_serialBoard.processInboundPacket(packet);
 }

@@ -1,7 +1,8 @@
 #include "serialcontrol.h"
 
 SerialControl::SerialControl(QObject* parent)
-    : RingQueue("serialControl", 10, 10000, parent)
+    : RingQueue("serialControl", 10, 10000, parent),
+      m_resetSerialStateDelay(200)
 {
     RingQueue::initialize();
 //    QObject::connect(this, &RingQueue::sigReadData,
@@ -54,6 +55,10 @@ SerialControl::SerialControl(QObject* parent)
 
     m_boardVersion = 0;
     m_sensorValue = SensorValue_Unknown;
+
+
+    m_platformSerialInboundState = false;
+    m_platformSerialOutboundState = false;
 
     init_crc8();
 }
@@ -483,6 +488,10 @@ void SerialControl::writeDataOnPlatformsSerialPort(const QByteArray& data)
     //qDebug() << "write data :" << data.toHex(' ');
 
     if (m_serialPort->isOpen()) {
+        changePlatformSerialInboundState(true);
+        QTimer::singleShot(m_resetSerialStateDelay,
+                           this, [this](){changePlatformSerialInboundState(false);});
+
         m_serialPort->write(data);
     }
     else
@@ -559,6 +568,10 @@ void SerialControl::sltReadData(QByteArray data)
 void SerialControl::sltReadSeialPortData()
 {
     if (m_serialPort->isOpen()) {
+        changePlatformSerialOutboundState(true);
+        QTimer::singleShot(m_resetSerialStateDelay,
+                           this, [this](){changePlatformSerialOutboundState(false);});
+
         const QByteArray data = m_serialPort->readAll();
         //        qDebug() << "read data :" << data.toHex();
         insertToReadQueue(data);
@@ -1048,6 +1061,18 @@ void SerialControl::bootLoader()
     sendCommand1(110, 0);
 }
 
+bool SerialControl::
+platformSerialInboundState() const
+{
+    return m_platformSerialInboundState;
+}
+
+bool SerialControl::
+platformSerialOutboundState() const
+{
+    return m_platformSerialOutboundState;
+}
+
 void SerialControl::setContrastMode(const quint8 level)
 {
     m_contrastLevel = (ContrastLevel)(level + 1);
@@ -1275,3 +1300,16 @@ quint8 SerialControl::crc8(quint8 buf[], quint8 len) const
 
     return crc ^ 0xFF;
 }
+
+void SerialControl::changePlatformSerialInboundState(const bool &state)
+{
+    m_platformSerialInboundState = state;
+    Q_EMIT sigSerialStateChanged();
+}
+
+void SerialControl::changePlatformSerialOutboundState(const bool &state)
+{
+    m_platformSerialOutboundState = state;
+    Q_EMIT sigSerialStateChanged();
+}
+

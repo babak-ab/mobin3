@@ -63,6 +63,8 @@ class SerialControl : public RingQueue
 	Q_PROPERTY(quint8 boardVersion READ boardVersion NOTIFY sigDataChanged)
     Q_PROPERTY(QString sensor READ sensor NOTIFY sigDataChanged)
     Q_PROPERTY(QString imageType READ imageType NOTIFY sigDataChanged)
+    Q_PROPERTY(bool platformSerialInboundState READ platformSerialInboundState NOTIFY sigSerialStateChanged)
+    Q_PROPERTY(bool platformSerialOutboundState READ platformSerialOutboundState NOTIFY sigSerialStateChanged)
 
 public:
 
@@ -263,6 +265,8 @@ public:
     Q_INVOKABLE void login();
     Q_INVOKABLE void setImageType(const quint8 type);
     Q_INVOKABLE void bootLoader();
+    Q_INVOKABLE bool platformSerialInboundState() const;
+    Q_INVOKABLE bool platformSerialOutboundState() const;
 
     ///
     /// \brief SerialControl default constructor
@@ -610,6 +614,11 @@ private:
 
     bool m_isMenuOpened;
 
+    bool m_platformSerialInboundState;
+    bool m_platformSerialOutboundState;
+
+    const int m_resetSerialStateDelay;
+
     // Private Functions
     void writeDataOnPlatformsSerialPort(const QByteArray &data);
     int bytesToInt(QByteArray data, int start, int length, bool reverse = false);
@@ -626,6 +635,9 @@ private:
     void init_crc8();
     quint8 crc8(quint8 buf[], quint8 len) const;
 
+    void changePlatformSerialInboundState(const bool &state);
+    void changePlatformSerialOutboundState(const bool &state);
+
 private Q_SLOTS:
     void sltReadData(QByteArray data);
     void sltReadSeialPortData();
@@ -639,6 +651,7 @@ Q_SIGNALS:
     void sigDataChanged();
     void sigMessageBoxRequested();
     void sigLoginWindowRequested();
+    void sigSerialStateChanged();
 };
 
 

@@ -42,6 +42,8 @@ class AppControl : public QObject {
     Q_PROPERTY(QString appVersion READ appVersion NOTIFY signalVideoAdapter)
     Q_PROPERTY(bool reticleVisible READ reticleVisible WRITE setReticleVisible NOTIFY reticleVisibleChanged)
     Q_PROPERTY(int lastSerialCommand READ lastSerialCommand WRITE setLastSerialCommand)
+    Q_PROPERTY(bool boardSerialInboundState READ boardSerialInboundState NOTIFY sigSerialStateChanged)
+    Q_PROPERTY(bool boardSerialOutboundState READ boardSerialOutboundState NOTIFY sigSerialStateChanged)
 
 public:
     ///
@@ -202,6 +204,9 @@ public:
 
     Q_INVOKABLE void takeSnapshot();
 
+    Q_INVOKABLE bool boardSerialInboundState() const;
+    Q_INVOKABLE bool boardSerialOutboundState() const;
+
 private:
     QString m_recordingLocation;
     QString m_captureDevice;
@@ -236,6 +241,9 @@ private:
 
     bool m_reticleVisible;
 
+    bool m_boardSerialInboundState;
+    bool m_boardSerialOutboundState;
+
     SerialBoard::Commands m_lastCommand;
 
     quint8 m_lastJoystickPanSpeed;
@@ -246,8 +254,13 @@ private:
     QElapsedTimer m_elapsedTimerTvCaptureWatchdog;
     QTimer m_timerTvWatchdog;
 
+    const int m_resetSerialStateDelay;
+
     void processGamepadCommand(const CommandPacket& packet);
     void fillSerialPortNames();
+
+    void changeBoardSerialInboundState(const bool &state);
+    void changeBoardSerialOutboundState(const bool &state);
 
 private Q_SLOTS:
     void sltExecuteCommandRequested(const CommandPacket& packet);
@@ -262,6 +275,7 @@ Q_SIGNALS:
     void recordVisibleChanged();
     void reticleVisibleChanged();
     void sigSerialBoardDataReceived(const int &command);
+    void sigSerialStateChanged();
 };
 
 #endif // APPCONTROL_H

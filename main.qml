@@ -1136,8 +1136,6 @@ ApplicationWindow {
     {
         var delay = 1000
 
-        console.log("handleSerialBoardCommand", command, appControl.lastSerialCommand)
-
         if (command === 0) // Normal
         {
             if (appControl.lastSerialCommand === 13 ||
@@ -1160,18 +1158,6 @@ ApplicationWindow {
             {
                 appControl.serialControl.focusStop()
             }
-
-            //  appControl.sendMouseEvent(upTiltButton, false);
-            //  appControl.sendMouseEvent(downTiltButton, false);
-
-            //  appControl.sendMouseEvent(leftPanButton, false);
-            //  appControl.sendMouseEvent(rightPanButton, false);
-
-            //  appControl.sendMouseEvent(zoomInButton, false);
-            //  appControl.sendMouseEvent(zoomOutButton, false);
-
-            //  appControl.sendMouseEvent(focusFarButton, false);
-            //  appControl.sendMouseEvent(focusNearButton, false);
         }
         else if (command === 1) // Continuous
         {
@@ -1198,7 +1184,6 @@ ApplicationWindow {
         }
         else if (command === 5) // Video Record
         {
-            // appControl.sendMouseEvent(recordButton, true)
             recordButton.checked = !recordButton.checked
             recordButton.released();
         }
@@ -1270,75 +1255,34 @@ ApplicationWindow {
         else if (command === 13) // Move Up
         {
             appControl.serialControl.tiltUp()
-
-            // appControl.sendMouseEvent(upTiltButton, true);
-
-            // lambda = ()=>{}
-
-            // sendWithDelay(delay, lambda)
         }
         else if (command === 14) // Move Down
         {
             appControl.serialControl.tiltDown()
-            // appControl.sendMouseEvent(downTiltButton, true);
-
-            // lambda = ()=>{}
-
-            // sendWithDelay(delay, lambda)
         }
         else if (command === 15) // Move Left
         {
             appControl.serialControl.panLeft()
-            // appControl.sendMouseEvent(leftPanButton, true);
-
-            // lambda = ()=>{}
-
-            // sendWithDelay(delay, lambda)
         }
         else if (command === 16) // Move Right
         {
             appControl.serialControl.panRight()
-            // appControl.sendMouseEvent(rightPanButton, true);
-
-            // lambda = ()=>{}
-
-            // sendWithDelay(delay, lambda)
         }
         else if (command === 17) // Zoom +
         {
             appControl.serialControl.zoomIn()
-            // appControl.sendMouseEvent(zoomInButton, true);
-
-            // lambda = ()=>{}
-
-            // sendWithDelay(delay, lambda)
         }
         else if (command === 18) // Zoom -
         {
             appControl.serialControl.zoomOut()
-            // appControl.sendMouseEvent(zoomOutButton, true);
-
-            // lambda = ()=>{}
-
-            // sendWithDelay(delay, lambda)
         }
         else if (command === 19) // Focus +
         {
             appControl.serialControl.focusFar()
-            // appControl.sendMouseEvent(focusFarButton, true);
-
-            // lambda = ()=>{}
-
-            // sendWithDelay(delay, lambda)
         }
         else if (command === 20) // Focus -
         {
             appControl.serialControl.focusNear()
-            // appControl.sendMouseEvent(focusNearButton, true);
-
-            // lambda = ()=>{}
-
-            // sendWithDelay(delay, lambda)
         }
         else if (command === 21) // Auto Focus
         {
