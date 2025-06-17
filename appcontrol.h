@@ -267,6 +267,7 @@ private Q_SLOTS:
     void sltCheckTVCapture();
     void restartElapsedTimerRequested(const QByteArray &data);
     void sltNewDataReceived(const QByteArray &packet);
+    void sltPlatformNewDataReceived();
 
 Q_SIGNALS:
     void signalVideoAdapter();

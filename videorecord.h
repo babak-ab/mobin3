@@ -25,6 +25,7 @@ private:
     QString _location;
     bool _need_data = false;
     bool _stop = false;
+    bool m_isActive;
 
     QString m_currentVideoFileName;
 
@@ -45,6 +46,7 @@ public:
     void start();
     void stop();
 
+    bool isActive() const;
 
 Q_SIGNALS:
     void sigFrameReady(QByteArray ba);

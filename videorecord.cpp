@@ -29,6 +29,7 @@ bool VideoRecord::bus_message(GstBus* bus, GstMessage* msg, gpointer user_data)
         gst_element_set_state(videoCapture->_data.pipeline, GST_STATE_NULL);
         gst_object_unref(videoCapture->_data.pipeline);
         videoCapture->_data.pipeline = Q_NULLPTR;
+        videoCapture->m_isActive = false;
 
         break;
 
@@ -50,7 +51,8 @@ bool VideoRecord::bus_message(GstBus* bus, GstMessage* msg, gpointer user_data)
 
 VideoRecord::VideoRecord(QSize resolution, QString location)
     : _location(location)
-    , _resolution(resolution)
+    , _resolution(resolution),
+      m_isActive(false)
 
 {
 
@@ -128,6 +130,7 @@ void VideoRecord::initialize(const QString& location)
     gst_object_unref(_data.bus);
 
     gst_element_set_state(_data.pipeline, GST_STATE_PLAYING);
+    m_isActive = true;
 }
 
 void VideoRecord::setResolution(QSize resolution)
@@ -149,6 +152,7 @@ QString VideoRecord::videoName()
 void VideoRecord::start()
 {
     if (_data.pipeline) {
+        m_isActive = true;
         _data.timestamp = 0;
         gst_element_set_state(GST_ELEMENT(_data.pipeline), GST_STATE_PLAYING);
     }
@@ -157,6 +161,7 @@ void VideoRecord::start()
 void VideoRecord::stop()
 {
     if (_data.pipeline) {
+        m_isActive = false;
         _need_data = false;
         gst_element_send_event(_data.pipeline, gst_event_new_eos());
         QTimer::singleShot(500, [this] {
@@ -167,4 +172,9 @@ void VideoRecord::stop()
             }
         });
     }
+}
+
+bool VideoRecord::isActive() const
+{
+    return m_isActive;
 }

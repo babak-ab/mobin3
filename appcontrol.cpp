@@ -93,6 +93,9 @@ AppControl::AppControl(QObject* parent)
             sigNewDataReceived, this,
             &AppControl::sigSerialBoardDataReceived);
 
+    connect(m_serialControl, &SerialControl::sigDataChanged,
+            this, &AppControl::sltPlatformNewDataReceived);
+
     m_boardSerialInboundState = false;
     m_boardSerialOutboundState = false;
 
@@ -658,4 +661,38 @@ void AppControl::sltNewDataReceived(const QByteArray &packet)
                        [this](){changeBoardSerialOutboundState(false);});
 
     m_serialBoard.processInboundPacket(packet);
+}
+
+void AppControl::sltPlatformNewDataReceived()
+{
+    const SerialControl::CameraSelection camera =
+            m_serialControl->selectedCamera();
+
+    const SerialControl::FilterModes filterMode =
+            m_serialControl->selectedFilter();
+
+    const bool isRecording =
+            m_videoRecord->isActive();
+
+    const bool &isIlluminatorEnabled =
+            m_serialControl->illuminator();
+
+    const bool &isAutoFocusEnabled =
+            m_serialControl->focusMode();
+
+    QByteArray data(5, char(0x00));
+    data[0] = camera == SerialControl::CameraSelection_Spotter ? 0x01 : 0x00;
+    data[1] = filterMode == SerialControl::NIR ? 0x01 : 0x00;
+    data[2] = isRecording == true ? 0x01 : 0x00;
+    data[3] = isIlluminatorEnabled == true ? 0x01 : 0x00;
+    data[4] = isAutoFocusEnabled == true ? 0x01 : 0x00;
+
+    const QByteArray packet =
+            m_serialBoard.createFeedback(data);
+
+    m_serialBoardController.writeData(packet);
+
+    changeBoardSerialInboundState(true);
+    QTimer::singleShot(m_resetSerialStateDelay, this,
+                       [this](){changeBoardSerialInboundState(false);});
 }

@@ -46,6 +46,9 @@ public:
     QByteArray createPacket(
             const uint8_t &command);
 
+    QByteArray createFeedback(
+            const QByteArray &data);
+
 private:
     const uint8_t m_header;
     const uint8_t m_footer;

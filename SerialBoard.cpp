@@ -35,6 +35,23 @@ createPacket(const uint8_t &command)
     return packet;
 }
 
+QByteArray SerialBoard::
+createFeedback(const QByteArray &data)
+{
+    QByteArray packet(data.length() + 2, char(0x00));
+
+    packet[0] = m_header;
+
+    for (int i = 0; i < data.length(); i++)
+    {
+        packet[1 + i] = data.at(i);
+    }
+
+    packet[data.length() + 1] = m_footer;
+
+    return packet;
+}
+
 void SerialBoard::
 analyzePacket()
 {
