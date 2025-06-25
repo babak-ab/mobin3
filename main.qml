@@ -27,14 +27,6 @@ ApplicationWindow {
         }
     }
 
-    Connections
-    {
-        target: appControl
-        onSigSerialBoardDataReceived:
-        {
-            handleSerialBoardCommand(command)
-        }
-    }
 
 
     Rectangle {

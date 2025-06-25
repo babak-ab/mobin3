@@ -41,7 +41,6 @@ class AppControl : public QObject {
     Q_PROPERTY(QString recordingLocation READ recordingLocation WRITE setRecordingLocation NOTIFY recordingLocationChanged)
     Q_PROPERTY(QString appVersion READ appVersion NOTIFY signalVideoAdapter)
     Q_PROPERTY(bool reticleVisible READ reticleVisible WRITE setReticleVisible NOTIFY reticleVisibleChanged)
-    Q_PROPERTY(int lastSerialCommand READ lastSerialCommand WRITE setLastSerialCommand)
     Q_PROPERTY(bool boardSerialInboundState READ boardSerialInboundState NOTIFY sigSerialStateChanged)
     Q_PROPERTY(bool boardSerialOutboundState READ boardSerialOutboundState NOTIFY sigSerialStateChanged)
 
@@ -195,9 +194,6 @@ public:
     bool reticleVisible() const;
     Q_INVOKABLE void setReticleVisible(bool reticleVisible);
 
-    Q_INVOKABLE int lastSerialCommand();
-
-    Q_INVOKABLE void setLastSerialCommand(const int &lastCommand);
 
     Q_INVOKABLE void sendMouseEvent(QObject *object,
                                     const bool &isPressed);
@@ -254,6 +250,8 @@ private:
     QElapsedTimer m_elapsedTimerTvCaptureWatchdog;
     QTimer m_timerTvWatchdog;
 
+    bool m_isKeyboardCommandChanged;
+
     const int m_resetSerialStateDelay;
 
     void processGamepadCommand(const CommandPacket& packet);
@@ -268,6 +266,8 @@ private Q_SLOTS:
     void restartElapsedTimerRequested(const QByteArray &data);
     void sltNewDataReceived(const QByteArray &packet);
     void sltPlatformNewDataReceived();
+    void sltSerialBoardDataReceived(
+            const int &keyboardCommand);
 
 Q_SIGNALS:
     void signalVideoAdapter();

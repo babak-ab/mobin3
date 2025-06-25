@@ -91,7 +91,8 @@ AppControl::AppControl(QObject* parent)
 
     connect(&m_serialBoard, &SerialBoard::
             sigNewDataReceived, this,
-            &AppControl::sigSerialBoardDataReceived);
+            &AppControl::sltSerialBoardDataReceived);
+//            &AppControl::sigSerialBoardDataReceived);
 
     connect(m_serialControl, &SerialControl::sigDataChanged,
             this, &AppControl::sltPlatformNewDataReceived);
@@ -99,13 +100,16 @@ AppControl::AppControl(QObject* parent)
     m_boardSerialInboundState = false;
     m_boardSerialOutboundState = false;
 
+    m_isKeyboardCommandChanged = false;
+
+
     // Automatic connect to serial ports
     int32_t errorCode;
 
 #ifdef __linux__
     m_serialControl->connectToSerialPort("ttyTHS0");
     m_serialBoardController.openConnection(
-                "ttyTHS1", 9600, errorCode);
+                "ttyTHS1", 115200, errorCode);
 #elif defined(WIN32)
     m_serialControl->connectToSerialPort("COM1");
     m_serialBoardController.openConnection(
@@ -493,18 +497,6 @@ void AppControl::setReticleVisible(bool reticleVisible)
     Q_EMIT reticleVisibleChanged();
 }
 
-int AppControl::lastSerialCommand()
-{
-    return m_lastCommand;
-}
-
-void AppControl::setLastSerialCommand(
-        const int &lastCommand)
-{
-    m_lastCommand = static_cast<
-            SerialBoard::Commands>(lastCommand);
-}
-
 void AppControl::sendMouseEvent(
         QObject *object, const bool &isPressed)
 {
@@ -695,4 +687,285 @@ void AppControl::sltPlatformNewDataReceived()
     changeBoardSerialInboundState(true);
     QTimer::singleShot(m_resetSerialStateDelay, this,
                        [this](){changeBoardSerialInboundState(false);});
+}
+
+void AppControl::
+sltSerialBoardDataReceived(
+        const int &keyboardCommand)
+{
+    const SerialBoard::Commands command =
+            static_cast<SerialBoard::Commands>(
+                keyboardCommand);
+
+    qCritical() << "       command:" << command << endl
+                << "  last command:" << m_lastCommand << endl
+                << "keyboard state:" << m_isKeyboardCommandChanged << endl;
+
+    if (command == SerialBoard::Command_Normal)
+    {
+        m_isKeyboardCommandChanged = false;
+    }
+
+    if (m_isKeyboardCommandChanged == true)
+    {
+        return;
+    }
+
+    if (command != SerialBoard::Command_Normal)
+    {
+        m_isKeyboardCommandChanged = true;
+    }
+
+    switch (command)
+    {
+    case SerialBoard::Command_Normal:
+    {
+        if (m_lastCommand ==
+                SerialBoard::Command_MoveUp ||
+                m_lastCommand ==
+                SerialBoard::Command_MoveDown)
+        {
+            m_serialControl->tiltStop();
+        }
+        else if (m_lastCommand ==
+                 SerialBoard::Command_MoveLeft ||
+                 m_lastCommand ==
+                 SerialBoard::Command_MoveRight)
+        {
+            m_serialControl->panStop();
+        }
+        else if (m_lastCommand ==
+                 SerialBoard::Command_ZoomPlus ||
+                 m_lastCommand ==
+                 SerialBoard::Command_ZoomMinus)
+        {
+            m_serialControl->zoomStop();
+        }
+        else if (m_lastCommand ==
+                 SerialBoard::Command_FocusPlus ||
+                 m_lastCommand ==
+                 SerialBoard::Command_FocusMinus)
+        {
+            m_serialControl->focusStop();
+        }
+
+        break;
+    }
+    case SerialBoard::Command_Continuous:
+    {
+        m_serialControl->
+                setSelectedCamera(
+                    SerialControl::
+                    CameraSelection_ContinuousZoom);
+        break;
+    }
+    case SerialBoard::Command_Spotter:
+    {
+        m_serialControl->
+                setSelectedCamera(
+                    SerialControl::
+                    CameraSelection_Spotter);
+        break;
+    }
+    case SerialBoard::Command_NIR_Filter:
+    {
+        const SerialControl::
+                FilterModes lastState =
+                m_serialControl->selectedFilter();
+
+        if (lastState == SerialControl::Color)
+        {
+            m_serialControl->setSelectedFilter(
+                        SerialControl::NIR);
+        }
+        else
+        {
+            m_serialControl->setSelectedFilter(
+                        SerialControl::Color);
+        }
+
+        break;
+    }
+    case SerialBoard::Command_Snapshot:
+    {
+        takeSnapshot();
+
+        break;
+    }
+    case SerialBoard::Command_VideoRecord:
+    {
+        if (m_videoRecord->isActive() == true)
+        {
+            stopRecord();
+        }
+        else
+        {
+            startRecord();
+        }
+
+        break;
+    }
+    case SerialBoard::Command_Laser:
+    {
+        const bool shouldEnabled =
+                !m_serialControl->illuminator();
+
+        m_serialControl->
+                enableIlluminator(shouldEnabled);
+
+        break;
+    }
+    case SerialBoard::Command_BeamAnglePlus:
+    {
+        m_serialControl->
+                setIlluminatorLargerAngle();
+        break;
+    }
+    case SerialBoard::Command_BeamAngleMinus:
+    {
+        m_serialControl->
+                setIlluminatorSmallerAngle();
+        break;
+    }
+    case SerialBoard::Command_IntensityPlus:
+    {
+        uint8_t intensityPlus =
+                m_serialControl->
+                illuminatorBrightnessLevel();
+
+        if (intensityPlus + 10 > 255)
+        {
+            intensityPlus = 255;
+        }
+        else
+        {
+            intensityPlus += 10;
+        }
+
+        m_serialControl->
+                setIlluminatorBrightness(
+                    intensityPlus);
+        break;
+    }
+    case SerialBoard::Command_IntensityMinus:
+    {
+        uint8_t intensityPlus =
+                m_serialControl->
+                illuminatorBrightnessLevel();
+
+        if (intensityPlus - 10 < 0)
+        {
+            intensityPlus = 0;
+        }
+        else
+        {
+            intensityPlus -= 10;
+        }
+
+        m_serialControl->
+                setIlluminatorBrightness(
+                    intensityPlus);
+
+        break;
+    }
+    case SerialBoard::Command_SpeedPlus:
+    {
+        uint8_t speedPlus =
+                m_serialControl->panTiltSpeed();
+
+        if (speedPlus + 10 > 255)
+        {
+            speedPlus = 255;
+        }
+        else
+        {
+            speedPlus += 10;
+        }
+
+        m_serialControl->
+                setPanTiltSpeed(speedPlus);
+
+        break;
+    }
+    case SerialBoard::Command_SpeedMinus:
+    {
+        uint8_t speedPlus =
+                m_serialControl->panTiltSpeed();
+
+        if (speedPlus + 10 > 255)
+        {
+            speedPlus = 255;
+        }
+        else
+        {
+            speedPlus += 10;
+        }
+
+        m_serialControl->
+                setPanTiltSpeed(speedPlus);
+
+        break;
+    }
+    case SerialBoard::Command_MoveUp:
+    {
+        m_serialControl->tiltUp();
+
+        break;
+    }
+    case SerialBoard::Command_MoveDown:
+    {
+        m_serialControl->tiltDown();
+
+        break;
+    }
+    case SerialBoard::Command_MoveLeft:
+    {
+        m_serialControl->panLeft();
+
+        break;
+    }
+    case SerialBoard::Command_MoveRight:
+    {
+        m_serialControl->panRight();
+
+        break;
+    }
+    case SerialBoard::Command_ZoomPlus:
+    {
+        m_serialControl->zoomIn();
+
+        break;
+    }
+    case SerialBoard::Command_ZoomMinus:
+    {
+        m_serialControl->zoomOut();
+
+        break;
+    }
+    case SerialBoard::Command_FocusPlus:
+    {
+        m_serialControl->focusFar();
+
+        break;
+    }
+    case SerialBoard::Command_FocusMinus:
+    {
+        m_serialControl->focusNear();
+
+        break;
+    }
+    case SerialBoard::Command_AutoFocus:
+    {
+        const bool newFocusMode =
+                !m_serialControl->focusMode();
+
+        m_serialControl->
+                setFocusMode(newFocusMode);
+
+        break;
+    }
+    }
+
+    m_lastCommand = command;
+    qCritical() << "m_lastCommand:" << m_lastCommand << endl;
 }
