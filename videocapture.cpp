@@ -207,6 +207,13 @@ void VideoCapture::start()
     }
 }
 
+void VideoCapture::pause()
+{
+    if (_data.pipeline) {
+        gst_element_set_state(GST_ELEMENT(_data.pipeline), GST_STATE_PAUSED);
+    }
+}
+
 void VideoCapture::stop()
 {
     if (_data.pipeline) {

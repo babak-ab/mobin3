@@ -12,6 +12,7 @@
 
 AppControl::AppControl(QObject* parent)
     : QObject(parent) ,
+      m_videoCaptureSpotter(nullptr),
       m_resetSerialStateDelay(200)
 {
 
@@ -23,24 +24,31 @@ AppControl::AppControl(QObject* parent)
     m_serialControl = new SerialControl;
     m_reticle = new Reticle;
 
+    QString device1 = "";
+    QString device2 = "";
+
 #ifdef Q_OS_WIN32
-    int counter = 0;
-    const QList<QCameraInfo> cameras = QCameraInfo::availableCameras();
-    for (const QCameraInfo& cameraInfo : cameras) {
-        counter++;
-    }
-    m_captureDevice = QString::number(counter - 1);
+    const QList<QCameraInfo> cameras =
+            QCameraInfo::availableCameras();
+
+    device1 = QString::number(cameras.count() - 1);
+    device2 = QString::number(cameras.count() - 2);
 #endif
 
 #ifdef Q_OS_LINUX
-    m_captureDevice = "/dev/video0";
+    device1 = "/dev/video0";
+    device2 = "/dev/video1";
 #endif
 
     m_recordingLocation = QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
 
-    m_videoCapture = new VideoCapture(m_captureDevice, QSize(FRAME_WIDTH, FRAME_HEIGHT));
+    m_videoCapture = new VideoCapture(device1, QSize(FRAME_WIDTH, FRAME_HEIGHT));
     m_videoCapture->initialize();
     m_videoCapture->start();
+
+    m_videoCaptureSpotter = new VideoCapture(device2, QSize(FRAME_WIDTH, FRAME_HEIGHT));
+    m_videoCaptureSpotter->initialize();
+    m_videoCaptureSpotter->pause();
 
     m_recordVisible = false;
 
@@ -53,6 +61,10 @@ AppControl::AppControl(QObject* parent)
     connect(m_videoCapture, &VideoCapture::sigFrameReady, m_videoAdapter, &VideoAdapter::onFrameReady);
     connect(m_videoCapture, &VideoCapture::sigFrameReady, this, &AppControl::restartElapsedTimerRequested);
     connect(m_videoCapture, &VideoCapture::sigI420_FrameReady, m_videoRecord, &VideoRecord::pushFrame);
+
+    connect(m_videoCaptureSpotter, &VideoCapture::sigFrameReady, m_videoAdapter, &VideoAdapter::onFrameReady);
+    connect(m_videoCaptureSpotter, &VideoCapture::sigFrameReady, this, &AppControl::restartElapsedTimerRequested);
+    connect(m_videoCaptureSpotter, &VideoCapture::sigI420_FrameReady, m_videoRecord, &VideoRecord::pushFrame);
 
     m_toggleIlluminatorTimer.setInterval(5000);
     connect(&m_toggleIlluminatorTimer, &QTimer::timeout,
@@ -92,7 +104,7 @@ AppControl::AppControl(QObject* parent)
     connect(&m_serialBoard, &SerialBoard::
             sigNewDataReceived, this,
             &AppControl::sltSerialBoardDataReceived);
-//            &AppControl::sigSerialBoardDataReceived);
+    //            &AppControl::sigSerialBoardDataReceived);
 
     connect(m_serialControl, &SerialControl::sigDataChanged,
             this, &AppControl::sltPlatformNewDataReceived);
@@ -618,7 +630,7 @@ void AppControl::setGamepadController(GamepadController* gamepadController)
     m_gamepadController = gamepadController;
 
     connect(m_gamepadController, &GamepadController::sigExecuteCommandRequested,
-        this, &AppControl::sltExecuteCommandRequested);
+            this, &AppControl::sltExecuteCommandRequested);
 }
 
 void AppControl::setGamepadManager(QGamepadManager* manager)
@@ -635,7 +647,15 @@ void AppControl::sltCheckTVCapture()
 {
     if (m_elapsedTimerTvCaptureWatchdog.elapsed() > 3000) {
 
-        m_videoCapture->checkConnection();
+        if (m_serialControl->selectedCamera() ==
+                SerialControl::CameraSelection_Spotter)
+        {
+            m_videoCaptureSpotter->checkConnection();
+        }
+        else
+        {
+            m_videoCapture->checkConnection();
+        }
 
         m_elapsedTimerTvCaptureWatchdog.restart();
     }
@@ -659,6 +679,17 @@ void AppControl::sltPlatformNewDataReceived()
 {
     const SerialControl::CameraSelection camera =
             m_serialControl->selectedCamera();
+
+    if (camera == SerialControl::CameraSelection_Spotter)
+    {
+        m_videoCapture->pause();
+        m_videoCaptureSpotter->start();
+    }
+    else
+    {
+        m_videoCapture->start();
+        m_videoCaptureSpotter->pause();
+    }
 
     const SerialControl::FilterModes filterMode =
             m_serialControl->selectedFilter();

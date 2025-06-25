@@ -59,6 +59,11 @@ public:
     void start();
 
     ///
+    /// \brief pause
+    /// Pause the capturing based on the GStreamer pipe.
+    void pause();
+
+    ///
     /// \brief stop
     /// Stops the capturing pipe of the GStreamer.
     void stop();

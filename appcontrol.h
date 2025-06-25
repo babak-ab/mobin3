@@ -205,9 +205,9 @@ public:
 
 private:
     QString m_recordingLocation;
-    QString m_captureDevice;
 
     VideoCapture* m_videoCapture;
+    VideoCapture* m_videoCaptureSpotter;
     VideoAdapter* m_videoAdapter;
     VideoRecord* m_videoRecord;
 
