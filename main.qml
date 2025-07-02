@@ -74,8 +74,8 @@ ApplicationWindow {
             icon.source: "Images/menu-icon.png"
             icon.color: "transparent"
             font.family: "Helvetica"
-            icon.height: 54
-            icon.width: 54
+            icon.height: 42
+            icon.width: 42
             background: Rectangle {
                 color: "black"
                 opacity: 0.6
@@ -151,7 +151,7 @@ ApplicationWindow {
                 Text {
                     text: "Illuminator:"
                     font.family: "Helvetica"
-                    font.pointSize: 10
+                    font.pointSize: 12
                     font.bold: true
                     color: "white"
                     style: Text.Outline;
@@ -161,6 +161,8 @@ ApplicationWindow {
                 Switch {
                     id: illuminatorOnOffSwitch
                     checked: appControl.serialControl.illuminator
+
+                    height: 10
 
                     onReleased: {
 
@@ -180,7 +182,7 @@ ApplicationWindow {
                     id: ratioAngleOffsetText
                     text: ", Ratio: " + (appControl.serialControl.illuminatorAngleOffset / 100.0).toFixed(2)
                     font.family: "Helvetica"
-                    font.pointSize: 10
+                    font.pointSize: 12
                     font.bold: true
                     color: "white"
                     style: Text.Outline
@@ -217,7 +219,7 @@ ApplicationWindow {
 
                     text: ", Brightness: " + appControl.serialControl.illuminatorBrightnessLevel
                     font.family: "Helvetica"
-                    font.pointSize: 10
+                    font.pointSize: 12
                     font.bold: true
                     color: "white"
                     style: Text.Outline;
@@ -256,6 +258,8 @@ ApplicationWindow {
             Layout.column: 2
             Layout.row: 0
 
+            padding: 3
+
             background: Rectangle {
                 color: "black"
                 opacity: 0.5
@@ -274,7 +278,7 @@ ApplicationWindow {
                     font.family: "Helvetica"
                     checked: appControl.serialControl.selectedCamera
                              === SerialControl.CameraSelection_ContinuousZoom
-                    font.pointSize: 10
+                    font.pointSize: 12
                     font.bold: true
 
                     background: Rectangle {
@@ -296,7 +300,7 @@ ApplicationWindow {
                     font.family: "Helvetica"
                     checked: appControl.serialControl.selectedCamera
                              === SerialControl.CameraSelection_Spotter
-                    font.pointSize: 10
+                    font.pointSize: 12
                     font.bold: true
 
                     background: Rectangle {
@@ -318,6 +322,8 @@ ApplicationWindow {
             Layout.column: 3
             Layout.row: 0
 
+            padding: 3
+
             background: Rectangle {
                 color: "black"
                 opacity: 0.5
@@ -335,7 +341,7 @@ ApplicationWindow {
                     text: "Color"
                     font.family: "Helvetica"
                     checked: appControl.serialControl.selectedFilter === SerialControl.Color
-                    font.pointSize: 10
+                    font.pointSize: 12
                     font.bold: true
                     visible: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_ContinuousZoom
                              || appControl.serialControl.selectedCamera === SerialControl.CameraSelection_Spotter
@@ -359,7 +365,7 @@ ApplicationWindow {
                     text: "NIR"
                     font.family: "Helvetica"
                     checked: appControl.serialControl.selectedFilter === SerialControl.NIR
-                    font.pointSize: 10
+                    font.pointSize: 12
                     font.bold: true
                     visible: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_ContinuousZoom
                              || appControl.serialControl.selectedCamera === SerialControl.CameraSelection_Spotter
@@ -384,6 +390,8 @@ ApplicationWindow {
             Layout.column: 4
             Layout.row: 0
 
+            padding: 3
+
             background: Rectangle {
                 color: "black"
                 opacity: 0.5
@@ -401,7 +409,7 @@ ApplicationWindow {
                     text: "AF"
                     font.family: "Helvetica"
                     checked: appControl.serialControl.focusMode
-                    font.pointSize: 10
+                    font.pointSize: 12
                     font.bold: true
 
                     background: Rectangle {
@@ -422,7 +430,7 @@ ApplicationWindow {
                     text: "MF"
                     font.family: "Helvetica"
                     checked: !appControl.serialControl.focusMode
-                    font.pointSize: 10
+                    font.pointSize: 12
                     font.bold: true
 
                     background: Rectangle {
@@ -704,12 +712,12 @@ ApplicationWindow {
             Layout.row: 9
             Layout.alignment: Qt.AlignHCenter
 
-            spacing: 15
+            spacing: 30
 
             Text {
                 text: "NR: " + appControl.serialControl.noiseReductionType.toString() + ","
                 font.family: "Helvetica"
-                font.pointSize: 10
+                font.pointSize: 15
                 font.bold: true
                 color: "white"
                 style: Text.Outline
@@ -719,7 +727,7 @@ ApplicationWindow {
             Text {
                 text: "Defog: " + appControl.serialControl.defogType.toString() + ","
                 font.family: "Helvetica"
-                font.pointSize: 10
+                font.pointSize: 15
                 font.bold: true
                 color: "white"
                 style: Text.Outline
@@ -729,7 +737,7 @@ ApplicationWindow {
             Text {
                 text: "Gamma: " + appControl.serialControl.gammaType.toString() + ","
                 font.family: "Helvetica"
-                font.pointSize: 10
+                font.pointSize: 15
                 font.bold: true
                 color: "white"
                 style: Text.Outline
@@ -739,7 +747,7 @@ ApplicationWindow {
             Text {
                 text: "FOV: " + (appControl.serialControl.fovPosition / 1000).toFixed(2) + " °,"
                 font.family: "Helvetica"
-                font.pointSize: 10
+                font.pointSize: 15
                 font.bold: true
                 color: "white"
                 style: Text.Outline
@@ -749,7 +757,7 @@ ApplicationWindow {
             Text {
                 text: "Focus: " + (appControl.serialControl.focusPosition)
                 font.family: "Helvetica"
-                font.pointSize: 10
+                font.pointSize: 15
                 font.bold: true
                 color: "white"
                 style: Text.Outline
@@ -765,7 +773,7 @@ ApplicationWindow {
             Layout.alignment: Qt.AlignHCenter
 
             font.family: "Helvetica"
-            font.pointSize: 10
+            font.pointSize: 12
             color: "white"
             style: Text.Outline
             styleColor: "black"

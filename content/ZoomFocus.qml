@@ -54,6 +54,7 @@ import QtQuick.Controls.Styles 1.1
 
 import QtQuick.Controls 2.3 as QQC2
 import QtQuick.Controls 1.4 as QQC1
+import QtQuick.Layouts 1.12
 
 import AppControl 1.0
 
@@ -77,21 +78,20 @@ Item {
         }
     }
 
-    Column {
-        spacing: 20
+    ColumnLayout {
+        anchors.fill: parent
+        spacing: 9
 
         Text {
             text: "  Zoom & Focus: "
             font.family: "Helvetica"
-            font.pointSize: 15
+            font.pointSize: 12
             color: "white"
             style: Text.Outline;
             styleColor: "#fc0303"
         }
 
         QQC2.GroupBox {
-            font.pixelSize: 15
-
             label: QQC2.Label {
                 text: " Zoom: "
                 color: "white"
@@ -99,6 +99,7 @@ Item {
                 elide: Text.ElideRight
                 style: Text.Outline;
                 styleColor: "black"
+                font.pointSize: 12
             }
 
             background: Rectangle {
@@ -110,14 +111,21 @@ Item {
                 border.color: "white"
             }
 
-            Column {
+            ColumnLayout {
+                anchors.fill: parent
+
                 spacing: 6
 
-                Row {
+                RowLayout {
                     spacing: 9
+
+                    Layout.fillWidth: true
 
                     QQC2.Button {
                         id: zoomInButton
+
+                        Layout.fillWidth: true
+
                         contentItem: Text {
                             text: "Zoom In"
                             color: "white"
@@ -125,7 +133,7 @@ Item {
                             opacity: 1.0
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
-                            font.pixelSize: 15
+                            font.pixelSize: 12
                             font.bold: true
                             elide: Text.ElideRight
                         }
@@ -151,6 +159,9 @@ Item {
 
                     QQC2.Button {
                         id: zoomOutButton
+
+                        Layout.fillWidth: true
+
                         contentItem: Text {
                             text: "Zoom Out"
                             color: "white"
@@ -158,7 +169,7 @@ Item {
                             opacity: 1.0
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
-                            font.pixelSize: 15
+                            font.pixelSize: 12
                             font.bold: true
                             elide: Text.ElideRight
                         }
@@ -183,7 +194,7 @@ Item {
                     }
                 }
 
-                Row {
+                RowLayout {
 
                     Text {
                         text: "Speed:  "
@@ -197,8 +208,8 @@ Item {
 
                     QQC1.Slider {
                         id: zoomSlider
-                        anchors.margins: 15
-//                        style: sliderTouchStyle
+                        anchors.margins: 12
+                        style: sliderTouchStyle
                         value: appControl.serialControl.zoomSpeed
                         updateValueWhileDragging: false
                         minimumValue: 0
@@ -214,7 +225,6 @@ Item {
         }
 
         QQC2.GroupBox {
-            font.pixelSize: 15
 
             label: QQC2.Label {
                 text: " Focus: "
@@ -223,6 +233,7 @@ Item {
                 elide: Text.ElideRight
                 style: Text.Outline;
                 styleColor: "black"
+                font.pointSize: 12
             }
 
             background: Rectangle {
@@ -234,14 +245,22 @@ Item {
                 border.color: "white"
             }
 
-            Column {
+            ColumnLayout {
+                anchors.fill: parent
+
                 spacing: 6
 
-                Row {
+                RowLayout {
+                    anchors.fill: parent
                     spacing: 9
+
+                    Layout.fillWidth: true
 
                     QQC2.Button {
                         id: focusFarButton
+
+                        Layout.fillWidth: true
+
                         contentItem: Text {
                             text: "Focus Far"
                             color: "white"
@@ -249,7 +268,7 @@ Item {
                             opacity: 1.0
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
-                            font.pixelSize: 15
+                            font.pixelSize: 12
                             font.bold: true
                             elide: Text.ElideRight
                         }
@@ -275,6 +294,9 @@ Item {
 
                     QQC2.Button {
                         id: focusNearButton
+
+                        Layout.fillWidth: true
+
                         contentItem: Text {
                             text: "Focus Near"
                             color: "white"
@@ -282,7 +304,7 @@ Item {
                             opacity: 1.0
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
-                            font.pixelSize: 15
+                            font.pixelSize: 12
                             font.bold: true
                             elide: Text.ElideRight
                         }
@@ -307,12 +329,12 @@ Item {
                     }
                 }
 
-                Row {
+                RowLayout {
 
                     Text {
                         text: "Speed:  "
                         font.family: "Helvetica"
-                        font.pointSize: 15
+                        font.pointSize: 12
                         color: "white"
                         style: Text.Outline;
                         styleColor: "black"
@@ -336,7 +358,6 @@ Item {
         }
 
         QQC2.GroupBox {
-            font.pixelSize: 15
 
             label: QQC2.Label {
                 text: " Focus Mode: "
@@ -345,6 +366,7 @@ Item {
                 elide: Text.ElideRight
                 style: Text.Outline;
                 styleColor: "black"
+                font.pointSize: 12
             }
 
             background: Rectangle {
@@ -356,15 +378,17 @@ Item {
                 border.color: "white"
             }
 
-            Column {
-                spacing: 15
+            ColumnLayout {
+                anchors.fill: parent
+
+                spacing: 9
 
                 QQC2.RadioButton {
                     id: autoFocusButton
                     text: "Auto Focus"
                     font.family: "Helvetica"
                     checked: appControl.serialControl.focusMode
-                    font.pixelSize: 15
+                    font.pixelSize: 12
 
                     background: Rectangle {
                         implicitWidth: 60
@@ -387,7 +411,7 @@ Item {
                     text: "Manual Focus"
                     font.family: "Helvetica"
                     checked: !appControl.serialControl.focusMode
-                    font.pixelSize: 15
+                    font.pixelSize: 12
 
                     background: Rectangle {
                         implicitWidth: 60
@@ -410,8 +434,6 @@ Item {
 
 
         QQC2.GroupBox {
-            font.pixelSize: 15
-
             label: QQC2.Label {
                 text: " Angle Ratio of the Illuminator: "
                 color: "white"
@@ -419,6 +441,7 @@ Item {
                 elide: Text.ElideRight
                 style: Text.Outline;
                 styleColor: "black"
+                font.pointSize: 12
             }
 
             background: Rectangle {
@@ -430,14 +453,15 @@ Item {
                 border.color: "white"
             }
 
-            Column {
+            ColumnLayout {
+                anchors.fill: parent
                 spacing: 6
 
                 Text {
                     id: ratioValueText
                     text: "Ratio:  " + appControl.serialControl.illuminatorAngleOffset / 100.0
                     font.family: "Helvetica"
-                    font.pointSize: 15
+                    font.pointSize: 12
                     color: "white"
                     style: Text.Outline;
                     styleColor: "black"
