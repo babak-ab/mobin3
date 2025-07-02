@@ -9,8 +9,7 @@
 #include <QQmlApplicationEngine>
 
 int main(int argc, char* argv[])
-{
-
+{   
 #ifdef Q_OS_LINUX
     // Set custom screen resolution
     QProcess::execute("xrandr --output HDMI-0 --mode 1920x1080");

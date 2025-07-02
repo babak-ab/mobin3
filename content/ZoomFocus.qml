@@ -83,14 +83,14 @@ Item {
         Text {
             text: "  Zoom & Focus: "
             font.family: "Helvetica"
-            font.pointSize: 25
+            font.pointSize: 15
             color: "white"
             style: Text.Outline;
             styleColor: "#fc0303"
         }
 
         QQC2.GroupBox {
-            font.pixelSize: 25
+            font.pixelSize: 15
 
             label: QQC2.Label {
                 text: " Zoom: "
@@ -102,8 +102,8 @@ Item {
             }
 
             background: Rectangle {
-                implicitWidth: 100
-                implicitHeight: 60
+                implicitWidth: 60
+                implicitHeight: 36
                 color: "black"
                 opacity: 0.5
                 radius: 5
@@ -111,10 +111,10 @@ Item {
             }
 
             Column {
-                spacing: 10
+                spacing: 6
 
                 Row {
-                    spacing: 15
+                    spacing: 9
 
                     QQC2.Button {
                         id: zoomInButton
@@ -125,14 +125,14 @@ Item {
                             opacity: 1.0
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
-                            font.pixelSize: 25
+                            font.pixelSize: 15
                             font.bold: true
                             elide: Text.ElideRight
                         }
 
                         background: Rectangle {
-                            implicitWidth: 180
-                            implicitHeight: 60
+                            implicitWidth: 108
+                            implicitHeight: 36
                             color: zoomInButton.down ? "red" : "black"
                             opacity: 0.5
                             radius: 5
@@ -158,14 +158,14 @@ Item {
                             opacity: 1.0
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
-                            font.pixelSize: 25
+                            font.pixelSize: 15
                             font.bold: true
                             elide: Text.ElideRight
                         }
 
                         background: Rectangle {
-                            implicitWidth: 180
-                            implicitHeight: 60
+                            implicitWidth: 108
+                            implicitHeight: 36
                             color: zoomOutButton.down ? "red" : "black"
                             opacity: 0.5
                             radius: 5
@@ -188,7 +188,7 @@ Item {
                     Text {
                         text: "Speed:  "
                         font.family: "Helvetica"
-                        font.pointSize: 20
+                        font.pointSize: 12
                         color: "white"
                         style: Text.Outline;
                         styleColor: "black"
@@ -197,8 +197,8 @@ Item {
 
                     QQC1.Slider {
                         id: zoomSlider
-                        anchors.margins: 20
-                        style: sliderTouchStyle
+                        anchors.margins: 15
+//                        style: sliderTouchStyle
                         value: appControl.serialControl.zoomSpeed
                         updateValueWhileDragging: false
                         minimumValue: 0
@@ -214,7 +214,7 @@ Item {
         }
 
         QQC2.GroupBox {
-            font.pixelSize: 25
+            font.pixelSize: 15
 
             label: QQC2.Label {
                 text: " Focus: "
@@ -226,8 +226,8 @@ Item {
             }
 
             background: Rectangle {
-                implicitWidth: 100
-                implicitHeight: 60
+                implicitWidth: 60
+                implicitHeight: 36
                 color: "black"
                 opacity: 0.5
                 radius: 5
@@ -235,10 +235,10 @@ Item {
             }
 
             Column {
-                spacing: 10
+                spacing: 6
 
                 Row {
-                    spacing: 15
+                    spacing: 9
 
                     QQC2.Button {
                         id: focusFarButton
@@ -249,14 +249,14 @@ Item {
                             opacity: 1.0
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
-                            font.pixelSize: 25
+                            font.pixelSize: 15
                             font.bold: true
                             elide: Text.ElideRight
                         }
 
                         background: Rectangle {
-                            implicitWidth: 180
-                            implicitHeight: 60
+                            implicitWidth: 108
+                            implicitHeight: 36
                             color: focusFarButton.down ? "red" : "black"
                             opacity: 0.5
                             radius: 5
@@ -282,14 +282,14 @@ Item {
                             opacity: 1.0
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
-                            font.pixelSize: 25
+                            font.pixelSize: 15
                             font.bold: true
                             elide: Text.ElideRight
                         }
 
                         background: Rectangle {
-                            implicitWidth: 180
-                            implicitHeight: 60
+                            implicitWidth: 108
+                            implicitHeight: 36
                             color: focusNearButton.down ? "red" : "black"
                             opacity: 0.5
                             radius: 5
@@ -312,7 +312,7 @@ Item {
                     Text {
                         text: "Speed:  "
                         font.family: "Helvetica"
-                        font.pointSize: 20
+                        font.pointSize: 15
                         color: "white"
                         style: Text.Outline;
                         styleColor: "black"
@@ -321,7 +321,7 @@ Item {
 
                     QQC1.Slider {
                         id: focusSlider
-                        anchors.margins: 20
+                        anchors.margins: 12
                         style: sliderTouchStyle
                         value: appControl.serialControl.focusSpeed
                         minimumValue: 0
@@ -336,7 +336,7 @@ Item {
         }
 
         QQC2.GroupBox {
-            font.pixelSize: 25
+            font.pixelSize: 15
 
             label: QQC2.Label {
                 text: " Focus Mode: "
@@ -348,8 +348,8 @@ Item {
             }
 
             background: Rectangle {
-                implicitWidth: 100
-                implicitHeight: 60
+                implicitWidth: 60
+                implicitHeight: 36
                 color: "black"
                 opacity: 0.5
                 radius: 5
@@ -364,11 +364,11 @@ Item {
                     text: "Auto Focus"
                     font.family: "Helvetica"
                     checked: appControl.serialControl.focusMode
-                    font.pixelSize: 25
+                    font.pixelSize: 15
 
                     background: Rectangle {
-                        implicitWidth: 100
-                        implicitHeight: 60
+                        implicitWidth: 60
+                        implicitHeight: 36
                         color: autoFocusButton.checked ? "red" : "gray"
                         opacity: 0.5
                         radius: 5
@@ -387,11 +387,11 @@ Item {
                     text: "Manual Focus"
                     font.family: "Helvetica"
                     checked: !appControl.serialControl.focusMode
-                    font.pixelSize: 25
+                    font.pixelSize: 15
 
                     background: Rectangle {
-                        implicitWidth: 100
-                        implicitHeight: 60
+                        implicitWidth: 60
+                        implicitHeight: 36
                         color: manualFocusButton.checked ? "red" : "gray"
                         opacity: 0.5
                         radius: 5
@@ -410,7 +410,7 @@ Item {
 
 
         QQC2.GroupBox {
-            font.pixelSize: 25
+            font.pixelSize: 15
 
             label: QQC2.Label {
                 text: " Angle Ratio of the Illuminator: "
@@ -431,13 +431,13 @@ Item {
             }
 
             Column {
-                spacing: 10
+                spacing: 6
 
                 Text {
                     id: ratioValueText
                     text: "Ratio:  " + appControl.serialControl.illuminatorAngleOffset / 100.0
                     font.family: "Helvetica"
-                    font.pointSize: 20
+                    font.pointSize: 15
                     color: "white"
                     style: Text.Outline;
                     styleColor: "black"
@@ -445,8 +445,8 @@ Item {
 
                 QQC1.Slider {
                     id: angleOffsetSlider
-                    anchors.margins: 20
-                    anchors.topMargin: 20
+                    anchors.margins: 12
+                    anchors.topMargin: 12
                     style: sliderTouchStyle
                     value: appControl.serialControl.illuminatorAngleOffset
                     updateValueWhileDragging: false
@@ -483,8 +483,8 @@ Item {
         id: touchStyle
         ButtonStyle {
             panel: Item {
-                implicitHeight: 60
-                implicitWidth: 180
+                implicitHeight: 36
+                implicitWidth: 108
                 BorderImage {
                     anchors.fill: parent
                     antialiasing: true
@@ -509,7 +509,7 @@ Item {
                         anchors.centerIn: parent
                         color: "white"
                         font.family: "Helvetica"
-                        font.pixelSize: 25
+                        font.pixelSize: 15
                         renderType: Text.NativeRendering
                     }
                 }
@@ -521,16 +521,16 @@ Item {
         id: sliderTouchStyle
         SliderStyle {
             handle: Rectangle {
-                width: 30
-                height: 30
+                width: 18
+                height: 18
                 radius: height
                 antialiasing: true
                 color: Qt.lighter("#fc0303", 1.2)
             }
 
             groove: Item {
-                implicitHeight: 50
-                implicitWidth: 300
+                implicitHeight: 18
+                implicitWidth: 180
                 Rectangle {
                     height: 8
                     width: parent.width

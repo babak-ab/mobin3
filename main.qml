@@ -16,10 +16,13 @@ import QtQml 2.12
 ApplicationWindow {
     id: root
     visible: true
-    width: 1920
-    height: 1080
+    //     width: 1280
+    //     height: 720
     title: qsTr("Mobin3")
-    property  bool isSecondPageOpen: false
+
+    screen: Qt.application.screens[1]
+
+    property bool isSecondPageOpen: false
 
     onVisibleChanged: {
         if (visible) {
@@ -27,26 +30,52 @@ ApplicationWindow {
         }
     }
 
-
-
     Rectangle {
         color: "#212126"
         anchors.fill: parent
     }
 
-    RowLayout {
-        anchors.left: parent.left
-        anchors.top: parent.top
-        anchors.margins: 25
-        z: 1000
+    VideoRender {
+        id: videoRender
+        anchors.fill: root
+        source: appControl.videoAdapter
+    }
 
+    Reticle {
+        id: reticle
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
+        width: parent.width
+        height: parent.height
+        visible: appControl.reticleVisible
+
+        onSigDataChanged:
+        {
+            reticle.update()
+        }
+    }
+
+    GridLayout
+    {
+        anchors.fill: parent
+
+        columns: 6
+        rows: 10
+
+        //  ===========================
+        //      Top Row
+        //  ===========================
         Button {
             id: menuButton
+
+            Layout.column: 0
+            Layout.row: 0
+
             icon.source: "Images/menu-icon.png"
             icon.color: "transparent"
             font.family: "Helvetica"
-            icon.height: 90
-            icon.width: 90
+            icon.height: 54
+            icon.width: 54
             background: Rectangle {
                 color: "black"
                 opacity: 0.6
@@ -92,113 +121,41 @@ ApplicationWindow {
                 }
             }
         }
-    }
-
-    VideoRender {
-        id: videoRender
-        anchors.fill: parent
-        source: appControl.videoAdapter
-    }
-
-    Reticle {
-        id: reticle
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.horizontalCenter: parent.horizontalCenter
-        width: parent.width
-        height: parent.height
-        visible: appControl.reticleVisible
-
-        onSigDataChanged:
-        {
-            reticle.update()
-        }
-    }
-
-    Row {
-        spacing: 25
-        anchors.bottom: parent.bottom
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.margins: 15
-
-        Text {
-            text: "NR: " + appControl.serialControl.noiseReductionType.toString() + ","
-            font.family: "Helvetica"
-            font.pointSize: 25
-            font.bold: true
-            color: "white"
-            style: Text.Outline
-            styleColor: "black"
-        }
-
-        Text {
-            text: "Defog: " + appControl.serialControl.defogType.toString() + ","
-            font.family: "Helvetica"
-            font.pointSize: 25
-            font.bold: true
-            color: "white"
-            style: Text.Outline
-            styleColor: "black"
-        }
-
-        Text {
-            text: "Gamma: " + appControl.serialControl.gammaType.toString() + ","
-            font.family: "Helvetica"
-            font.pointSize: 25
-            font.bold: true
-            color: "white"
-            style: Text.Outline
-            styleColor: "black"
-        }
-
-        Text {
-            text: "FOV: " + (appControl.serialControl.fovPosition / 1000).toFixed(2) + " °,"
-            font.family: "Helvetica"
-            font.pointSize: 25
-            font.bold: true
-            color: "white"
-            style: Text.Outline
-            styleColor: "black"
-        }
-
-        Text {
-            text: "Focus: " + (appControl.serialControl.focusPosition)
-            font.family: "Helvetica"
-            font.pointSize: 25
-            font.bold: true
-            color: "white"
-            style: Text.Outline
-            styleColor: "black"
-        }
-    }
-
-
-    Row {
-        spacing: 20
-        anchors.top: parent.top
-        anchors.right: parent.right
-        anchors.margins: 15
 
         GroupBox {
+            Layout.column: 1
+            Layout.row: 0
+
+            padding: 5
+
             background: Rectangle {
-                implicitWidth: 20
-                implicitHeight: 20
+                implicitWidth: 12
+                implicitHeight: 12
                 color: "black"
                 opacity: 0.5
                 radius: 5
                 border.color: "white"
             }
 
-            Row {
-                spacing: 15
+            implicitWidth: 570
+
+            RowLayout {
+                anchors
+                {
+                    fill: parent
+                    margins: 5
+                }
+
+                spacing: 5
+
                 Text {
                     text: "Illuminator:"
                     font.family: "Helvetica"
-                    font.pointSize: 20
+                    font.pointSize: 10
                     font.bold: true
                     color: "white"
                     style: Text.Outline;
                     styleColor: "black"
-                    anchors.verticalCenter: parent.verticalCenter
                 }
 
                 Switch {
@@ -219,27 +176,25 @@ ApplicationWindow {
                     }
                 }
 
-
                 Text {
                     id: ratioAngleOffsetText
                     text: ", Ratio: " + (appControl.serialControl.illuminatorAngleOffset / 100.0).toFixed(2)
                     font.family: "Helvetica"
-                    font.pointSize: 18
+                    font.pointSize: 10
                     font.bold: true
                     color: "white"
                     style: Text.Outline
                     styleColor: "black"
-                    width: 150
-                    anchors.verticalCenter: parent.verticalCenter
                 }
 
                 Slider {
                     id: angleOffsetSlider
+
+                    implicitWidth: 80
+
                     value: appControl.serialControl.illuminatorAngleOffset
                     from: 50
                     to: 100
-
-                    implicitWidth: 100
 
                     onPressedChanged: {
 
@@ -259,25 +214,24 @@ ApplicationWindow {
 
                 Text {
                     id: brightnessValueText
+
                     text: ", Brightness: " + appControl.serialControl.illuminatorBrightnessLevel
                     font.family: "Helvetica"
-                    font.pointSize: 18
+                    font.pointSize: 10
                     font.bold: true
                     color: "white"
                     style: Text.Outline;
                     styleColor: "black"
-                    width: 200
-                    anchors.verticalCenter: parent.verticalCenter
                 }
 
                 Slider {
                     id: brightnessSlider
-                    anchors.margins: 20
-                    anchors.topMargin: 50
+
+                    implicitWidth: 80
+
                     value: appControl.serialControl.illuminatorBrightnessLevel
                     from: 0
                     to: 255
-                    implicitWidth: 100
 
                     onPressedChanged: {
 
@@ -295,24 +249,24 @@ ApplicationWindow {
                         brightnessValueText.text = ", Brightness:  " + value.toFixed(0)
                     }
                 }
-
             }
         }
 
         GroupBox {
-            font.pixelSize: 20
+            Layout.column: 2
+            Layout.row: 0
 
             background: Rectangle {
-                implicitWidth: 60
-                implicitHeight: 40
                 color: "black"
                 opacity: 0.5
                 radius: 5
                 border.color: "white"
             }
 
-            Row {
-                spacing: 15
+            RowLayout {
+                anchors.fill: parent
+
+                spacing: 3
 
                 RadioButton {
                     id: continuousZoom
@@ -320,12 +274,10 @@ ApplicationWindow {
                     font.family: "Helvetica"
                     checked: appControl.serialControl.selectedCamera
                              === SerialControl.CameraSelection_ContinuousZoom
-                    font.pixelSize: 18
+                    font.pointSize: 10
                     font.bold: true
 
                     background: Rectangle {
-                        implicitWidth: 60
-                        implicitHeight: 40
                         color: continuousZoom.checked ? "red" : "gray"
                         opacity: 0.5
                         radius: 5
@@ -344,12 +296,10 @@ ApplicationWindow {
                     font.family: "Helvetica"
                     checked: appControl.serialControl.selectedCamera
                              === SerialControl.CameraSelection_Spotter
-                    font.pixelSize: 18
+                    font.pointSize: 10
                     font.bold: true
 
                     background: Rectangle {
-                        implicitWidth: 60
-                        implicitHeight: 40
                         color: spotter.checked ? "red" : "gray"
                         opacity: 0.5
                         radius: 5
@@ -365,34 +315,33 @@ ApplicationWindow {
         }
 
         GroupBox {
-            font.pixelSize: 20
+            Layout.column: 3
+            Layout.row: 0
 
             background: Rectangle {
-                implicitWidth: 60
-                implicitHeight: 40
                 color: "black"
                 opacity: 0.5
                 radius: 5
                 border.color: "white"
             }
 
-            Row {
-                spacing: 15
+            RowLayout {
+                anchors.fill: parent
+
+                spacing: 3
 
                 RadioButton {
                     id: colorFilter
                     text: "Color"
                     font.family: "Helvetica"
                     checked: appControl.serialControl.selectedFilter === SerialControl.Color
-                    font.pixelSize: 18
+                    font.pointSize: 10
                     font.bold: true
                     visible: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_ContinuousZoom
                              || appControl.serialControl.selectedCamera === SerialControl.CameraSelection_Spotter
                              || appControl.serialControl.selectedCamera === SerialControl.CameraSelection_Unknown
 
                     background: Rectangle {
-                        implicitWidth: 60
-                        implicitHeight: 40
                         color: colorFilter.checked ? "red" : "gray"
                         opacity: 0.5
                         radius: 5
@@ -410,15 +359,13 @@ ApplicationWindow {
                     text: "NIR"
                     font.family: "Helvetica"
                     checked: appControl.serialControl.selectedFilter === SerialControl.NIR
-                    font.pixelSize: 18
+                    font.pointSize: 10
                     font.bold: true
                     visible: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_ContinuousZoom
                              || appControl.serialControl.selectedCamera === SerialControl.CameraSelection_Spotter
                              || appControl.serialControl.selectedCamera === SerialControl.CameraSelection_Unknown
 
                     background: Rectangle {
-                        implicitWidth: 60
-                        implicitHeight: 40
                         color: nirFilter.checked ? "red" : "gray"
                         opacity: 0.5
                         radius: 5
@@ -434,32 +381,30 @@ ApplicationWindow {
         }
 
         GroupBox {
-            font.pixelSize: 20
-            anchors.margins: 0
+            Layout.column: 4
+            Layout.row: 0
 
             background: Rectangle {
-                implicitWidth: 40
-                implicitHeight: 40
                 color: "black"
                 opacity: 0.5
                 radius: 5
                 border.color: "white"
             }
 
-            Row {
-                spacing: 10
+            RowLayout {
+                anchors.fill: parent
+
+                spacing: 3
 
                 RadioButton {
                     id: autoFocusButton
                     text: "AF"
                     font.family: "Helvetica"
                     checked: appControl.serialControl.focusMode
-                    font.pixelSize: 18
+                    font.pointSize: 10
                     font.bold: true
 
                     background: Rectangle {
-                        implicitWidth: 40
-                        implicitHeight: 40
                         color: autoFocusButton.checked ? "red" : "gray"
                         opacity: 0.5
                         radius: 5
@@ -477,12 +422,10 @@ ApplicationWindow {
                     text: "MF"
                     font.family: "Helvetica"
                     checked: !appControl.serialControl.focusMode
-                    font.pixelSize: 18
+                    font.pointSize: 10
                     font.bold: true
 
                     background: Rectangle {
-                        implicitWidth: 40
-                        implicitHeight: 40
                         color: manualFocusButton.checked ? "red" : "gray"
                         opacity: 0.5
                         radius: 5
@@ -499,18 +442,20 @@ ApplicationWindow {
 
         Button {
             id: recordButton
+
+            Layout.column: 5
+            Layout.row: 0
+
             icon.source: "qrc:/Images/record-icon.png"
             icon.color: "transparent"
-            icon.height: 60
-            icon.width: 60
+            icon.height: 42
+            icon.width: 42
             font.family: "Helvetica"
 
             checkable: true
             highlighted: checked
 
             background: Rectangle {
-                implicitWidth: 60
-                implicitHeight: 60
                 color: recordButton.checked ? "red" : "transparent"
                 opacity: 0.5
                 radius: 5
@@ -530,29 +475,21 @@ ApplicationWindow {
                 }
             }
         }
-    }
 
-    ButtonGroup {
-
-        buttons: column.children
-        onClicked: console.log("clicked:", button.text)
-    }
-
-    Column {
-
-        id: column
-        spacing: 15
-        anchors.bottom: parent.bottom
-        anchors.right: parent.right
-        anchors.margins: 15
-
+        //  ===========================
+        //      Right Column
+        //  ===========================
         Button {
             id: zoomInButton
+
+            Layout.column: 5
+            Layout.row: 1
+
             icon.source: "qrc:/Images/zoom-in-icon.png"
             icon.color: "white"
             font.family: "Helvetica"
-            icon.height: 70
-            icon.width: 70
+            icon.height: 42
+            icon.width: 42
 
             background: Rectangle {
                 opacity: 0.5
@@ -571,11 +508,15 @@ ApplicationWindow {
 
         Button {
             id: zoomOutButton
+
+            Layout.column: 5
+            Layout.row: 2
+
             icon.source: "qrc:/Images/zoom-out-icon.png"
             icon.color: "white"
             font.family: "Helvetica"
-            icon.height: 70
-            icon.width: 70
+            icon.height: 42
+            icon.width: 42
 
             background: Rectangle {
                 color: zoomOutButton.down ? "red" : "black"
@@ -594,11 +535,15 @@ ApplicationWindow {
 
         Button {
             id: focusFarButton
+
+            Layout.column: 5
+            Layout.row: 3
+
             icon.source: "qrc:/Images/focus-far.png"
             icon.color: "white"
             font.family: "Helvetica"
-            icon.height: 70
-            icon.width: 70
+            icon.height: 42
+            icon.width: 42
 
             background: Rectangle {
                 opacity: 0.5
@@ -617,11 +562,15 @@ ApplicationWindow {
 
         Button {
             id: focusNearButton
+
+            Layout.column: 5
+            Layout.row: 4
+
             icon.source: "qrc:/Images/focus-near.png"
             icon.color: "white"
             font.family: "Helvetica"
-            icon.height: 70
-            icon.width: 70
+            icon.height: 42
+            icon.width: 42
 
             background: Rectangle {
                 opacity: 0.5
@@ -640,11 +589,15 @@ ApplicationWindow {
 
         Button {
             id: rightPanButton
+
+            Layout.column: 5
+            Layout.row: 5
+
             icon.source: "qrc:/Images/right-arrow.png"
             icon.color: "white"
             font.family: "Helvetica"
-            icon.height: 70
-            icon.width: 70
+            icon.height: 42
+            icon.width: 42
 
             background: Rectangle {
                 color: rightPanButton.down ? "red" : "black"
@@ -663,11 +616,15 @@ ApplicationWindow {
 
         Button {
             id: leftPanButton
+
+            Layout.column: 5
+            Layout.row: 6
+
             icon.source: "qrc:/Images/left-arrow.png"
             icon.color: "white"
             font.family: "Helvetica"
-            icon.height: 70
-            icon.width: 70
+            icon.height: 42
+            icon.width: 42
 
             background: Rectangle {
                 color: leftPanButton.down ? "red" : "black"
@@ -686,11 +643,15 @@ ApplicationWindow {
 
         Button {
             id: upTiltButton
+
+            Layout.column: 5
+            Layout.row: 7
+
             icon.source: "qrc:/Images/up-arrow.png"
             icon.color: "white"
             font.family: "Helvetica"
-            icon.height: 70
-            icon.width: 70
+            icon.height: 42
+            icon.width: 42
 
             background: Rectangle {
                 color: upTiltButton.down ? "red" : "black"
@@ -709,11 +670,15 @@ ApplicationWindow {
 
         Button {
             id: downTiltButton
+
+            Layout.column: 5
+            Layout.row: 8
+
             icon.source: "qrc:/Images/down-arrow.png"
             icon.color: "white"
             font.family: "Helvetica"
-            icon.height: 70
-            icon.width: 70
+            icon.height: 42
+            icon.width: 42
 
             background: Rectangle {
                 color: downTiltButton.down ? "red" : "black"
@@ -730,10 +695,77 @@ ApplicationWindow {
             }
         }
 
+        //  ===========================
+        //      Bottom Row
+        //  ===========================
+        RowLayout {
+            Layout.column: 0
+            Layout.columnSpan: 5
+            Layout.row: 9
+            Layout.alignment: Qt.AlignHCenter
+
+            spacing: 15
+
+            Text {
+                text: "NR: " + appControl.serialControl.noiseReductionType.toString() + ","
+                font.family: "Helvetica"
+                font.pointSize: 10
+                font.bold: true
+                color: "white"
+                style: Text.Outline
+                styleColor: "black"
+            }
+
+            Text {
+                text: "Defog: " + appControl.serialControl.defogType.toString() + ","
+                font.family: "Helvetica"
+                font.pointSize: 10
+                font.bold: true
+                color: "white"
+                style: Text.Outline
+                styleColor: "black"
+            }
+
+            Text {
+                text: "Gamma: " + appControl.serialControl.gammaType.toString() + ","
+                font.family: "Helvetica"
+                font.pointSize: 10
+                font.bold: true
+                color: "white"
+                style: Text.Outline
+                styleColor: "black"
+            }
+
+            Text {
+                text: "FOV: " + (appControl.serialControl.fovPosition / 1000).toFixed(2) + " °,"
+                font.family: "Helvetica"
+                font.pointSize: 10
+                font.bold: true
+                color: "white"
+                style: Text.Outline
+                styleColor: "black"
+            }
+
+            Text {
+                text: "Focus: " + (appControl.serialControl.focusPosition)
+                font.family: "Helvetica"
+                font.pointSize: 10
+                font.bold: true
+                color: "white"
+                style: Text.Outline
+                styleColor: "black"
+            }
+        }
+
         Text {
             text: appControl.appVersion
+
+            Layout.column: 5
+            Layout.row: 9
+            Layout.alignment: Qt.AlignHCenter
+
             font.family: "Helvetica"
-            font.pointSize: 20
+            font.pointSize: 10
             color: "white"
             style: Text.Outline
             styleColor: "black"
@@ -793,16 +825,19 @@ ApplicationWindow {
 
     StackView {
         id: stackView
-        width: 400
+        width: 240
         visible: false
-        height: root.height
-        anchors.fill: parent
+        height: root.height - 250
+
+        y: (root.height / 2) - (height / 2)
+        x: 20
+
         font.family: "Helvetica"
         background: Rectangle {
             id: background
             color: "black"
             opacity: 0.6
-            width: 400
+            width: stackView.width
         }
 
         // Implements back key navigation
@@ -813,13 +848,15 @@ ApplicationWindow {
                          }
 
         initialItem: ColumnLayout {
-            width: 400
+            width: 240
             height: parent.height
+
             ListView {
                 id: listView
                 model: pageModel
                 anchors.fill: parent
                 spacing: -12
+
                 delegate: AndroidDelegate {
                     text: title
 
@@ -843,20 +880,18 @@ ApplicationWindow {
         id: exitDialog
         standardButtons: Dialog.Ok | Dialog.Cancel
         parent: Overlay.overlay
-        font.pointSize: 20
+        font.pointSize: 10
 
         Text {
             text: "Are you sure to exit the application?"
             font.family: "Helvetica"
-            font.pointSize: 20
+            font.pointSize: 10
             color: "white"
             style: Text.Outline;
             styleColor: "black"
         }
 
         background: Rectangle {
-            implicitWidth: 100
-            implicitHeight: 60
             color: "black"
             opacity: 0.5
             radius: 5
@@ -877,20 +912,18 @@ ApplicationWindow {
         id: illuminatorDialog
         standardButtons: Dialog.Ok | Dialog.Cancel
         parent: Overlay.overlay
-        font.pointSize: 20
+        font.pointSize: 10
 
         Text {
             text: "Are you sure to power on the illuminator?"
             font.family: "Helvetica"
-            font.pointSize: 20
+            font.pointSize: 10
             color: "white"
             style: Text.Outline;
             styleColor: "black"
         }
 
         background: Rectangle {
-            implicitWidth: 100
-            implicitHeight: 60
             color: "black"
             opacity: 0.5
             radius: 5
@@ -918,15 +951,13 @@ ApplicationWindow {
         visible: appControl.serialControl.messageBox === "" ? false : true
         //        standardButtons: Dialog.Ok
         //        parent: Overlay.overlay
-        font.pointSize: 20
-        width: 450
-        height: 280
+        font.pointSize: 10
+        width: 270
+        height: 168
 
         spacing: 40
 
         background: Rectangle {
-            implicitWidth: 100
-            implicitHeight: 60
             color: "black"
             opacity: 0.5
             radius: 5
@@ -942,7 +973,7 @@ ApplicationWindow {
             Text {
                 text: appControl.serialControl.messageBox
                 font.family: "Helvetica"
-                font.pointSize: 25
+                font.pointSize: 10
                 color: "red"
                 style: Text.Outline;
                 styleColor: "black"
@@ -955,7 +986,7 @@ ApplicationWindow {
                 Text {
                     text: "Serial Port: "
                     font.family: "Helvetica"
-                    font.pointSize: 20
+                    font.pointSize: 10
                     color: "white"
                     style: Text.Outline
                     styleColor: "black"
@@ -966,7 +997,7 @@ ApplicationWindow {
                     id: control
                     model: appControl.serialPortList
                     font.family: "Helvetica"
-                    width: 150
+                    width: 90
 
                     delegate: QQC2.ItemDelegate {
                         width: control.width
@@ -991,7 +1022,7 @@ ApplicationWindow {
                 id: controlBt
                 text: appControl.serialControl.isConnected ? "Disconnect" : "Connect"
                 font.family: "Helvetica"
-                font.pixelSize: 32
+                font.pointSize: 10
                 checkable: true
                 checked: appControl.serialControl.isConnected
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -1007,8 +1038,6 @@ ApplicationWindow {
                 }
 
                 background: Rectangle {
-                    implicitWidth: 150
-                    implicitHeight: 60
                     opacity: enabled ? 1 : 0.3
                     border.color: appControl.serialControl.isConnected ? "darkred" : "gray"
                     border.width: 1
@@ -1045,7 +1074,7 @@ ApplicationWindow {
             Text {
                 text: "Camera Menu Login"
                 font.family: "Helvetica"
-                font.pointSize: 15
+                font.pointSize: 10
                 color: "red"
                 style: Text.Outline
                 styleColor: "black"
@@ -1113,8 +1142,8 @@ ApplicationWindow {
         x: parent ? ((parent.width - width) / 2) : 0
         y: parent ? ((parent.height - height) / 2) : 0
 
-        width: 300
-        height: 100
+        width: 180
+        height: 60
         standardButtons: Dialog.Ok
 
         onAccepted: passwordDialog.close()
