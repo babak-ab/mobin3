@@ -75,7 +75,7 @@ Item {
     }
 
     GridLayout {
-        rowSpacing: 40
+        rowSpacing: 9
 
         rows: 5
         columns: 2
@@ -86,7 +86,7 @@ Item {
 
             text: "  Settings: "
             font.family: "Helvetica"
-            font.pointSize: 25
+            font.pointSize: 12
             color: "white"
             style: Text.Outline;
             styleColor: "#fc0303"
@@ -96,7 +96,7 @@ Item {
             Layout.column: 0
             Layout.row: 1
 
-            font.pixelSize: 25
+            font.pointSize: 12
 
             label: QQC2.Label {
                 text: " Defog: "
@@ -108,8 +108,8 @@ Item {
             }
 
             background: Rectangle {
-                implicitWidth: 100
-                implicitHeight: 60
+                implicitWidth: 60
+                implicitHeight: 36
                 color: "black"
                 opacity: 0.5
                 radius: 5
@@ -160,14 +160,14 @@ Item {
                             opacity: 1.0
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
-                            font.pixelSize: 25
+                            font.pointSize: 12
                             font.bold: true
                             elide: Text.ElideRight
                         }
 
                         background: Rectangle {
-                            implicitWidth: 180
-                            implicitHeight: 60
+                            implicitWidth: 108
+                            implicitHeight: 36
                             color: appControl.serialControl.defogMode === 0 ? "red" : "black"
                             opacity: 0.5
                             radius: 5
@@ -186,14 +186,14 @@ Item {
                             opacity: 1.0
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
-                            font.pixelSize: 25
+                            font.pointSize: 12
                             font.bold: true
                             elide: Text.ElideRight
                         }
 
                         background: Rectangle {
-                            implicitWidth: 180
-                            implicitHeight: 60
+                            implicitWidth: 108
+                            implicitHeight: 36
                             color: appControl.serialControl.defogMode === 1 ? "red" : "black"
                             opacity: 0.5
                             radius: 5
@@ -216,14 +216,14 @@ Item {
                             opacity: 1.0
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
-                            font.pixelSize: 25
+                            font.pointSize: 12
                             font.bold: true
                             elide: Text.ElideRight
                         }
 
                         background: Rectangle {
-                            implicitWidth: 180
-                            implicitHeight: 60
+                            implicitWidth: 108
+                            implicitHeight: 36
                             color: appControl.serialControl.defogMode === 2 ? "red" : "black"
                             opacity: 0.5
                             radius: 5
@@ -242,14 +242,14 @@ Item {
                             opacity: 1.0
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
-                            font.pixelSize: 25
+                            font.pointSize: 12
                             font.bold: true
                             elide: Text.ElideRight
                         }
 
                         background: Rectangle {
-                            implicitWidth: 180
-                            implicitHeight: 60
+                            implicitWidth: 108
+                            implicitHeight: 36
                             color: appControl.serialControl.defogMode === 3 ? "red" : "black"
                             opacity: 0.5
                             radius: 5
@@ -268,7 +268,7 @@ Item {
             Layout.column: 0
             Layout.row: 2
 
-            font.pixelSize: 25
+            font.pointSize: 12
 
             label: QQC2.Label {
                 text: " Gamma: "
@@ -280,8 +280,8 @@ Item {
             }
 
             background: Rectangle {
-                implicitWidth: 100
-                implicitHeight: 60
+                implicitWidth: 60
+                implicitHeight: 36
                 color: "black"
                 opacity: 0.5
                 radius: 5
@@ -326,7 +326,7 @@ Item {
             Layout.column: 0
             Layout.row: 3
 
-            font.pixelSize: 25
+            font.pointSize: 12
 
             label: QQC2.Label {
                 text: " Noise Reduction: "
@@ -338,8 +338,8 @@ Item {
             }
 
             background: Rectangle {
-                implicitWidth: 100
-                implicitHeight: 60
+                implicitWidth: 60
+                implicitHeight: 36
                 color: "black"
                 opacity: 0.4
                 radius: 5
@@ -384,7 +384,7 @@ Item {
             Layout.column: 0
             Layout.row: 4
 
-            font.pixelSize: 25
+            font.pointSize: 12
 
             label: QQC2.Label {
                 text: " Digital Zoom: "
@@ -396,8 +396,8 @@ Item {
             }
 
             background: Rectangle {
-                implicitWidth: 100
-                implicitHeight: 60
+                implicitWidth: 60
+                implicitHeight: 36
                 color: "black"
                 opacity: 0.4
                 radius: 5
@@ -423,7 +423,7 @@ Item {
             Layout.row: 1
             Layout.rowSpan: 2
 
-            font.pixelSize: 25
+            font.pointSize: 12
 
             label: QQC2.Label {
                 text: " Reticle: "
@@ -435,8 +435,8 @@ Item {
             }
 
             background: Rectangle {
-                implicitWidth: 100
-                implicitHeight: 60
+                implicitWidth: 60
+                implicitHeight: 36
                 color: "black"
                 opacity: 0.4
                 radius: 5
@@ -444,7 +444,7 @@ Item {
             }
 
             Column {
-                spacing: 20
+                spacing: 9
 
                 QQC1.Switch {
                     id: reticleSwitch
@@ -464,7 +464,7 @@ Item {
                     Text {
                         text: "Color:  "
                         font.family: "Helvetica"
-                        font.pointSize: 18
+                        font.pointSize: 12
                         color: "red"
                         style: Text.Outline;
                         styleColor: "black"
@@ -506,7 +506,7 @@ Item {
                     Text {
                         text: "Shape:  "
                         font.family: "Helvetica"
-                        font.pointSize: 18
+                        font.pointSize: 12
                         color: "red"
                         style: Text.Outline;
                         styleColor: "black"
@@ -518,7 +518,7 @@ Item {
                         to: items.length - 1
                         value: reticle.shape
 
-                        width: 300
+                        width: 180
 
                         property var items:
                             ["Cross",
@@ -565,7 +565,7 @@ Item {
                         Layout.alignment: Qt.AlignCenter
 
                         font.family: "Helvetica"
-                        font.pointSize: 18
+                        font.pointSize: 12
                         color: "red"
                         style: Text.Outline;
                         styleColor: "black"
@@ -580,7 +580,7 @@ Item {
                         Layout.alignment: Qt.AlignCenter
 
                         font.family: "Helvetica"
-                        font.pointSize: 18
+                        font.pointSize: 12
                         color: "red"
                         style: Text.Outline;
                         styleColor: "black"
@@ -671,7 +671,7 @@ Item {
                         text: control.text
                         anchors.centerIn: parent
                         color: "white"
-                        font.pixelSize: 23
+                        font.pointSize: 23
                         renderType: Text.NativeRendering
                     }
                 }
@@ -684,19 +684,19 @@ Item {
         SwitchStyle {
 
             groove: Rectangle {
-                implicitHeight: 50
-                implicitWidth: 152
+                implicitHeight: 30
+                implicitWidth: 91
                 Rectangle {
                     anchors.top: parent.top
                     anchors.left: parent.left
                     anchors.bottom: parent.bottom
                     width: parent.width/2 - 2
-                    height: 20
+                    height: 12
                     anchors.margins: 2
                     color: control.checked ? "#468bb7" : "#222"
                     Behavior on color {ColorAnimation {}}
                     Text {
-                        font.pixelSize: 23
+                        font.pointSize: 12
                         color: "white"
                         anchors.centerIn: parent
                         text: "ON"
@@ -708,7 +708,7 @@ Item {
                     height: parent.height
                     anchors.right: parent.right
                     Text {
-                        font.pixelSize: 23
+                        font.pointSize: 12
                         color: "white"
                         anchors.centerIn: parent
                         text: "OFF"

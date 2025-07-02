@@ -73,12 +73,12 @@ Item {
     }
 
     Column {
-        spacing: 40
+        spacing: 9
 
         Text {
             text: "  FOV: "
             font.family: "Helvetica"
-            font.pointSize: 25
+            font.pointSize: 12
             color: "white"
             style: Text.Outline;
             styleColor: "#fc0303"
@@ -86,24 +86,22 @@ Item {
 
         Row {
 
-            spacing: 25
+            spacing: 9
 
             Text {
                 id: fovValueText
                 text: "FOV:  " + appControl.serialControl.fovPosition / 1000 + " °"
                 font.family: "Helvetica"
-                font.pointSize: 20
+                font.pointSize: 12
                 color: "white"
                 style: Text.Outline;
                 styleColor: "black"
                 anchors.verticalCenter: parent.verticalCenter
-                width: 200
+                width: 100
             }
 
             QQC1.Slider {
                 id: gotoFovSlider
-                anchors.margins: 20
-                anchors.topMargin: 50
                 style: sliderTouchStyle
                 value: appControl.serialControl.fovPosition
                 minimumValue: 0
@@ -139,24 +137,22 @@ Item {
         }
 
         Row {
-            spacing: 25
+            spacing: 9
 
             Text {
                 id: focusValueText
                 text: "Focus:  " + appControl.serialControl.focusPosition
                 font.family: "Helvetica"
-                font.pointSize: 20
+                font.pointSize: 12
                 color: "white"
                 style: Text.Outline;
                 styleColor: "black"
                 anchors.verticalCenter: parent.verticalCenter
-                width: 200
+                width: 100
             }
 
             QQC1.Slider {
                 id: gotoFocusSlider
-                anchors.margins: 20
-                anchors.topMargin: 50
                 style: sliderTouchStyle
                 value: appControl.serialControl.focusPosition
                 minimumValue: 0
@@ -190,7 +186,7 @@ Item {
         }
 
         QQC2.GroupBox {
-            font.pixelSize: 25
+            font.pointSize: 12
 
             label: QQC2.Label {
                 text: " Positions: "
@@ -202,8 +198,8 @@ Item {
             }
 
             background: Rectangle {
-                implicitWidth: 100
-                implicitHeight: 60
+                implicitWidth: 60
+                implicitHeight: 36
                 color: "black"
                 opacity: 0.5
                 radius: 5
@@ -211,7 +207,7 @@ Item {
             }
 
             Column {
-                spacing: 25
+                spacing: 9
                 QQC2.SpinBox {
                     id: positionSpinBox
                     from: 1
@@ -220,8 +216,8 @@ Item {
                     editable: true
 
                     background: Rectangle {
-                        implicitWidth: 150
-                        implicitHeight: 60
+                        implicitWidth: 90
+                        implicitHeight: 36
                         color: "gray"
                         opacity: 0.5
                         radius: 5
@@ -238,14 +234,14 @@ Item {
                         opacity: 1.0
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
-                        font.pixelSize: 25
+                        font.pointSize: 12
                         font.bold: true
                         elide: Text.ElideRight
                     }
 
                     background: Rectangle {
-                        implicitWidth: 180
-                        implicitHeight: 60
+                        implicitWidth: 108
+                        implicitHeight: 36
                         color: setPositionButton.down ? "red" : "gray"
                         opacity: 0.5
                         radius: 5
@@ -267,14 +263,14 @@ Item {
                         opacity: 1.0
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
-                        font.pixelSize: 25
+                        font.pointSize: 12
                         font.bold: true
                         elide: Text.ElideRight
                     }
 
                     background: Rectangle {
-                        implicitWidth: 180
-                        implicitHeight: 60
+                        implicitWidth: 108
+                        implicitHeight: 36
                         color: clearPositionButton.down ? "red" : "gray"
                         opacity: 0.5
                         radius: 5
@@ -296,14 +292,14 @@ Item {
                         opacity: 1.0
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
-                        font.pixelSize: 25
+                        font.pointSize: 12
                         font.bold: true
                         elide: Text.ElideRight
                     }
 
                     background: Rectangle {
-                        implicitWidth: 180
-                        implicitHeight: 60
+                        implicitWidth: 108
+                        implicitHeight: 36
                         color: gotoPositionButton.down ? "red" : "gray"
                         opacity: 0.5
                         radius: 5
@@ -350,7 +346,7 @@ Item {
                         anchors.centerIn: parent
                         color: "white"
                         font.family: "Helvetica"
-                        font.pixelSize: 25
+                        font.pointSize: 25
                         renderType: Text.NativeRendering
                     }
                 }
@@ -362,21 +358,21 @@ Item {
         id: sliderTouchStyle
         SliderStyle {
             handle: Rectangle {
-                width: 30
-                height: 30
+                width: 18
+                height: 18
                 radius: height
                 antialiasing: true
                 color: Qt.lighter("#fc0303", 1.2)
             }
 
             groove: Item {
-                implicitHeight: 50
-                implicitWidth: 400
+                implicitHeight: 18
+                implicitWidth: 180
                 Rectangle {
                     height: 8
                     width: parent.width
                     anchors.verticalCenter: parent.verticalCenter
-                    color: "#444"
+                    color: "#ede4e4"
                     opacity: 0.8
                     Rectangle {
                         antialiasing: true

@@ -73,19 +73,19 @@ Item {
     }
 
     Column {
-        spacing: 40
+        spacing: 9
 
         Text {
             text: "  Advanced Settings: "
             font.family: "Helvetica"
-            font.pointSize: 25
+            font.pointSize: 12
             color: "white"
             style: Text.Outline;
             styleColor: "#fc0303"
         }
 
         QQC2.GroupBox { // Contrast ------------------------------
-            font.pixelSize: 25
+            font.pointSize: 12
 
             label: QQC2.Label {
                 text: " Contrast: "
@@ -97,8 +97,8 @@ Item {
             }
 
             background: Rectangle {
-                implicitWidth: 150
-                implicitHeight: 60
+                implicitWidth: 90
+                implicitHeight: 36
                 color: "black"
                 opacity: 0.5
                 radius: 5
@@ -140,7 +140,7 @@ Item {
         }
 
         QQC2.GroupBox { // Brightness --------------------------
-            font.pixelSize: 25
+            font.pointSize: 12
 
             label: QQC2.Label {
                 text: " Brightness: "
@@ -152,8 +152,8 @@ Item {
             }
 
             background: Rectangle {
-                implicitWidth: 150
-                implicitHeight: 60
+                implicitWidth: 90
+                implicitHeight: 36
                 color: "black"
                 opacity: 0.5
                 radius: 5
@@ -194,7 +194,7 @@ Item {
         }
 
         QQC2.GroupBox { // Mode --------------------
-            font.pixelSize: 25
+            font.pointSize: 12
 
             label: QQC2.Label {
                 text: " Mode: "
@@ -206,8 +206,8 @@ Item {
             }
 
             background: Rectangle {
-                implicitWidth: 100
-                implicitHeight: 60
+                implicitWidth: 60
+                implicitHeight: 36
                 color: "black"
                 opacity: 0.5
                 radius: 5
@@ -248,7 +248,7 @@ Item {
         }
 
         QQC2.GroupBox { // Image Type (In Night) -------------
-            font.pixelSize: 25
+            font.pointSize: 12
 
             label: QQC2.Label {
                 text: " Image Type (In Night): "
@@ -260,8 +260,8 @@ Item {
             }
 
             background: Rectangle {
-                implicitWidth: 100
-                implicitHeight: 60
+                implicitWidth: 60
+                implicitHeight: 36
                 color: "black"
                 opacity: 0.5
                 radius: 5
@@ -301,7 +301,7 @@ Item {
         }
 
         QQC2.GroupBox { // Bootloader Program ---------------
-            font.pixelSize: 25
+            font.pointSize: 12
 
             label: QQC2.Label {
                 text: " Bootloader Program: "
@@ -313,8 +313,8 @@ Item {
             }
 
             background: Rectangle {
-                implicitWidth: 100
-                implicitHeight: 60
+                implicitWidth: 60
+                implicitHeight: 36
                 color: "black"
                 opacity: 0.5
                 radius: 5
@@ -330,14 +330,14 @@ Item {
                     opacity: 1.0
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
-                    font.pixelSize: 25
+                    font.pointSize: 12
                     font.bold: true
                     elide: Text.ElideRight
                 }
 
                 background: Rectangle {
-                    implicitWidth: 180
-                    implicitHeight: 60
+                    implicitWidth: 108
+                    implicitHeight: 36
                     color: activateBootLoader.down ? "red" : "black"
                     opacity: 0.5
                     radius: 5
@@ -366,7 +366,7 @@ Item {
             label: Text {
                 verticalAlignment: Text.AlignVCenter
                 horizontalAlignment: Text.AlignHCenter
-                font.pointSize: 15
+                font.pointSize: 12
                 font.family: "Helvetica"
                 font.capitalization: Font.SmallCaps
                 color: "white"
@@ -379,8 +379,8 @@ Item {
         id: touchStyle
         ButtonStyle {
             panel: Item {
-                implicitHeight: 60
-                implicitWidth: 150
+                implicitHeight: 36
+                implicitWidth: 90
                 BorderImage {
                     anchors.fill: parent
                     antialiasing: true
@@ -395,7 +395,7 @@ Item {
                         anchors.centerIn: parent
                         color: "white"
                         font.family: "Helvetica"
-                        font.pixelSize: 23
+                        font.pointSize: 12
                         renderType: Text.NativeRendering
                     }
                 }
@@ -408,19 +408,19 @@ Item {
         SwitchStyle {
 
             groove: Rectangle {
-                implicitHeight: 50
-                implicitWidth: 152
+                implicitHeight: 30
+                implicitWidth: 91
                 Rectangle {
                     anchors.top: parent.top
                     anchors.left: parent.left
                     anchors.bottom: parent.bottom
                     width: parent.width/2 - 2
-                    height: 20
+                    height: 12
                     anchors.margins: 2
                     color: control.checked ? "#468bb7" : "#222"
                     Behavior on color {ColorAnimation {}}
                     Text {
-                        font.pixelSize: 23
+                        font.pointSize: 12
                         color: "white"
                         anchors.centerIn: parent
                         text: "ON"
@@ -432,7 +432,7 @@ Item {
                     height: parent.height
                     anchors.right: parent.right
                     Text {
-                        font.pixelSize: 23
+                        font.pointSize: 12
                         color: "white"
                         anchors.centerIn: parent
                         text: "OFF"
@@ -461,15 +461,15 @@ Item {
         Text {
             text: "Are you sure to activate Bootloader?\nThis may be harmful for the system!"
             font.family: "Helvetica"
-            font.pointSize: 15
+            font.pointSize: 12
             color: "white"
             style: Text.Outline;
             styleColor: "black"
         }
 
         background: Rectangle {
-            implicitWidth: 100
-            implicitHeight: 60
+            implicitWidth: 60
+            implicitHeight: 36
             color: "black"
             opacity: 0.5
             radius: 5

@@ -58,24 +58,24 @@ import QtQuick.Controls 2.2 as QQC2
 import AppControl 1.0
 import SerialControl 1.0
 
-ScrollView {
+Item {
 
-    flickableItem.interactive: true
+//    flickableItem.interactive: true
 
     Column {
-        spacing: 40
+        spacing: 9
 
         Text {
             text: "  Sending Mode: "
             font.family: "Helvetica"
-            font.pointSize: 25
+            font.pointSize: 12
             color: "white"
             style: Text.Outline;
             styleColor: "#fc0303"
         }
 
         QQC2.GroupBox {
-            font.pixelSize: 25
+            font.pointSize: 12
 
             label: QQC2.Label {
                 text: " Sending Mode: "
@@ -87,8 +87,8 @@ ScrollView {
             }
 
             background: Rectangle {
-                implicitWidth: 100
-                implicitHeight: 60
+                implicitWidth: 60
+                implicitHeight: 36
                 color: "black"
                 opacity: 0.5
                 radius: 5
@@ -96,20 +96,20 @@ ScrollView {
             }
 
             Column {
-                spacing: 25
+                spacing: 9
                 Row {
-                    spacing: 30
+                    spacing: 9
                     QQC2.RadioButton {
                         id: requestSendingMode
                         text: "Request"
                         font.family: "Helvetica"
                         checked: appControl.serialControl.sendingMode === 2
-                        font.pixelSize: 25
+                        font.pointSize: 12
                         anchors.verticalCenter: parent.verticalCenter
 
                         background: Rectangle {
-                            implicitWidth: 100
-                            implicitHeight: 60
+                            implicitWidth: 60
+                            implicitHeight: 36
                             color: requestSendingMode.checked ? "red" : "gray"
                             opacity: 0.5
                             radius: 5
@@ -137,15 +137,15 @@ ScrollView {
                             opacity: 1.0
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
-                            font.pixelSize: 25
+                            font.pointSize: 12
                             font.bold: true
                             elide: Text.ElideRight
                             anchors.verticalCenter: parent.verticalCenter
                         }
 
                         background: Rectangle {
-                            implicitWidth: 180
-                            implicitHeight: 60
+                            implicitWidth: 108
+                            implicitHeight: 36
                             color: statusModeButton.down ? "red" : "black"
                             opacity: 0.5
                             radius: 5
@@ -169,11 +169,11 @@ ScrollView {
                         text: "Continuous"
                         font.family: "Helvetica"
                         checked: appControl.serialControl.sendingMode === 1
-                        font.pixelSize: 25
+                        font.pointSize: 12
 
                         background: Rectangle {
-                            implicitWidth: 200
-                            implicitHeight: 60
+                            implicitWidth: 120
+                            implicitHeight: 36
                             visible: control.checked
                             color: continuousSendingMode.checked ? "red" : "gray"
                             opacity: 0.5
@@ -199,11 +199,11 @@ ScrollView {
                         to: 255
                         value: appControl.serialControl.continuousModeInterval
                         visible: false
-                        spacing: 20
+                        spacing: 9
 
                         background: Rectangle {
-                            implicitWidth: 120
-                            implicitHeight: 60
+                            implicitWidth: 72
+                            implicitHeight: 36
                             color: "black"
                             opacity: 0.5
                             radius: 5
@@ -226,11 +226,10 @@ ScrollView {
                         font.family: "Helvetica"
                         anchors.verticalCenter: parent.verticalCenter
 
-                        font.pointSize: 15
+                        font.pointSize: 12
                         color: "white"
                         style: Text.Outline;
                         styleColor: "black"
-                        anchors.topMargin: 25
                     }
                 }
             }

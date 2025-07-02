@@ -53,6 +53,7 @@ import QtQuick.Controls.Styles 1.1
 
 import QtQuick.Controls 2.3 as QQC2
 import QtQuick.Controls 1.4 as QQC1
+import QtQuick.Layouts 1.12
 
 Item {
 
@@ -72,13 +73,20 @@ Item {
         }
     }
 
-    Column {
-        spacing: 40
+    GridLayout
+    {
+        columns: 4
+        rows: 3
+
+        columnSpacing: 20
 
         Text {
+            Layout.column: 0
+            Layout.row: 0
+
             text: "  Menu: "
             font.family: "Helvetica"
-            font.pointSize: 25
+            font.pointSize: 12
             color: "white"
             style: Text.Outline;
             styleColor: "#fc0303"
@@ -86,16 +94,20 @@ Item {
 
         QQC2.Button {
             id: upButton
+
+            Layout.column: 1
+            Layout.row: 1
+            Layout.alignment: Qt.AlignCenter
+
             icon.source: "qrc:/Images/up-tilt-icon.png"
             icon.color: "white"
             font.family: "Helvetica"
-            icon.height: 60
-            icon.width: 60
-            anchors.horizontalCenter: parent.horizontalCenter
+            icon.height: 36
+            icon.width: 36
 
             background: Rectangle {
-                implicitWidth: 60
-                implicitHeight: 60
+                implicitWidth: 36
+                implicitHeight: 36
                 color: upButton.down ? "red" : "black"
                 opacity: 0.5
                 radius: 5
@@ -111,124 +123,139 @@ Item {
             }
         }
 
-        Row {
-            spacing: 80
-            anchors.horizontalCenter: parent.horizontalCenter
+        QQC2.Button {
+            id: leftButton
+
+            Layout.column: 0
+            Layout.row: 2
+            Layout.alignment: Qt.AlignCenter
+
+            icon.source: "qrc:/Images/left-pan-icon.png"
+            icon.color: "white"
+            font.family: "Helvetica"
+            icon.height: 36
+            icon.width: 36
+
+            background: Rectangle {
+                implicitWidth: 36
+                implicitHeight: 36
+                color: leftButton.down ? "red" : "black"
+                opacity: 0.5
+                radius: 5
+            }
+
+            onPressed: {
+                appControl.serialControl.menuLeftPressed()
+            }
+
+            onDownChanged: {
+                if (!leftButton.pressed)
+                    appControl.serialControl.menuLeftReleased()
+            }
+        }
+
+        ColumnLayout {
+            id: column
+
+            Layout.column: 1
+            Layout.row: 2
+            Layout.alignment: Qt.AlignCenter
+
+            spacing: -10
 
             QQC2.Button {
-                id: leftButton
-                icon.source: "qrc:/Images/left-pan-icon.png"
-                icon.color: "white"
+                id: menuButton
+                text: "Menu"
                 font.family: "Helvetica"
-                icon.height: 60
-                icon.width: 60
+                font.bold: true
+                font.pointSize: 12
 
                 background: Rectangle {
-                    implicitWidth: 60
-                    implicitHeight: 60
-                    color: leftButton.down ? "red" : "black"
+                    implicitWidth: 36
+                    implicitHeight: 36
+                    color: menuButton.down ? "red" : "black"
                     opacity: 0.5
                     radius: 5
+                    border.color: "white"
                 }
 
                 onPressed: {
-                    appControl.serialControl.menuLeftPressed()
-                }
+                    appControl.serialControl.showMenuPressedRequested()
 
-                onDownChanged: {
-                    if (!leftButton.pressed)
-                        appControl.serialControl.menuLeftReleased()
-                }
-            }
-
-            Column {
-                id: column
-                //anchors.verticalCenter: column.verticalCenter
-                QQC2.Button {
-                    id: menuButton
-                    text: "Menu"
-                    font.family: "Helvetica"
-                    font.bold: true
-                    font.pixelSize: 24
-
-                    background: Rectangle {
-                        implicitWidth: 80
-                        implicitHeight: 80
-                        color: menuButton.down ? "red" : "black"
-                        opacity: 0.5
-                        radius: 5
-                        border.color: "white"
-                    }
-
-                    onPressed: {
-                        appControl.serialControl.showMenuPressedRequested()
-
-                    }
-                }
-
-                QQC2.Button {
-                    anchors.horizontalCenter: column.horizontalCenter
-                    id: escButton
-                    text: "ESC"
-                    font.family: "Helvetica"
-                    font.bold: true
-                    font.pixelSize: 24
-
-                    background: Rectangle {
-                        implicitWidth: 60
-                        implicitHeight: 60
-                        color: escButton.down ? "red" : "black"
-                        opacity: 0.5
-                        radius: 5
-                        border.color: "white"
-                    }
-
-                    onDownChanged: {
-                        if (!escButton.pressed)
-                            appControl.serialControl.menuESCReleased()
-                    }
                 }
             }
 
             QQC2.Button {
-                id: rightButton
-                icon.source: "qrc:/Images/right-pan-icon.png"
-                icon.color: "white"
+                anchors.horizontalCenter: column.horizontalCenter
+                id: escButton
+                text: "ESC"
                 font.family: "Helvetica"
-                icon.height: 60
-                icon.width: 60
+                font.bold: true
+                font.pointSize: 12
 
                 background: Rectangle {
-                    implicitWidth: 60
-                    implicitHeight: 60
-                    color: rightButton.down ? "red" : "black"
+                    implicitWidth: 36
+                    implicitHeight: 36
+                    color: escButton.down ? "red" : "black"
                     opacity: 0.5
                     radius: 5
-                }
-
-                onPressed: {
-                    appControl.serialControl.menuRightPressed()
+                    border.color: "white"
                 }
 
                 onDownChanged: {
-                    if (!rightButton.pressed)
-                        appControl.serialControl.menuRightReleased()
+                    if (!escButton.pressed)
+                        appControl.serialControl.menuESCReleased()
                 }
             }
         }
 
         QQC2.Button {
+            id: rightButton
+
+            Layout.column: 2
+            Layout.row: 2
+            Layout.alignment: Qt.AlignCenter
+
+            icon.source: "qrc:/Images/right-pan-icon.png"
+            icon.color: "white"
+            font.family: "Helvetica"
+            icon.height: 36
+            icon.width: 36
+
+            background: Rectangle {
+                implicitWidth: 36
+                implicitHeight: 36
+                color: rightButton.down ? "red" : "black"
+                opacity: 0.5
+                radius: 5
+            }
+
+            onPressed: {
+                appControl.serialControl.menuRightPressed()
+            }
+
+            onDownChanged: {
+                if (!rightButton.pressed)
+                    appControl.serialControl.menuRightReleased()
+            }
+        }
+
+        QQC2.Button {
             id: downButton
+
+            Layout.column: 1
+            Layout.row: 3
+            Layout.alignment: Qt.AlignCenter
+
             icon.source: "qrc:/Images/down-tilt-icon.png"
             icon.color: "white"
             font.family: "Helvetica"
-            icon.height: 60
-            icon.width: 60
-            anchors.horizontalCenter: parent.horizontalCenter
+            icon.height: 36
+            icon.width: 36
 
             background: Rectangle {
-                implicitWidth: 60
-                implicitHeight: 60
+                implicitWidth: 36
+                implicitHeight: 36
                 color: downButton.down ? "red" : "black"
                 opacity: 0.5
                 radius: 5
@@ -249,16 +276,16 @@ Item {
         id: sliderTouchStyle
         SliderStyle {
             handle: Rectangle {
-                width: 30
-                height: 30
+                width: 18
+                height: 18
                 radius: height
                 antialiasing: true
                 color: Qt.lighter("#fc0303", 1.2)
             }
 
             groove: Item {
-                implicitHeight: 50
-                implicitWidth: 400
+                implicitHeight: 30
+                implicitWidth: 240
                 Rectangle {
                     height: 8
                     width: parent.width

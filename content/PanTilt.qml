@@ -81,6 +81,7 @@ Item {
     }
 
     ColumnLayout {
+
         anchors.fill: parent
 
         spacing: 9
@@ -126,8 +127,7 @@ Item {
 
         GridLayout
         {
-            width: row.width
-
+            Layout.alignment: Qt.AlignCenter
             columns: 3
             rows: 3
 
@@ -254,6 +254,11 @@ Item {
                         appControl.serialControl.tiltStop()
                 }
             }
+        }
+
+        Item
+        {
+            Layout.fillHeight: true
         }
     }
 

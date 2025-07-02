@@ -95,7 +95,7 @@ Item {
 
             text: "Serial Status"
             font.family: "Helvetica"
-            font.pointSize: 25
+            font.pointSize: 12
             color: "white"
             style: Text.Outline
             styleColor: "#fc0303"
@@ -108,7 +108,7 @@ Item {
 
             text: "Platform:"
             font.family: "Helvetica"
-            font.pointSize: 20
+            font.pointSize: 12
             font.bold: true
             color: "white"
             style: Text.Outline;
@@ -142,7 +142,7 @@ Item {
 
             text: "Board:"
             font.family: "Helvetica"
-            font.pointSize: 20
+            font.pointSize: 12
             font.bold: true
             color: "white"
             style: Text.Outline;
@@ -364,7 +364,7 @@ Item {
             label: Text {
                 verticalAlignment: Text.AlignVCenter
                 horizontalAlignment: Text.AlignHCenter
-                font.pointSize: 15
+                font.pointSize: 12
                 font.capitalization: Font.SmallCaps
                 color: "white"
                 font.family: "Helvetica"
@@ -377,8 +377,8 @@ Item {
         id: touchStyle
         ButtonStyle {
             panel: Item {
-                implicitHeight: 60
-                implicitWidth: 150
+                implicitHeight: 36
+                implicitWidth: 90
                 BorderImage {
                     anchors.fill: parent
                     antialiasing: true
@@ -393,7 +393,7 @@ Item {
                         anchors.centerIn: parent
                         color: "white"
                         font.family: "Helvetica"
-                        font.pixelSize: 23
+                        font.pixelSize: 12
                         renderType: Text.NativeRendering
                     }
                 }
@@ -405,8 +405,8 @@ Item {
         id: pressedTouchStyle
         ButtonStyle {
             panel: Item {
-                implicitHeight: 60
-                implicitWidth: 150
+                implicitHeight: 36
+                implicitWidth: 90
                 BorderImage {
                     anchors.fill: parent
                     antialiasing: true
@@ -421,7 +421,7 @@ Item {
                         anchors.centerIn: parent
                         color: "white"
                         font.family: "Helvetica"
-                        font.pixelSize: 23
+                        font.pixelSize: 12
                         renderType: Text.NativeRendering
                     }
                 }

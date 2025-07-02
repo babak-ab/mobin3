@@ -73,12 +73,12 @@ Item {
     }
 
     Column {
-        spacing: 40
+        spacing: 9
 
         Text {
             text: "  Sensor Information: "
             font.family: "Helvetica"
-            font.pointSize: 25
+            font.pointSize: 12
             color: "white"
             style: Text.Outline;
             styleColor: "#fc0303"
@@ -87,8 +87,8 @@ Item {
         QQC2.GroupBox {
 
             background: Rectangle {
-                implicitWidth: 80
-                implicitHeight: 60
+                implicitWidth: 48
+                implicitHeight: 36
                 color: "black"
                 opacity: 0.5
                 radius: 5
@@ -96,11 +96,11 @@ Item {
             }
 
             Column {
-                spacing: 25
+                spacing: 9
                 Text {
                     text: "Sensor:  " + appControl.serialControl.sensor
                     font.family: "Helvetica"
-                    font.pointSize: 20
+                    font.pointSize: 12
                     color: "white"
                     style: Text.Outline;
                     styleColor: "black"
@@ -109,7 +109,7 @@ Item {
                 Text {
                     text: "Image Type:  " + appControl.serialControl.imageType
                     font.family: "Helvetica"
-                    font.pointSize: 20
+                    font.pointSize: 12
                     color: "white"
                     style: Text.Outline;
                     styleColor: "black"
@@ -118,7 +118,7 @@ Item {
                 Text {
                     text: "Roll:  " + appControl.serialControl.roll.toFixed(2) + " °"
                     font.family: "Helvetica"
-                    font.pointSize: 20
+                    font.pointSize: 12
                     color: "white"
                     style: Text.Outline;
                     styleColor: "black"
@@ -127,7 +127,7 @@ Item {
                 Text {
                     text: "Pitch:  " + appControl.serialControl.pitch.toFixed(2) + " °"
                     font.family: "Helvetica"
-                    font.pointSize: 20
+                    font.pointSize: 12
                     color: "white"
                     style: Text.Outline;
                     styleColor: "black"
@@ -136,7 +136,7 @@ Item {
                 Text {
                     text: "Version:  " + appControl.serialControl.boardVersion
                     font.family: "Helvetica"
-                    font.pointSize: 20
+                    font.pointSize: 12
                     color: "white"
                     style: Text.Outline;
                     styleColor: "black"
@@ -149,8 +149,8 @@ Item {
         id: touchStyle
         ButtonStyle {
             panel: Item {
-                implicitHeight: 60
-                implicitWidth: 180
+                implicitHeight: 36
+                implicitWidth: 108
                 BorderImage {
                     anchors.fill: parent
                     antialiasing: true
@@ -175,7 +175,7 @@ Item {
                         anchors.centerIn: parent
                         color: "white"
                         font.family: "Helvetica"
-                        font.pixelSize: 25
+                        font.pointSize: 12
                         renderType: Text.NativeRendering
                     }
                 }
@@ -187,16 +187,16 @@ Item {
         id: sliderTouchStyle
         SliderStyle {
             handle: Rectangle {
-                width: 30
-                height: 30
+                width: 18
+                height: 18
                 radius: height
                 antialiasing: true
                 color: Qt.lighter("#fc0303", 1.2)
             }
 
             groove: Item {
-                implicitHeight: 50
-                implicitWidth: 400
+                implicitHeight: 30
+                implicitWidth: 240
                 Rectangle {
                     height: 8
                     width: parent.width
@@ -220,19 +220,19 @@ Item {
         SwitchStyle {
 
             groove: Rectangle {
-                implicitHeight: 50
-                implicitWidth: 152
+                implicitHeight: 30
+                implicitWidth: 91
                 Rectangle {
                     anchors.top: parent.top
                     anchors.left: parent.left
                     anchors.bottom: parent.bottom
                     width: parent.width/2 - 2
-                    height: 20
+                    height: 12
                     anchors.margins: 2
                     color: control.checked ? "#468bb7" : "#222"
                     Behavior on color {ColorAnimation {}}
                     Text {
-                        font.pixelSize: 23
+                        font.pointSize: 12
                         color: "white"
                         anchors.centerIn: parent
                         text: "ON"
@@ -244,7 +244,7 @@ Item {
                     height: parent.height
                     anchors.right: parent.right
                     Text {
-                        font.pixelSize: 23
+                        font.pointSize: 12
                         color: "white"
                         anchors.centerIn: parent
                         text: "OFF"

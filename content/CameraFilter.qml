@@ -61,19 +61,18 @@ Item {
     //    height: parent.height
 
     Column {
-        spacing: 30
+        spacing: 9
 
         Text {
             text: "  Camera & Filter: "
             font.family: "Helvetica"
-            font.pointSize: 25
+            font.pointSize: 12
             color: "white"
             style: Text.Outline;
             styleColor: "#fc0303"
         }
 
         QQC2.GroupBox {
-            font.pixelSize: 25
 
             label: QQC2.Label {
                 text: " Camera Mode: "
@@ -82,11 +81,12 @@ Item {
                 elide: Text.ElideRight
                 style: Text.Outline;
                 styleColor: "black"
+                font.pointSize: 12
             }
 
             background: Rectangle {
-                implicitWidth: 100
-                implicitHeight: 60
+                implicitWidth: 60
+                implicitHeight: 36
                 color: "black"
                 opacity: 0.5
                 radius: 5
@@ -94,18 +94,18 @@ Item {
             }
 
             Column {
-                spacing: 25
+                spacing: 9
 
                 QQC2.RadioButton {
                     id: continuousZoom
                     text: "Continuous Zoom"
                     font.family: "Helvetica"
                     checked: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_ContinuousZoom
-                    font.pixelSize: 25
+                    font.pointSize: 12
 
                     background: Rectangle {
-                        implicitWidth: 100
-                        implicitHeight: 60
+                        implicitWidth: 60
+                        implicitHeight: 36
                         color: continuousZoom.checked ? "red" : "gray"
                         opacity: 0.5
                         radius: 5
@@ -123,11 +123,11 @@ Item {
                     text: "Spotter"
                     font.family: "Helvetica"
                     checked: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_Spotter
-                    font.pixelSize: 25
+                    font.pointSize: 12
 
                     background: Rectangle {
-                        implicitWidth: 100
-                        implicitHeight: 60
+                        implicitWidth: 60
+                        implicitHeight: 36
                         color: spotter.checked ? "red" : "gray"
                         opacity: 0.5
                         radius: 5
@@ -145,12 +145,12 @@ Item {
                     text: "SWIR"
                     font.family: "Helvetica"
                     checked: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_SWIRSpotter
-                    font.pixelSize: 25
+                    font.pointSize: 12
                     visible: true
 
                     background: Rectangle {
-                        implicitWidth: 100
-                        implicitHeight: 60
+                        implicitWidth: 60
+                        implicitHeight: 36
                         color: swirSpotter.checked ? "red" : "gray"
                         opacity: 0.5
                         radius: 5
@@ -166,7 +166,6 @@ Item {
         }
 
         QQC2.GroupBox {
-            font.pixelSize: 25
 
             label: QQC2.Label {
                 text: " Filter Mode: "
@@ -175,11 +174,12 @@ Item {
                 elide: Text.ElideRight
                 style: Text.Outline;
                 styleColor: "black"
+                font.pointSize: 12
             }
 
             background: Rectangle {
-                implicitWidth: 100
-                implicitHeight: 60
+                implicitWidth: 60
+                implicitHeight: 36
                 color: "black"
                 opacity: 0.5
                 radius: 5
@@ -187,24 +187,24 @@ Item {
             }
 
             Column {
-                spacing: 25
+                spacing: 9
 
                 Column {
-                    spacing: 25
+                    spacing: 9
 
                     QQC2.RadioButton {
                         id: colorFilter
                         text: "Color"
                         font.family: "Helvetica"
                         checked: appControl.serialControl.selectedFilter === SerialControl.Color
-                        font.pixelSize: 25
+                        font.pointSize: 12
                         visible: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_ContinuousZoom
                                  || appControl.serialControl.selectedCamera === SerialControl.CameraSelection_Spotter
                                  || appControl.serialControl.selectedCamera === SerialControl.CameraSelection_Unknown
 
                         background: Rectangle {
-                            implicitWidth: 100
-                            implicitHeight: 60
+                            implicitWidth: 60
+                            implicitHeight: 36
                             color: colorFilter.checked ? "red" : "gray"
                             opacity: 0.5
                             radius: 5
@@ -222,14 +222,14 @@ Item {
                         text: "NIR"
                         font.family: "Helvetica"
                         checked: appControl.serialControl.selectedFilter === SerialControl.NIR
-                        font.pixelSize: 25
+                        font.pointSize: 12
                         visible: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_ContinuousZoom
                                  || appControl.serialControl.selectedCamera === SerialControl.CameraSelection_Spotter
                                  || appControl.serialControl.selectedCamera === SerialControl.CameraSelection_Unknown
 
                         background: Rectangle {
-                            implicitWidth: 100
-                            implicitHeight: 60
+                            implicitWidth: 60
+                            implicitHeight: 36
                             color: nirFilter.checked ? "red" : "gray"
                             opacity: 0.5
                             radius: 5
@@ -247,13 +247,13 @@ Item {
                         text: "Laser"
                         font.family: "Helvetica"
                         checked: appControl.serialControl.selectedFilter === SerialControl.F1064
-                        font.pixelSize: 25
+                        font.pointSize: 12
                         visible: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_Spotter
                                  || appControl.serialControl.selectedCamera === SerialControl.CameraSelection_Unknown
 
                         background: Rectangle {
-                            implicitWidth: 100
-                            implicitHeight: 60
+                            implicitWidth: 60
+                            implicitHeight: 36
                             color: laserFilter.checked ? "red" : "gray"
                             opacity: 0.5
                             radius: 5
@@ -268,19 +268,19 @@ Item {
                 }
 
                 Column {
-                    spacing: 25
+                    spacing: 9
 
                     QQC2.RadioButton {
                         id: bwFilter
                         text: "BW"
                         font.family: "Helvetica"
                         checked: appControl.serialControl.selectedFilter === SerialControl.Color
-                        font.pixelSize: 25
+                        font.pointSize: 12
                         visible: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_SWIRSpotter
 
                         background: Rectangle {
-                            implicitWidth: 100
-                            implicitHeight: 60
+                            implicitWidth: 60
+                            implicitHeight: 36
                             color: bwFilter.checked ? "red" : "gray"
                             opacity: 0.5
                             radius: 5
@@ -298,12 +298,12 @@ Item {
                         text: "GW"
                         font.family: "Helvetica"
                         checked: appControl.serialControl.selectedFilter === SerialControl.NIR
-                        font.pixelSize: 25
+                        font.pointSize: 12
                         visible: appControl.serialControl.selectedCamera === SerialControl.CameraSelection_SWIRSpotter
 
                         background: Rectangle {
-                            implicitWidth: 100
-                            implicitHeight: 60
+                            implicitWidth: 60
+                            implicitHeight: 36
                             color: gwFilter.checked ? "red" : "gray"
                             opacity: 0.5
                             radius: 5
