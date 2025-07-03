@@ -166,7 +166,9 @@ void VideoCapture::initialize()
             .arg(QString::number(30));
 
     QString pipestr = QString("v4l2src device=%1 ! video/x-raw, format=YUY2, width=%2, height=%3, framerate=30/1 ! "
-                              "videoconvert name=sourceI420 ! video/x-raw, format=I420, width=%2, height=%3, framerate=30/1  ! "
+//                              "videoconvert name=sourceI420 ! video/x-raw, format=I420, width=%2, height=%3, framerate=30/1  ! "
+//                              "videoconvert ! video/x-raw,format=BGRA,width=%2,height=%3,framerate=%4/1 ! appsink name=sink caps=%5")
+                              "queue ! nvvidconv ! video/x-raw(memory:NVMM), format=BGRx ! nvvidconv ! video/x-raw, width=%2, height=%3, format=BGRx, framerate=30/1 ! "
                               "videoconvert ! video/x-raw,format=BGRA,width=%2,height=%3,framerate=%4/1 ! appsink name=sink caps=%5")
             .arg(_device)
             .arg(QString::number(_resolution.width()))
@@ -176,11 +178,11 @@ void VideoCapture::initialize()
 
 #endif
 
-//    qDebug() << "pipestr" << pipestr;
+    qDebug() << "pipestr" << pipestr;
 
     _data.pipeline = gst_parse_launch(pipestr.toLatin1().data(), NULL);
 
-    _data.source = gst_bin_get_by_name(GST_BIN(_data.pipeline), "sourceI420");
+//    _data.source = gst_bin_get_by_name(GST_BIN(_data.pipeline), "sourceI420");
 
     _data.sink = gst_bin_get_by_name(GST_BIN(_data.pipeline), "sink");
 

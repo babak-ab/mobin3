@@ -60,11 +60,13 @@ AppControl::AppControl(QObject* parent)
 
     connect(m_videoCapture, &VideoCapture::sigFrameReady, m_videoAdapter, &VideoAdapter::onFrameReady);
     connect(m_videoCapture, &VideoCapture::sigFrameReady, this, &AppControl::restartElapsedTimerRequested);
-    connect(m_videoCapture, &VideoCapture::sigI420_FrameReady, m_videoRecord, &VideoRecord::pushFrame);
+    //connect(m_videoCapture, &VideoCapture::sigI420_FrameReady, m_videoRecord, &VideoRecord::pushFrame);
+    connect(m_videoCapture, &VideoCapture::sigFrameReady, m_videoRecord, &VideoRecord::pushFrame);
 
     connect(m_videoCaptureSpotter, &VideoCapture::sigFrameReady, m_videoAdapter, &VideoAdapter::onFrameReady);
     connect(m_videoCaptureSpotter, &VideoCapture::sigFrameReady, this, &AppControl::restartElapsedTimerRequested);
-    connect(m_videoCaptureSpotter, &VideoCapture::sigI420_FrameReady, m_videoRecord, &VideoRecord::pushFrame);
+    //connect(m_videoCaptureSpotter, &VideoCapture::sigI420_FrameReady, m_videoRecord, &VideoRecord::pushFrame);
+    connect(m_videoCaptureSpotter, &VideoCapture::sigFrameReady, m_videoRecord, &VideoRecord::pushFrame);
 
     m_toggleIlluminatorTimer.setInterval(5000);
     connect(&m_toggleIlluminatorTimer, &QTimer::timeout,

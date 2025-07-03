@@ -67,7 +67,7 @@ bool VideoRecord::pushFrame(QByteArray ba)
     if (_data.pipeline == nullptr)
         return false;
 
-    if (size != _resolution.width() * _resolution.height() * 1.5) {
+    if (size != _resolution.width() * _resolution.height() * 4) {
         return false;
     }
 
@@ -100,7 +100,7 @@ void VideoRecord::initialize(const QString& location)
         QDir(_location).mkpath(location);
     }
 
-    QString caps = QString("video/x-raw,format=I420,width=%1,height=%2,framerate=%3/1 ")
+    QString caps = QString("video/x-raw,format=BGRA,width=%1,height=%2,framerate=%3/1 ")
                        .arg(QString::number(_resolution.width()))
                        .arg(QString::number(_resolution.height()))
                        .arg(QString::number(30));
@@ -109,7 +109,8 @@ void VideoRecord::initialize(const QString& location)
 
     QString pipestr;
     pipestr = QString("appsrc caps=%1 is-live=true name=src max-buffers=1 block=TRUE format=3 do-timestamp=true ! "
-                      "queue ! nvvidconv ! video/x-raw(memory:NVMM), format=I420 ! nvv4l2h264enc maxperf-enable=1 insert-sps-pps=1 bitrate=5000000 ! "
+                      "videoconvert ! video/x-raw, format=BGRA ! videoconvert ! video/x-raw, format=RGBA ! "
+                      "queue ! nvvidconv ! video/x-raw, format=BGRx ! nvvidconv ! video/x-raw(memory:NVMM), format=I420 ! nvv4l2h264enc maxperf-enable=1 insert-sps-pps=1 bitrate=5000000 ! "
                       "h264parse ! splitmuxsink muxer=mp4mux max-size-time=300000000000 sync=false location=%2")
             .arg(caps)
             .arg(m_currentVideoFileName);

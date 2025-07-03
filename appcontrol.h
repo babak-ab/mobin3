@@ -1,8 +1,8 @@
 #ifndef APPCONTROL_H
 #define APPCONTROL_H
 
-#define FRAME_WIDTH 1920
-#define FRAME_HEIGHT 1080
+#define FRAME_WIDTH 1280
+#define FRAME_HEIGHT 720
 
 
 #include <QAbstractItemModel>

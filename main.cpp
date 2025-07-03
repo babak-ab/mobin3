@@ -10,11 +10,11 @@
 
 int main(int argc, char* argv[])
 {   
-#ifdef Q_OS_LINUX
+//#ifdef Q_OS_LINUX
     // Set custom screen resolution
-    QProcess::execute("xrandr --output HDMI-0 --mode 1920x1080");
-    QThread::sleep(3);
-#endif
+    //QProcess::execute("xrandr --output HDMI-0 --mode 1920x1080");
+    //QThread::sleep(3);
+//#endif
 
 #ifdef WIN_32
     QGamepadManager *manager = QGamepadManager::instance();
