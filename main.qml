@@ -835,7 +835,7 @@ ApplicationWindow {
         id: stackView
         width: 240
         visible: false
-        height: root.height - 250
+        height: root.height - 230
 
         y: (root.height / 2) - (height / 2)
         x: 20
@@ -1157,9 +1157,20 @@ ApplicationWindow {
         onAccepted: passwordDialog.close()
     }
 
-    RecordIndicator {}
+    RecordIndicator
+    {
+        id: recordIndicator
 
-    IlluminatorIndicator {}
+        x: zoomInButton.x - 90
+        y: zoomInButton.y
+    }
+
+    IlluminatorIndicator
+    {
+        anchors.horizontalCenter: recordIndicator.horizontalCenter
+        anchors.top: recordIndicator.bottom
+        anchors.topMargin: 20
+    }
 
     function handleSerialBoardCommand(command)
     {

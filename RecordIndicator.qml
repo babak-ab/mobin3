@@ -5,10 +5,6 @@ import QtQuick.Layouts 1.14
 
 RowLayout {
     id: root
-    anchors.right: parent.right
-    anchors.top: parent.top
-    anchors.rightMargin: 60
-    anchors.topMargin: 120
     visible: appControl.recordVisible
 
     RoundButton {

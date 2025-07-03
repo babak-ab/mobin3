@@ -71,6 +71,7 @@ Item {
     {
         id: row
         anchors.fill: parent
+        anchors.leftMargin: 20
 
         Text {
             id: textitem
