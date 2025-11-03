@@ -6,6 +6,7 @@
 
 
 #include <QAbstractItemModel>
+#include <QTime>
 #include <QElapsedTimer>
 #include <QFont>
 #include <QMouseEvent>

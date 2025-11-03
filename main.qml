@@ -164,15 +164,18 @@ ApplicationWindow {
 
                     height: 10
 
-                    onReleased: {
-
-                        if (!checked) {
-
-                            if (illuminatorOnOffSwitch.checked !== appControl.serialControl.illuminator) {
-                                appControl.serialControl.enableIlluminator(
-                                            illuminatorOnOffSwitch.checked)
+                    onReleased:
+                    {
+                        if (checked === false)
+                        {
+                            if (illuminatorOnOffSwitch.checked !==
+                                    appControl.serialControl.illuminator)
+                            {
+                                appControl.serialControl.enableIlluminator(false)
                             }
-                        } else {
+                        }
+                        else
+                        {
                             illuminatorDialog.open()
                         }
                     }
@@ -942,14 +945,17 @@ ApplicationWindow {
         x: parent ? ((parent.width - width) / 2) : 0
         y: parent ? ((parent.height - height) / 2) : 0
 
-        onAccepted: {
-            if (illuminatorOnOffSwitch.checked !== appControl.serialControl.illuminator) {
-                appControl.serialControl.enableIlluminator(
-                            illuminatorOnOffSwitch.checked)
+        onAccepted:
+        {
+            if (illuminatorOnOffSwitch.checked !==
+                    appControl.serialControl.illuminator)
+            {
+                appControl.serialControl.enableIlluminator(true)
             }
         }
 
-        onRejected: {
+        onRejected:
+        {
             illuminatorOnOffSwitch.checked = false
         }
     }
@@ -1028,18 +1034,18 @@ ApplicationWindow {
 
             Button {
                 id: controlBt
-                text: appControl.serialControl.isConnected ? "Disconnect" : "Connect"
+                //  text: appControl.serialControl.isConnected ? "Disconnect" : "Connect"       /* O */
                 font.family: "Helvetica"
                 font.pointSize: 10
                 checkable: true
-                checked: appControl.serialControl.isConnected
+                //  checked: appControl.serialControl.isConnected                               /* O */
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 contentItem: Text {
-                    text: appControl.serialControl.isConnected ? "Disconnect" : "Connect"
+                    //  text: appControl.serialControl.isConnected ? "Disconnect" : "Connect"   /* O */
                     font: controlBt.font
                     opacity: enabled ? 1.0 : 0.3
-                    color: appControl.serialControl.isConnected ? "green" : "black"
+                    //  color: appControl.serialControl.isConnected ? "green" : "black"         /* O */
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                     elide: Text.ElideRight

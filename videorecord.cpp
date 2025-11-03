@@ -60,19 +60,26 @@ VideoRecord::VideoRecord(QSize resolution, QString location)
 
 bool VideoRecord::pushFrame(QByteArray ba)
 {
-
     auto size = ba.size();
     auto data = ba.data();
 
+    qCritical() << " 1 ======================= " << size << endl;
+
     if (_data.pipeline == nullptr)
         return false;
+
+    qCritical() << " 2 ======================= ";
 
     if (size != _resolution.width() * _resolution.height() * 4) {
         return false;
     }
 
+    qCritical() << " 3 ======================= ";
+
     if (_need_data == false)
         return false;
+
+    qCritical() << " 4 ======================= ";
 
     _need_data = false;
 
@@ -108,12 +115,23 @@ void VideoRecord::initialize(const QString& location)
     m_currentVideoFileName = _location + videoName();
 
     QString pipestr;
+#ifdef Q_OS_LINUX
     pipestr = QString("appsrc caps=%1 is-live=true name=src max-buffers=1 block=TRUE format=3 do-timestamp=true ! "
                       "videoconvert ! video/x-raw, format=BGRA ! videoconvert ! video/x-raw, format=RGBA ! "
-                      "queue ! nvvidconv ! video/x-raw, format=BGRx ! nvvidconv ! video/x-raw(memory:NVMM), format=I420 ! nvv4l2h264enc maxperf-enable=1 insert-sps-pps=1 bitrate=5000000 ! "
+                      "queue ! nvvidconv ! video/x-raw, format=BGRx ! nvvidconv ! video/x-raw(memory:NVMM), format=I420 ! "
+                      "nvv4l2h264enc maxperf-enable=1 insert-sps-pps=1 bitrate=5000000 ! "
                       "h264parse ! splitmuxsink muxer=mp4mux max-size-time=300000000000 sync=false location=%2")
             .arg(caps)
             .arg(m_currentVideoFileName);
+#elif defined(Q_OS_WIN)
+    pipestr = QString("appsrc caps=%1 is-live=true name=src max-buffers=1 block=TRUE format=3 do-timestamp=true ! "
+                      "videoconvert ! video/x-raw, format=BGRA ! videoconvert ! video/x-raw, format=RGBA ! "
+                      "queue ! nvvidconv ! video/x-raw, format=BGRx ! nvvidconv ! video/x-raw(memory:NVMM), format=I420 ! "
+                      "nvv4l2h264enc maxperf-enable=1 insert-sps-pps=1 bitrate=5000000 ! "
+                      "h264parse ! splitmuxsink muxer=mp4mux max-size-time=300000000000 sync=false location=%2")
+            .arg(caps)
+            .arg(m_currentVideoFileName);
+#endif
 
     qDebug() << "Video record pipestr: " << pipestr;
     qDebug() << "----------------------------------------";

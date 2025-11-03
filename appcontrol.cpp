@@ -125,9 +125,9 @@ AppControl::AppControl(QObject* parent)
     m_serialBoardController.openConnection(
                 "ttyTHS1", 115200, errorCode);
 #elif defined(WIN32)
-    m_serialControl->connectToSerialPort("COM1");
-    m_serialBoardController.openConnection(
-                "COM2", 9600, errorCode);
+    qCritical() << "serialControl" << m_serialControl->connectToSerialPort("COM1");
+    qCritical() << "serialBoard" << m_serialBoardController.openConnection(
+                       "COM4", 38400, errorCode);
 #endif
 }
 
@@ -730,7 +730,9 @@ sltSerialBoardDataReceived(
             static_cast<SerialBoard::Commands>(
                 keyboardCommand);
 
-    qCritical() << "       command:" << command << endl
+    qCritical() << "------------------------"
+                << QTime::currentTime().toString("   hh:mm:ss.zzz") << endl
+                << "       command:" << command << endl
                 << "  last command:" << m_lastCommand << endl
                 << "keyboard state:" << m_isKeyboardCommandChanged << endl;
 
@@ -739,7 +741,17 @@ sltSerialBoardDataReceived(
         m_isKeyboardCommandChanged = false;
     }
 
-    if (m_isKeyboardCommandChanged == true)
+    if (m_isKeyboardCommandChanged == true &&
+            command != SerialBoard::Command_SpeedPlus &&
+            command != SerialBoard::Command_SpeedMinus &&
+            command != SerialBoard::Command_BeamAnglePlus &&
+            command != SerialBoard::Command_BeamAngleMinus &&
+            command != SerialBoard::Command_IntensityPlus &&
+            command != SerialBoard::Command_IntensityMinus &&
+            command != SerialBoard::Command_MoveUp &&
+            command != SerialBoard::Command_MoveDown &&
+            command != SerialBoard::Command_MoveLeft &&
+            command != SerialBoard::Command_MoveRight)
     {
         return;
     }
@@ -862,80 +874,78 @@ sltSerialBoardDataReceived(
     }
     case SerialBoard::Command_IntensityPlus:
     {
-        uint8_t intensityPlus =
-                m_serialControl->
+        uint8_t intensity = m_serialControl->
                 illuminatorBrightnessLevel();
 
-        if (intensityPlus + 10 > 255)
+        if (intensity + 10 > 255)
         {
-            intensityPlus = 255;
+            intensity = 255;
         }
         else
         {
-            intensityPlus += 10;
+            intensity += 10;
         }
 
         m_serialControl->
                 setIlluminatorBrightness(
-                    intensityPlus);
+                    intensity);
         break;
     }
     case SerialBoard::Command_IntensityMinus:
     {
-        uint8_t intensityPlus =
-                m_serialControl->
+        uint8_t intensity = m_serialControl->
                 illuminatorBrightnessLevel();
 
-        if (intensityPlus - 10 < 0)
+        if (intensity - 10 < 0)
         {
-            intensityPlus = 0;
+            intensity = 0;
         }
         else
         {
-            intensityPlus -= 10;
+            intensity -= 10;
         }
 
         m_serialControl->
                 setIlluminatorBrightness(
-                    intensityPlus);
+                    intensity);
 
         break;
     }
     case SerialBoard::Command_SpeedPlus:
     {
-        uint8_t speedPlus =
+        uint8_t speed =
                 m_serialControl->panTiltSpeed();
 
-        if (speedPlus + 10 > 255)
+        if (speed + 10 > 255)
         {
-            speedPlus = 255;
+            speed = 255;
         }
         else
         {
-            speedPlus += 10;
+            speed += 10;
         }
 
         m_serialControl->
-                setPanTiltSpeed(speedPlus);
+                setPanTiltSpeed(speed);
 
         break;
     }
     case SerialBoard::Command_SpeedMinus:
     {
-        uint8_t speedPlus =
+        uint8_t speed =
                 m_serialControl->panTiltSpeed();
 
-        if (speedPlus + 10 > 255)
+        if (speed - 10 < 0)
         {
-            speedPlus = 255;
+            speed = 0;
         }
         else
         {
-            speedPlus += 10;
+            speed -= 10;
         }
 
         m_serialControl->
-                setPanTiltSpeed(speedPlus);
+                setPanTiltSpeed(speed);
 
         break;
     }
