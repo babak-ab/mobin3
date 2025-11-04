@@ -717,6 +717,17 @@ ApplicationWindow {
 
             spacing: 30
 
+            Text
+            {
+                text: "PZ Speed: " + ((appControl.serialControl.panTiltSpeed / 255) * 100).toFixed(0) + "%"
+                font.family: "Helvetica"
+                font.pointSize: 15
+                font.bold: true
+                color: "white"
+                style: Text.Outline
+                styleColor: "black"
+            }
+
             Text {
                 text: "NR: " + appControl.serialControl.noiseReductionType.toString() + ","
                 font.family: "Helvetica"
