@@ -45,6 +45,9 @@ class AppControl : public QObject {
     Q_PROPERTY(bool boardSerialInboundState READ boardSerialInboundState NOTIFY sigSerialStateChanged)
     Q_PROPERTY(bool boardSerialOutboundState READ boardSerialOutboundState NOTIFY sigSerialStateChanged)
 
+    Q_PROPERTY(int serialPanState READ serialPanState NOTIFY sigSerialPanTiltStateChanged)
+    Q_PROPERTY(int serialTiltState READ serialTiltState NOTIFY sigSerialPanTiltStateChanged)
+
 public:
     ///
     /// \brief AppControl
@@ -204,6 +207,9 @@ public:
     Q_INVOKABLE bool boardSerialInboundState() const;
     Q_INVOKABLE bool boardSerialOutboundState() const;
 
+    Q_INVOKABLE int serialPanState() const;
+    Q_INVOKABLE int serialTiltState() const;
+
 private:
     QString m_recordingLocation;
 
@@ -240,6 +246,9 @@ private:
 
     bool m_boardSerialInboundState;
     bool m_boardSerialOutboundState;
+
+    int m_serialPanState;
+    int m_serialTiltState;
 
     SerialBoard::Commands m_lastCommand;
 
@@ -278,6 +287,8 @@ Q_SIGNALS:
     void reticleVisibleChanged();
     void sigSerialBoardDataReceived(const int &command);
     void sigSerialStateChanged();
+
+    void sigSerialPanTiltStateChanged();
 };
 
 #endif // APPCONTROL_H

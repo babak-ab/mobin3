@@ -611,7 +611,7 @@ ApplicationWindow {
             icon.width: 42
 
             background: Rectangle {
-                color: rightPanButton.down ? "red" : "black"
+                color: rightPanButton.down || appControl.serialPanState === 2 ? "red" : "black"
                 opacity: 0.5
             }
 
@@ -638,7 +638,7 @@ ApplicationWindow {
             icon.width: 42
 
             background: Rectangle {
-                color: leftPanButton.down ? "red" : "black"
+                color: leftPanButton.down || appControl.serialPanState === 1 ? "red" : "black"
                 opacity: 0.5
             }
 
@@ -665,7 +665,7 @@ ApplicationWindow {
             icon.width: 42
 
             background: Rectangle {
-                color: upTiltButton.down ? "red" : "black"
+                color: upTiltButton.down || appControl.serialTiltState === 1 ? "red" : "black"
                 opacity: 0.5
             }
 
@@ -692,7 +692,7 @@ ApplicationWindow {
             icon.width: 42
 
             background: Rectangle {
-                color: downTiltButton.down ? "red" : "black"
+                color: downTiltButton.down || appControl.serialTiltState === 2 ? "red" : "black"
                 opacity: 0.5
             }
 

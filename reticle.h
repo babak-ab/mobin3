@@ -6,6 +6,7 @@
 #include <QWidget>
 #include <QObject>
 #include <QPainter>
+#include <QPainterPath>
 #include <QQuickPaintedItem>
 
 #include <iostream>

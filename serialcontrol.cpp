@@ -733,8 +733,6 @@ void SerialControl::tiltDown()
 void SerialControl::tiltStop()
 {
     sendCommand1(175, 1);
-
-
 }
 
 void SerialControl::panLeft()
@@ -750,8 +748,6 @@ void SerialControl::panRight()
 void SerialControl::panStop()
 {
     sendCommand1(172, 1);
-
-
 }
 
 void SerialControl::setPanTiltSpeed(const quint8 speed)

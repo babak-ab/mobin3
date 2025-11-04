@@ -548,6 +548,16 @@ bool AppControl::boardSerialOutboundState() const
     return m_boardSerialOutboundState;
 }
 
+int AppControl::serialPanState() const
+{
+    return m_serialPanState;
+}
+
+int AppControl::serialTiltState() const
+{
+    return m_serialTiltState;
+}
+
 QString AppControl::messageTitle() const
 {
     return m_messageTitle;
@@ -794,6 +804,11 @@ sltSerialBoardDataReceived(
             m_serialControl->focusStop();
         }
 
+        m_serialPanState = 0;
+        m_serialTiltState = 0;
+
+        Q_EMIT sigSerialPanTiltStateChanged();
+
         break;
     }
     case SerialBoard::Command_Continuous:
@@ -863,13 +878,13 @@ sltSerialBoardDataReceived(
     case SerialBoard::Command_BeamAnglePlus:
     {
         m_serialControl->
-                setIlluminatorLargerAngle();
+                setIlluminatorSmallerAngle();
         break;
     }
     case SerialBoard::Command_BeamAngleMinus:
     {
         m_serialControl->
-                setIlluminatorSmallerAngle();
+                setIlluminatorLargerAngle();
         break;
     }
     case SerialBoard::Command_IntensityPlus:
@@ -953,11 +968,19 @@ sltSerialBoardDataReceived(
     {
         m_serialControl->tiltUp();
 
+        m_serialTiltState = 1;
+
+        Q_EMIT sigSerialPanTiltStateChanged();
+
         break;
     }
     case SerialBoard::Command_MoveDown:
     {
         m_serialControl->tiltDown();
+
+        m_serialTiltState = 2;
+
+        Q_EMIT sigSerialPanTiltStateChanged();
 
         break;
     }
@@ -965,11 +988,19 @@ sltSerialBoardDataReceived(
     {
         m_serialControl->panLeft();
 
+        m_serialPanState = 1;
+
+        Q_EMIT sigSerialPanTiltStateChanged();
+
         break;
     }
     case SerialBoard::Command_MoveRight:
     {
         m_serialControl->panRight();
+
+        m_serialPanState = 2;
+
+        Q_EMIT sigSerialPanTiltStateChanged();
 
         break;
     }

@@ -268,6 +268,8 @@ public:
     Q_INVOKABLE bool platformSerialInboundState() const;
     Q_INVOKABLE bool platformSerialOutboundState() const;
 
+
+
     ///
     /// \brief SerialControl default constructor
     ///
@@ -627,6 +629,7 @@ private:
     void sendCommand3(const quint8& command,
                       const quint8& param1, const quint8& param2,
                       const quint8& param3, const quint8& param4);
+
     void sendCommand4(const quint8 &command);
 
     void autoFocus();
