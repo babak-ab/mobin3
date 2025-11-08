@@ -40,13 +40,13 @@ AppControl::AppControl(QObject* parent)
     device2 = "/dev/video1";
 #endif
 
-    m_recordingLocation = QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
+    m_recordingLocation = QStandardPaths::writableLocation(QStandardPaths::MoviesLocation) + "/";
 
-    m_videoCapture = new VideoCapture(device1, QSize(FRAME_WIDTH, FRAME_HEIGHT));
+    m_videoCapture = new VideoCapture(device2, QSize(FRAME_WIDTH, FRAME_HEIGHT));
     m_videoCapture->initialize();
     m_videoCapture->start();
 
-    m_videoCaptureSpotter = new VideoCapture(device2, QSize(FRAME_WIDTH, FRAME_HEIGHT));
+    m_videoCaptureSpotter = new VideoCapture(device1, QSize(FRAME_WIDTH, FRAME_HEIGHT));
     m_videoCaptureSpotter->initialize();
     m_videoCaptureSpotter->pause();
 
@@ -54,19 +54,17 @@ AppControl::AppControl(QObject* parent)
 
     m_reticleVisible = false;
 
-    m_videoRecord = new VideoRecord(QSize(FRAME_WIDTH, FRAME_HEIGHT));
+    m_videoRecord = new VideoRecord(m_recordingLocation);
 
     m_videoAdapter = new VideoAdapter(QSize(FRAME_WIDTH, FRAME_HEIGHT));
 
     connect(m_videoCapture, &VideoCapture::sigFrameReady, m_videoAdapter, &VideoAdapter::onFrameReady);
     connect(m_videoCapture, &VideoCapture::sigFrameReady, this, &AppControl::restartElapsedTimerRequested);
     //connect(m_videoCapture, &VideoCapture::sigI420_FrameReady, m_videoRecord, &VideoRecord::pushFrame);
-    connect(m_videoCapture, &VideoCapture::sigFrameReady, m_videoRecord, &VideoRecord::pushFrame);
 
     connect(m_videoCaptureSpotter, &VideoCapture::sigFrameReady, m_videoAdapter, &VideoAdapter::onFrameReady);
     connect(m_videoCaptureSpotter, &VideoCapture::sigFrameReady, this, &AppControl::restartElapsedTimerRequested);
     //connect(m_videoCaptureSpotter, &VideoCapture::sigI420_FrameReady, m_videoRecord, &VideoRecord::pushFrame);
-    connect(m_videoCaptureSpotter, &VideoCapture::sigFrameReady, m_videoRecord, &VideoRecord::pushFrame);
 
     m_toggleIlluminatorTimer.setInterval(5000);
     connect(&m_toggleIlluminatorTimer, &QTimer::timeout,
@@ -487,15 +485,14 @@ int AppControl::findSerialPortName(QString portName)
 
 void AppControl::startRecord()
 {
-    m_videoRecord->initialize(m_recordingLocation);
-    m_videoRecord->start();
+    m_videoRecord->startRecord();
 
     setRecordVisible(true);
 }
 
 void AppControl::stopRecord()
 {
-    m_videoRecord->stop();
+    m_videoRecord->stopRecord();
 
     setRecordVisible(false);
 }
@@ -707,7 +704,7 @@ void AppControl::sltPlatformNewDataReceived()
             m_serialControl->selectedFilter();
 
     const bool isRecording =
-            m_videoRecord->isActive();
+            m_videoRecord->isRecording();
 
     const bool &isIlluminatorEnabled =
             m_serialControl->illuminator();
@@ -854,7 +851,7 @@ sltSerialBoardDataReceived(
     }
     case SerialBoard::Command_VideoRecord:
     {
-        if (m_videoRecord->isActive() == true)
+        if (m_videoRecord->isRecording() == true)
         {
             stopRecord();
         }

@@ -20,7 +20,7 @@
 #include "reticle.h"
 #include "videoadapter.h"
 #include "videocapture.h"
-#include "videorecord.h"
+#include "VideoRecord.h"
 #include "SerialController.h"
 #include "SerialBoard.h"
 

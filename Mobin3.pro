@@ -32,7 +32,7 @@ SOURCES += \
         serialcontrol.cpp \
         videoadapter.cpp \
         videocapture.cpp \
-        videorecord.cpp
+        VideoRecord.cpp
 
 RESOURCES += qml.qrc
 
@@ -55,7 +55,7 @@ HEADERS += \
     serialcontrol.h \
     videoadapter.h \
     videocapture.h \
-    videorecord.h
+    VideoRecord.h
 
 CONFIG += link_pkgconfig \
             c++11

@@ -163,11 +163,11 @@ void VideoCapture::initialize()
             .arg(QString::number(_resolution.height()))
             .arg(QString::number(30));
 
-    QString pipestr = QString("v4l2src device=%1 ! video/x-raw, format=YUY2, width=%2, height=%3, framerate=30/1 ! "
-//                              "videoconvert name=sourceI420 ! video/x-raw, format=I420, width=%2, height=%3, framerate=30/1  ! "
-//                              "videoconvert ! video/x-raw,format=BGRA,width=%2,height=%3,framerate=%4/1 ! appsink name=sink caps=%5")
-                              "queue ! nvvidconv ! video/x-raw(memory:NVMM), format=BGRx ! nvvidconv ! video/x-raw, width=%2, height=%3, format=BGRx, framerate=30/1 ! "
-                              "videoconvert ! video/x-raw,format=BGRA,width=%2,height=%3,framerate=%4/1 ! appsink name=sink caps=%5")
+    QString pipestr = QString("v4l2src device=%1 ! video/x-raw,format=YUY2,width=%2,height=%3,framerate=30/1 ! "
+                              "tee name=t ! queue ! nvvidconv ! video/x-raw(memory:NVMM), format=BGRx ! "
+                              "nvvidconv ! video/x-raw,width=%2,height=%3,format=BGRx,framerate=30/1 ! "
+                              "videoconvert ! video/x-raw,format=BGRA,width=%2,height=%3,framerate=%4/1 ! "
+                              "appsink name=sink caps=%5 t. ! queue ! v4l2sink device=/dev/video10")
             .arg(_device)
             .arg(QString::number(_resolution.width()))
             .arg(QString::number(_resolution.height()))

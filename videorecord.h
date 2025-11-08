@@ -1,55 +1,91 @@
-#ifndef VIDEORECORD_H
-#define VIDEORECORD_H
-#include "iostream"
-#include <QMetaObject>
-#include <QObject>
-#include <QSize>
-#include <QTimer>
-#include <gst/gst.h>
-#include <memory>
-#include "global.h"
+#ifndef GSTUDPRECORD_H
+#define GSTUDPRECORD_H
 
+#include <QColor>
+#include <QDir>
+#include <QImage>
+#include <QMetaType>
+#include <QDebug>
+#include <QObject>
+#include <QRgb>
+#include <QTime>
+#include <QTimer>
+#include <QElapsedTimer>
+#include <QUrl>
+
+#include <gst/gst.h>
+
+#include <memory>
+#include <iostream>
+
+///
+/// \brief this class is responsible for receiving ogab's camera's output frames and
+/// creates a record file of what oghab sees.
+///
 class VideoRecord : public QObject {
     Q_OBJECT
-    struct Data {
-        GstElement* pipeline = Q_NULLPTR;
-        GstElement* src = Q_NULLPTR;
-        GstBus* bus = Q_NULLPTR;
-        GstClockTime timestamp = 0;
+
+public:
+    explicit VideoRecord(QObject* parent = Q_NULLPTR);
+    explicit VideoRecord(QString dirName, QObject* parent = Q_NULLPTR);
+    virtual ~VideoRecord();
+    // bitrate Kbit/sec 1000 ~ 1000000 bit/sec
+
+    void startRecord();
+    void stopRecord();
+    void pause();
+
+    QString videoLocation() const;
+
+    void setVideoLocation(
+            const QString& videoLocation);
+
+    QString videoFileName();
+
+    bool isRecording() const;
+
+private:
+    QString m_currentVideoFileName;
+    bool m_recordStatus;
+    bool m_needdata;
+    quint32 m_bitrate;
+    bool m_isFirstRun;
+
+    struct Elements {
+        Elements()
+        {
+            pipeline = Q_NULLPTR;
+            appsrc = Q_NULLPTR;
+            videoencoder = Q_NULLPTR;
+            bus = Q_NULLPTR;
+        }
+        GstElement* pipeline;
+        GstElement* appsrc;
+        GstElement* videoencoder;
+        GstBus* bus;
     };
 
-private:
-    QSize _resolution;
-    Data _data;
+    Elements m_elements;
+    QString m_videoLocation;
+    GstBuffer* m_buffer;
+    int m_waitBeforeNoVideo;
+    static GstBusSyncReply onBusMessageVideoPipeline(
+            GstBus* bus, GstMessage* msg, gpointer user_data);
 
-    QString _location;
-    bool _need_data = false;
-    bool _stop = false;
-    bool m_isActive;
-
-    QString m_currentVideoFileName;
-
-private:
     template <typename T>
     static std::shared_ptr<T> takeGstMiniObject(T* o);
-    static void start_feed(GstElement* appsrc, guint unused, gpointer user_data);
-    static void stop_feed(GstElement* appsrc, guint unused, gpointer user_data);
-    static bool bus_message(GstBus* bus, GstMessage* msg, gpointer user_data);
 
     QString videoName();
-public:
-    explicit VideoRecord(QSize resolution, QString location = "");
-    bool pushFrame(QByteArray ba);
-    void initialize(const QString& location);
-    void setResolution(QSize resolution);
-    void finalize();
-    void start();
-    void stop();
+    void createNewVideoWriter();
 
-    bool isActive() const;
+private Q_SLOTS:
+    void busMessage(std::shared_ptr<GstMessage> message);
 
 Q_SIGNALS:
-    void sigFrameReady(QByteArray ba);
+    void sigError(QString src, QString msg, QString desc);
+    void sigEos();
+    void sigRecordingStatusChanged();
+    void sigRecordingSaved(const QString& filePath, const QString& label);
 };
 
-#endif // VIDEORECORD_H
+#endif // GSTRECORD_H
