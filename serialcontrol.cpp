@@ -752,7 +752,7 @@ void SerialControl::panStop()
 
 void SerialControl::setPanTiltSpeed(const quint8 speed)
 {
-    m_panTiltSpeed = speed;
+    m_panTiltSpeed = std::max(quint8(3), speed);
 
     Q_EMIT sigDataChanged();
 }

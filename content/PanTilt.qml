@@ -116,7 +116,7 @@ Item {
                 style: sliderTouchStyle
                 value: appControl.serialControl.panTiltSpeed
                 updateValueWhileDragging: false
-                minimumValue: 0
+                minimumValue: 3
                 maximumValue: 255
 
                 onValueChanged: {

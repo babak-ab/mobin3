@@ -719,7 +719,7 @@ ApplicationWindow {
 
             Text
             {
-                text: "PZ Speed: " + ((appControl.serialControl.panTiltSpeed / 255) * 100).toFixed(0) + "%"
+                text: "PT Speed: %" + ((appControl.serialControl.panTiltSpeed / 255) * 100).toFixed(0)
                 font.family: "Helvetica"
                 font.pointSize: 15
                 font.bold: true
